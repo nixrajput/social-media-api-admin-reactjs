@@ -1,5 +1,3 @@
-import { apiURL } from './urls';
-
 async function apiClient(endpoint, method, { body, ...options } = {}) {
     const headers = { 'Content-Type': 'application/json' };
 
@@ -16,7 +14,7 @@ async function apiClient(endpoint, method, { body, ...options } = {}) {
         config.body = JSON.stringify(body);
     }
 
-    const baseUrl = process.env.API_URL || apiURL;
+    const baseUrl = process.env.API_URL || 'http://localhost:5000';
 
     let data;
     try {
