@@ -37,7 +37,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "postinstall": "npm cache clean && install -g node-prune",
+    "postinstall": "npm cache clean && npm install -g node-prune",
     "build": "react-scripts build",
     "post-build": "node-prune",
     "test": "react-scripts test",
