@@ -37,7 +37,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && rm -rf node_modules && npm install --production",
+    "build": "react-scripts build",
+    "postinstall": "npm cache clean --force",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
