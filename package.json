@@ -37,8 +37,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && npm cache clean --force && rm -rf node_modules",
-    "postinstall": "npm cache clean --force",
+    "install": "npm install --omit=dev && npm install -g node-prune",
+    "postinstall": "npm cache clean",
+    "build": "react-scripts build",
+    "post-build": "node-prune",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -59,5 +61,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=8.0.0"
   }
 }
