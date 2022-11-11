@@ -23,6 +23,7 @@ async function apiClient(endpoint, method, { body, ...options } = {}) {
     }
 
     let data;
+
     try {
         const response = await fetch(`${baseUrl}${endpoint}`, config);
         data = await response.json();
