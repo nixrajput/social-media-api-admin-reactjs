@@ -16,7 +16,11 @@ async function apiClient(endpoint, method, { body, ...options } = {}) {
         config.body = JSON.stringify(body);
     }
 
-    const baseUrl = process.env.API_URL || ApiUrls.baseUrl;
+    let baseUrl = ApiUrls.baseUrl;
+
+    if (process.env.NODE_ENV !== 'development') {
+        baseUrl = process.env.API_URL;
+    }
 
     let data;
     try {
