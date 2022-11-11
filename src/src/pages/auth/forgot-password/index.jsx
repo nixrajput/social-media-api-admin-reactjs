@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
-import apiClient from "../../../api/apiClient";
-import {
-    sendingEmail, success, setError
-} from '../../../redux/slices/authSlice';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { forgotPasswordAction } from '../../../redux/actions';
 
 const ForgotPassword = () => {
     const auth = useSelector((state) => state.auth);
@@ -13,34 +12,35 @@ const ForgotPassword = () => {
     const location = useLocation();
 
     const [email, setEmail] = useState("");
+    const [open, setOpen] = useState(false);
+
+    const closeBackdrop = () => {
+        setOpen(false);
+    };
+
+    const openBackdrop = () => {
+        setOpen(true);
+    };
 
     const onClickBtnEvent = (e) => async (dispatch) => {
         e.preventDefault();
-        const body = {
-            "email": email.trim(),
-        };
 
-        dispatch(sendingEmail());
-        try {
-            const response = await apiClient.post('/forgot-password', body);
-            if (response.status === 200) {
-                dispatch(success());
-                navigate('/auth/reset-password');
-            }
-            else {
-                dispatch(setError(response.message));
-            }
-        }
-        catch (error) {
-            dispatch(setError(error));
+        openBackdrop();
+
+        await forgotPasswordAction(dispatch, email);
+
+        closeBackdrop();
+
+        if (auth.status === 'emailSent') {
+            navigate('/auth/reset-password', { replace: true });
         }
     }
 
     useEffect(() => {
         const returnUrl = location.state?.from?.pathname || '/';
 
-        if (auth.status === 'userLoaded' && auth.token && auth.user) {
-            navigate(returnUrl);
+        if (auth.token && auth.user && auth.status === 'userLoaded') {
+            navigate(returnUrl, { replace: true });
         }
 
         return () => { }
@@ -62,73 +62,72 @@ const ForgotPassword = () => {
                 </div>
             }
 
-            {
-                auth.status === "sending" ?
-                    <div className="app__box__form_container">
-                        <div className="app__loading_text">
-                            Please wait...
-                        </div>
-                    </div>
-                    :
-                    <form className="app__box__form_container"
-                        onSubmit={(e) => dispatch(onClickBtnEvent(e))}>
+            <form className="app__box__form_container"
+                onSubmit={(e) => dispatch(onClickBtnEvent(e))}>
 
-                        <p className="title">Forgot your password?</p>
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={open}
+                    onClick={closeBackdrop}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
 
-                        <p style={{
-                            marginBottom: "0.5rem",
-                            fontSize: "0.95rem",
-                        }}>
-                            Enter your email address and an OTP will be sent to your
-                            email address if account exists
-                        </p>
+                <p className="title">Forgot your password?</p>
 
-                        <div className="app__form_control">
-                            <input
-                                type="text"
-                                placeholder="Email"
-                                name="email"
-                                required
-                                disabled={auth.status === 'sending'}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
+                <p style={{
+                    marginBottom: "0.5rem",
+                    fontSize: "0.95rem",
+                }}>
+                    Enter your email address and we'll send you an OTP
+                    to reset your password.
+                </p>
 
-                        <div style={{
-                            width: '100%',
-                            marginTop: '1rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start'
-                        }}>
-                            <NavLink to="/auth/login">
-                                <div className="app__text_btn">Login to account</div>
-                            </NavLink>
-                        </div>
+                <div className="app__form_control">
+                    <input
+                        type="text"
+                        placeholder="Email"
+                        name="email"
+                        required
+                        disabled={auth.status === 'sendingEmail'}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
 
-                        <div style={{
-                            width: '100%',
-                            marginTop: '2rem',
-                        }}>
-                            <input
-                                type="submit"
-                                value="send otp"
-                                disabled={auth.status === 'sending'}
-                                className="app__filled_btn app__form_control"
-                            />
-                        </div>
+                <div style={{
+                    width: '100%',
+                    marginTop: '1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start'
+                }}>
+                    <NavLink to="/auth/login">
+                        <div className="app__text_btn">Login to account</div>
+                    </NavLink>
+                </div>
 
-                        <div className="app__form_control">
-                            <span>
-                                Already have an OTP?
-                            </span>
-                            <NavLink to="/auth/reset-password">
-                                <div className="app__text_btn">Reset Password</div>
-                            </NavLink>
-                        </div>
-                    </form>
-            }
+                <div style={{
+                    width: '100%',
+                    marginTop: '2rem',
+                }}>
+                    <input
+                        type="submit"
+                        value="send otp"
+                        disabled={auth.status === 'sendingEmail'}
+                        className="app__filled_btn app__form_control"
+                    />
+                </div>
+
+                <div className="app__form_control">
+                    <span>
+                        Already have an OTP?
+                    </span>
+                    <NavLink to="/auth/reset-password">
+                        <div className="app__text_btn">Reset Password</div>
+                    </NavLink>
+                </div>
+            </form>
 
         </div>
     )

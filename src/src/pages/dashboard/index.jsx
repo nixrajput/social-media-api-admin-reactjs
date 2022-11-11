@@ -71,12 +71,12 @@ const Dashboard = () => {
                   <StatBox
                     title={stat.total}
                     subtitle={key.toLocaleUpperCase()}
-                    progress={stat.progress ? stat.progress / 100 : 0}
-                    increase={
-                      stat.progress !== null && stat.progress >= 0 ?
-                        `+${stat.progress}%` :
-                        `-${stat.progress}%`
-                    }
+                    // progress={stat.progress ? stat.progress / 100 : 0}
+                    // increase={
+                    //   stat.progress !== null && stat.progress >= 0 ?
+                    //     `+${stat.progress}%` :
+                    //     `${stat.progress}%`
+                    // }
                     icon={
                       key === 'users' ? <PersonAddIcon
                         sx={{ color: colors.greenAccent[600], fontSize: "26px" }}

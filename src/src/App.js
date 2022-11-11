@@ -1,28 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Routes, Route } from "react-router-dom";
-import Dashboard from './pages/dashboard';
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import { ProSidebarProvider } from 'react-pro-sidebar';
-import Login from "./pages/auth/login";
 import AdminRoute from "./helpers/adminRoute";
-import storage from "./utils/storage";
-import {
-  authenticating, authenticated,
-  unauthenticated,
-} from './redux/slices/authSlice';
-import ForgotPassword from "./pages/auth/forgot-password";
-import ResetPassword from "./pages/auth/reset-password";
-import NotFound from "./pages/not-found";
 import Team from "./scenes/team";
 import Topbar from "./components/global/Topbar";
 import Sidebar from "./components/global/Sidebar";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import {
-  fetchProfileDetails,
+  loadAuthDetailsAction,
+  getProfileAction,
   fetchUsers,
-  fetchStatsProgress,
+  getStatsAction,
 } from './redux/actions';
+
+const Login = lazy(() => import('./pages/auth/login'));
+const ForgotPassword = lazy(() => import('./pages/auth/forgot-password'));
+const ResetPassword = lazy(() => import('./pages/auth/reset-password'));
+const NotFound = lazy(() => import('./pages/not-found'));
+const Dashboard = lazy(() => import('./pages/dashboard'));
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -34,18 +33,17 @@ function App() {
   useEffect(() => {
 
     const loadUserDetails = async () => {
-      dispatch(authenticating());
-      const data = storage.get('auth');
-      if (!data || !data.token) {
-        dispatch(unauthenticated());
+      if (auth.status === 'idle' || auth.status === 'unauthenticated') {
+        await loadAuthDetailsAction(dispatch);
       }
-      else {
-        dispatch(authenticated(data));
-        if (auth.token) {
-          await fetchProfileDetails(dispatch, auth.token);
-          await fetchStatsProgress(dispatch, auth.token);
-          await fetchUsers(dispatch, auth.token);
-        }
+
+      if (auth.status === 'authenticated' && auth.token) {
+        await getProfileAction(dispatch, auth.token);
+      }
+
+      if (auth.token && auth.user && auth.status === 'userLoaded') {
+        await getStatsAction(dispatch, auth.token);
+        await fetchUsers(dispatch, auth.token);
       }
     }
 
@@ -53,7 +51,7 @@ function App() {
 
     return () => { }
 
-  }, [auth.token, dispatch]);
+  }, [auth.token, dispatch, auth.status, auth.user]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -70,14 +68,24 @@ function App() {
               <Sidebar isSidebar={isSidebar} />
             }
             <main className="content">
-              <Routes>
-                <Route path="/auth/login" element={<Login />} />
-                <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-                <Route path="/auth/reset-password" element={<ResetPassword />} />
-                <Route path="/" element={<AdminRoute> <Dashboard /> </AdminRoute>} />
-                <Route path="/users" element={<AdminRoute> <Team /> </AdminRoute>} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+
+              <Suspense fallback={
+                <Backdrop
+                  sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                  open={true}
+                >
+                  <CircularProgress color="inherit" />
+                </Backdrop>
+              }>
+                <Routes>
+                  <Route path="/auth/login" element={<Login />} />
+                  <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/auth/reset-password" element={<ResetPassword />} />
+                  <Route path="/" element={<AdminRoute> <Dashboard /> </AdminRoute>} />
+                  <Route path="/users" element={<AdminRoute> <Team /> </AdminRoute>} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
             </main>
           </ProSidebarProvider>
         </div>

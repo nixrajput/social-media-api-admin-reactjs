@@ -4,8 +4,9 @@ import {
     getStatsSuccess,
     getStatsError,
 } from '../slices/statsSlice';
+import ApiUrls from "../../constants/urls";
 
-export const fetchStatsProgress = async (dispatch, token) => {
+export const getStatsAction = async (dispatch, token) => {
     if (!dispatch) {
         return;
     }
@@ -17,7 +18,7 @@ export const fetchStatsProgress = async (dispatch, token) => {
     dispatch(getStats());
     const headers = { 'Authorization': `Bearer ${token}` };
     try {
-        const response = await apiClient.get(`/admin/get-progress`, { headers });
+        const response = await apiClient.get(ApiUrls.getStatsEndpoint, { headers });
         if (response.status === 200) {
             dispatch(getStatsSuccess(response));
         }

@@ -2,13 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import storage from '../../utils/storage';
 
 const initialState = {
-    token: '',
-    expiresAt: '',
+    token: null,
+    expiresAt: null,
     status: 'idle',
-    user: {},
-    error: '',
+    user: null,
+    error: null,
 };
-
 
 const authSlice = createSlice({
     name: "auth",
@@ -28,6 +27,11 @@ const authSlice = createSlice({
         },
 
         unauthenticated: (state, action) => {
+            state.token = null;
+            state.expiresAt = null;
+            state.user = null;
+            state.error = null;
+            storage.remove('auth');
             state.status = 'unauthenticated';
         },
 
@@ -39,7 +43,7 @@ const authSlice = createSlice({
 
         loadUser: (state, action) => {
             if (state.status === 'loadingUser') {
-                state.error = '';
+                state.error = null;
                 state.user = action.payload;
                 storage.set('user', action.payload);
                 state.status = 'userLoaded';
@@ -52,10 +56,10 @@ const authSlice = createSlice({
         },
 
         logout: (state, action) => {
-            state.token = '';
-            state.expiresAt = '';
-            state.user = {};
-            state.error = '';
+            state.token = null;
+            state.expiresAt = null;
+            state.user = null;
+            state.error = null;
             storage.remove('auth');
             storage.remove('user');
             state.status = 'idle';
@@ -72,11 +76,23 @@ const authSlice = createSlice({
         },
 
         sendingEmail: (state, action) => {
-            state.status = 'sending';
+            state.status = 'sendingEmail';
         },
 
-        pending: (state, action) => {
-            state.status = 'pending';
+        emailSent: (state, action) => {
+            if (state.status === 'sendingEmail') {
+                state.status = 'emailSent';
+            }
+        },
+
+        resetPassword: (state, action) => {
+            state.status = 'resetPassword';
+        },
+
+        passwordReset: (state, action) => {
+            if (state.status === 'resetPassword') {
+                state.status = 'passwordReset';
+            }
         },
 
         success: (state, action) => {
@@ -96,7 +112,9 @@ export const {
     registering,
     registered,
     sendingEmail,
-    pending,
+    emailSent,
+    resetPassword,
+    passwordReset,
     success,
 } = authSlice.actions;
 

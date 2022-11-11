@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
-import apiClient from "../../../api/apiClient";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
-    authenticating, authenticated,
-    loadUser, loadingUser,
-    setError
-} from '../../../redux/slices/authSlice';
+    loginAction, getProfileAction
+} from '../../../redux/actions';
 
 const Login = () => {
 
@@ -17,56 +18,40 @@ const Login = () => {
 
     const [emailUsername, setEmailUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [open, setOpen] = useState(false);
+
+    const closeBackdrop = () => {
+        setOpen(false);
+    };
+
+    const openBackdrop = () => {
+        setOpen(true);
+    };
 
     const onClickLoginEvent = (e) => async (dispatch) => {
         e.preventDefault();
-        const body = {
-            "emailUname": emailUsername.trimEnd(),
-            "password": password,
-        };
 
-        dispatch(authenticating());
-        try {
-            const response = await apiClient.post('/admin/login', body);
-            if (response.status === 200) {
-                const payload = {
-                    token: response.token,
-                    expiresAt: response.expiresAt,
-                }
-                dispatch(authenticated(payload));
-                if (auth.token) {
-                    dispatch(loadingUser());
-                    const headers = { 'Authorization': `Bearer ${auth.token}` };
-                    try {
-                        const response = await apiClient.get('/me', { headers });
-                        if (response.status === 200) {
-                            dispatch(loadUser(response.user));
-                            const returnUrl = location.state?.from?.pathname || '/';
-                            navigate(returnUrl);
-                        }
-                        else {
-                            console.log(response.message);
-                            dispatch(setError(response.message));
-                        }
-                    } catch (error) {
-                        dispatch(setError(error));
-                    }
-                }
+        openBackdrop();
+
+        await loginAction(dispatch, emailUsername, password);
+
+        closeBackdrop();
+
+        if (auth.token && auth.status === 'authenticated') {
+            await getProfileAction(dispatch, auth.token);
+            if (auth.user && auth.status === 'userLoaded') {
+                const returnUrl = location.state?.from?.pathname || '/';
+                navigate(returnUrl, { replace: true });
             }
-            else {
-                dispatch(setError(response.message));
-            }
-        }
-        catch (error) {
-            dispatch(setError(error));
         }
     }
 
     useEffect(() => {
         const returnUrl = location.state?.from?.pathname || '/';
 
-        if (auth.status === 'userLoaded' && auth.token && auth.user) {
-            navigate(returnUrl);
+        if (auth.token && auth.user && auth.status === 'userLoaded') {
+            navigate(returnUrl, { replace: true });
         }
 
         return () => { }
@@ -88,69 +73,93 @@ const Login = () => {
                 </div>
             }
 
-            {
-                (auth.status === "authenticating" || auth.status === "loadingUser") ?
-                    <div className="app__box__form_container">
-                        <div className="app__loading_text">
-                            Please wait...
-                        </div>
-                    </div> :
-                    <form className="app__box__form_container"
-                        onSubmit={(e) => dispatch(onClickLoginEvent(e))}>
+            <form className="app__box__form_container"
+                onSubmit={(e) => dispatch(onClickLoginEvent(e))}>
 
-                        <p className="title">Welcome, Login to continue</p>
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={open}
+                    onClick={closeBackdrop}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
 
-                        <div className="app__form_control">
-                            <input
-                                type="text"
-                                placeholder="Email or Username"
-                                name="emailUsername"
-                                required
-                                disabled={auth.status === 'pending'}
-                                value={emailUsername}
-                                onChange={(e) => setEmailUsername(e.target.value)}
-                            />
-                        </div>
+                <p className="title">Welcome, Login to continue</p>
 
-                        <div className="app__form_control">
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                name="password"
-                                required
-                                disabled={auth.status === 'pending'}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
+                <div className="app__form_control">
+                    <input
+                        type="text"
+                        placeholder="Email or Username"
+                        name="emailUsername"
+                        required
+                        disabled={
+                            auth.status === "authenticating"
+                            ||
+                            auth.status === "loadingUser"
+                        }
+                        value={emailUsername}
+                        onChange={(e) => setEmailUsername(e.target.value)}
+                    />
+                </div>
 
-                        <div style={{
-                            width: '100%',
-                            marginTop: '1rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start'
-                        }}>
-                            <NavLink to="/auth/forgot-password">
-                                <div className="app__text_btn">Forgot Password?</div>
-                            </NavLink>
-                        </div>
+                <div className="app__form_control">
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Password"
+                        name="password"
+                        required
+                        disabled={
+                            auth.status === "authenticating"
+                            ||
+                            auth.status === "loadingUser"
+                        }
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <div className="password_toggle_btn">
+                        {
+                            showPassword ?
+                                <VisibilityIcon
+                                    onClick={() => setShowPassword(false)}
+                                />
+                                :
+                                <VisibilityOffIcon
+                                    onClick={() => setShowPassword(true)}
+                                />
+                        }
+                    </div>
+                </div>
 
-                        <div style={{
-                            width: '100%',
-                            marginTop: '2rem',
-                        }}>
-                            <input
-                                type="submit"
-                                value="Login"
-                                disabled={auth.status === 'pending'}
-                                className="app__filled_btn app__form_control"
-                            />
-                        </div>
-                    </form>
-            }
+                <div style={{
+                    width: '100%',
+                    marginTop: '1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start'
+                }}>
+                    <NavLink to="/auth/forgot-password">
+                        <div className="app__text_btn">Forgot Password?</div>
+                    </NavLink>
+                </div>
+
+                <div style={{
+                    width: '100%',
+                    marginTop: '2rem',
+                }}>
+                    <input
+                        type="submit"
+                        value="Login"
+                        disabled={
+                            auth.status === "authenticating"
+                            ||
+                            auth.status === "loadingUser"
+                        }
+                        className="app__filled_btn app__form_control"
+                    />
+                </div>
+            </form>
         </div>
     )
 }
 
-export default Login
+export default Login;

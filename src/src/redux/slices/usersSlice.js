@@ -23,7 +23,6 @@ const authSlice = createSlice({
         },
 
         getUsersSuccess: (state, action) => {
-            state.status = 'success';
             state.currentPage = action.payload.currentPage;
             state.totalPages = action.payload.totalPages;
             state.hasNextPage = action.payload.hasNextPage;
@@ -32,20 +31,20 @@ const authSlice = createSlice({
             state.nextPage = action.payload.nextPage;
             state.prevPage = action.payload.prevPage;
             state.results = JSON.parse(JSON.stringify(action.payload.results));
+            state.status = 'success';
         },
 
         getUsersError: (state, action) => {
-            state.status = 'failed';
             state.error = action.payload;
+            state.status = 'failed';
         },
 
         clearError: (state, action) => {
+            state.error = null;
             state.status = 'idle';
-            state.error = '';
         },
 
         clearUsers: (state, action) => {
-            state.status = 'idle';
             state.currentPage = null;
             state.totalPages = null;
             state.hasNextPage = false;
@@ -54,7 +53,8 @@ const authSlice = createSlice({
             state.nextPage = null;
             state.prevPage = null;
             state.results = [];
-            state.error = '';
+            state.error = null;
+            state.status = 'idle';
         },
 
         deleteUser: (state, action) => {

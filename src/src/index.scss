@@ -313,6 +313,12 @@ iframe {
     max-width: 100%;
   }
 
+  .password_toggle_btn {
+    position: absolute;
+    right: 0.75rem;
+    cursor: pointer;
+  }
+
   @media screen and (max-width: 768px) {
     height: 3.5rem;
   }

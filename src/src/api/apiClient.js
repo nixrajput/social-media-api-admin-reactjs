@@ -1,3 +1,5 @@
+import ApiUrls from '../constants/urls';
+
 async function apiClient(endpoint, method, { body, ...options } = {}) {
     const headers = { 'Content-Type': 'application/json' };
 
@@ -14,19 +16,23 @@ async function apiClient(endpoint, method, { body, ...options } = {}) {
         config.body = JSON.stringify(body);
     }
 
-    const baseUrl = process.env.API_URL || 'http://localhost:4000/api/v1';
+    const baseUrl = process.env.API_URL || ApiUrls.baseUrl;
 
     let data;
     try {
         const response = await fetch(`${baseUrl}${endpoint}`, config);
         data = await response.json();
         data.status = response.status;
-        console.log('apiClientData', data);
-        if (response.status === 200 || response.status === 200) return data;
-        throw new Error(data.message);
+        console.log('apiClientData:', data);
+        if (response.status === 200 || response.status === 201) {
+            return data;
+        }
+        else {
+            throw new Error(data.message);
+        }
     }
     catch (error) {
-        console.log('apiClientError', error);
+        console.log('apiClientError:', error);
         return Promise.reject(error.message ? error.message : data.message);
     }
 }
