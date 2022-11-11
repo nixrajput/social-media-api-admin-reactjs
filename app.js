@@ -23,7 +23,11 @@ var options = {
     redirect: false
 }
 
-app.use(express.static(path.join(__dirname, '/src/build'), options))
+app.use(express.static(path.join(__dirname, '/src/build'), options));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/src/build/index.html'));
+});
 
 // #############################################################################
 // Catch all handler for all other request.
@@ -39,6 +43,6 @@ app.use('*', (req, res) => {
         params: req.params
     })
         .end()
-})
+});
 
 module.exports = app;
