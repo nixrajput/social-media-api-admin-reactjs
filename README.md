@@ -2,6 +2,10 @@
 
 This is a dashboard for the [Social Media API](https://social-api.nixlab.co.in). It is built using [React](https://reactjs.org) and [Material-UI](https://material-ui.com). It is a work in progress.
 
+## Website
+
+The website is hosted at [social-api-dashboard.cyclic.app](https://social-api-dashboard.cyclic.app).
+
 ## Authors
 
 * **[Nikhil Rajput][portfolio]** - *Owner & Lead Developer*
