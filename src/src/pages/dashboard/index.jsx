@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { tokens } from "../../theme";
@@ -13,18 +14,72 @@ import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth);
   // const users = useSelector((state) => state.users);
   const stats = useSelector((state) => state.stats);
 
+  const [open, setOpen] = useState(false);
+
+  const closeBackdrop = () => {
+    setOpen(false);
+  };
+
+  const openBackdrop = () => {
+    setOpen(true);
+  };
+
+  const renderIcon = (key) => {
+    switch (key) {
+      case 'users':
+        return <PersonAddIcon sx={{ color: colors.greenAccent[600], fontSize: "32px" }} />;
+      case 'posts':
+        return <ListIcon sx={{ color: colors.greenAccent[600], fontSize: "32px" }} />;
+      case 'comments':
+        return <CommentIcon sx={{ color: colors.greenAccent[600], fontSize: "32px" }} />;
+      case 'messages':
+        return <EmailIcon sx={{ color: colors.greenAccent[600], fontSize: "32px" }} />;
+      default:
+        return <ListIcon sx={{ color: colors.greenAccent[600], fontSize: "32px" }} />;
+    }
+  }
+
+  useEffect(() => {
+    document.title = "Dashboard - Admin Panel";
+
+    if (
+      auth.status === 'authenticating' || auth.status === 'loadingUser' ||
+      stats.status === 'loading'
+    ) {
+      openBackdrop();
+    }
+    else {
+      closeBackdrop();
+    }
+
+    return () => { }
+
+  }, [
+    auth.token, auth.user, auth.status, stats.status
+  ]);
+
   return (
     <>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={open}
+        onClick={closeBackdrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Box m="20px">
+
         {/* HEADER */}
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
@@ -52,76 +107,39 @@ const Dashboard = () => {
           gridTemplateColumns="repeat(12, 1fr)"
           gridAutoRows="140px"
           gap="20px"
+          pb="20px"
         >
-          {/* ROW 1 */}
+          {/* Row 1 Start */}
 
           {
             stats.status === 'success' &&
             Object.keys(stats.stats).map((key) => {
               const stat = stats.stats[key];
               return (
-                <Box
+                <StatBox
                   key={key}
-                  gridColumn="span 3"
-                  backgroundColor={colors.primary[400]}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <StatBox
-                    title={stat.total}
-                    subtitle={key.toLocaleUpperCase()}
-                    // progress={stat.progress ? stat.progress / 100 : 0}
-                    // increase={
-                    //   stat.progress !== null && stat.progress >= 0 ?
-                    //     `+${stat.progress}%` :
-                    //     `${stat.progress}%`
-                    // }
-                    icon={
-                      key === 'users' ? <PersonAddIcon
-                        sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                      /> :
-                        key === 'posts' ? <ListIcon
-                          sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                        /> :
-                          key === 'comments' ? <CommentIcon
-                            sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                          /> :
-                            <EmailIcon
-                              sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                            />
-                    }
-                  />
-                </Box>
+                  title={stat.total}
+                  subtitle={key.toLocaleUpperCase()}
+                  icon={renderIcon(key)}
+                // progress={stat.progress ? stat.progress / 100 : 0}
+                // increase={
+                //   stat.progress !== null && stat.progress >= 0 ?
+                //     `+${stat.progress}%` :
+                //     `${stat.progress}%`
+                // }
+                />
               );
             })
           }
 
-          {/* <Box
-            gridColumn="span 3"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <StatBox
-              title={users.results.length}
-              subtitle="New Clients"
-              progress="0.30"
-              increase="+5%"
-              icon={
-                <PersonAddIcon
-                  sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                />
-              }
-            />
-          </Box>
-         
+          {/* Row 1 End */}
 
-          {/* ROW 2 */}
+          {/* Row 2 Start */}
+
           <Box
             gridColumn="span 8"
             gridRow="span 2"
+            sx={{ gridColumn: "span 12", gridRow: "span 2" }}
             backgroundColor={colors.primary[400]}
           >
             <Box
@@ -159,9 +177,11 @@ const Dashboard = () => {
               <LineChart isDashboard={true} />
             </Box>
           </Box>
+
           <Box
             gridColumn="span 4"
             gridRow="span 2"
+            sx={{ gridColumn: "span 12", gridRow: "span 2" }}
             backgroundColor={colors.primary[400]}
             overflow="auto"
           >
@@ -210,10 +230,14 @@ const Dashboard = () => {
             ))}
           </Box>
 
-          {/* ROW 3 */}
+          {/* Row 2 End */}
+
+          {/* Row 3 Start */}
+
           <Box
             gridColumn="span 4"
             gridRow="span 2"
+            sx={{ gridColumn: "span 12", gridRow: "span 2" }}
             backgroundColor={colors.primary[400]}
             p="30px"
           >
@@ -237,9 +261,11 @@ const Dashboard = () => {
               <Typography>Includes extra misc expenditures and costs</Typography>
             </Box>
           </Box>
+
           <Box
             gridColumn="span 4"
             gridRow="span 2"
+            sx={{ gridColumn: "span 12", gridRow: "span 2" }}
             backgroundColor={colors.primary[400]}
           >
             <Typography
@@ -253,9 +279,11 @@ const Dashboard = () => {
               <BarChart isDashboard={true} />
             </Box>
           </Box>
+
           <Box
             gridColumn="span 4"
             gridRow="span 2"
+            sx={{ gridColumn: "span 12", gridRow: "span 2" }}
             backgroundColor={colors.primary[400]}
             padding="30px"
           >
@@ -270,6 +298,9 @@ const Dashboard = () => {
               <GeographyChart isDashboard={true} />
             </Box>
           </Box>
+
+          {/* Row 3 End */}
+
         </Box>
       </Box>
     </>

@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunksocial_media_api_admin_dashboard=self.webpackChunksocial_media_api_admin_dashboard||[]).push([[416],{8416:function(a,i,e){e.r(i);var d=e(8166);i.default=function(){return(0,d.jsx)("div",{className:"app__flex",style:{width:"100%",height:"100vh"},children:(0,d.jsx)("div",{children:"Page Not Found!"})})}}}]);
-//# sourceMappingURL=416.dac9046a.chunk.js.map

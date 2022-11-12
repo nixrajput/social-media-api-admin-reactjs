@@ -43,6 +43,8 @@ const ResetPassword = () => {
     }
 
     useEffect(() => {
+        document.title = "Dashboard - Reset Password";
+
         const returnUrl = location.state?.from?.pathname || '/';
 
         if (auth.token && auth.user && auth.status === 'userLoaded') {

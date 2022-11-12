@@ -48,10 +48,19 @@ const Login = () => {
     }
 
     useEffect(() => {
+        document.title = "Dashboard - Login";
+
         const returnUrl = location.state?.from?.pathname || '/';
 
         if (auth.token && auth.user && auth.status === 'userLoaded') {
             navigate(returnUrl, { replace: true });
+        }
+
+        if (auth.status === 'authenticating' || auth.status === 'loadingUser') {
+            openBackdrop();
+        }
+        else {
+            closeBackdrop();
         }
 
         return () => { }

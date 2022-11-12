@@ -18,10 +18,6 @@ async function apiClient(endpoint, method, { body, ...options } = {}) {
 
     let baseUrl = ApiUrls.baseUrl;
 
-    if (process.env.NODE_ENV !== 'development') {
-        baseUrl = ApiUrls.baseUrl;
-    }
-
     let data;
 
     try {

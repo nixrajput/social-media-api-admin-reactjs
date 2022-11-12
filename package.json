@@ -6,7 +6,7 @@
     "license": "GPL-3.0",
     "main": "server.js",
     "scripts": {
-        "serve": "nodemon --watch . server.js",
+        "dev": "nodemon --watch . server.js",
         "start": "node server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -23,5 +23,9 @@
     },
     "devDependencies": {
         "nodemon": "^2.0.12"
+    },
+    "engines": {
+        "node": ">=16.0.0",
+        "npm": ">=8.0.0"
     }
 }

@@ -36,9 +36,7 @@ const authSlice = createSlice({
         },
 
         loadingUser: (state, action) => {
-            if (state.status === 'authenticated') {
-                state.status = 'loadingUser';
-            }
+            state.status = 'loadingUser';
         },
 
         loadUser: (state, action) => {
@@ -63,16 +61,6 @@ const authSlice = createSlice({
             storage.remove('auth');
             storage.remove('user');
             state.status = 'idle';
-        },
-
-        registering: (state, action) => {
-            state.status = 'registering';
-        },
-
-        registered: (state, action) => {
-            if (state.status === 'registering') {
-                state.status = 'registered';
-            }
         },
 
         sendingEmail: (state, action) => {
@@ -109,8 +97,6 @@ export const {
     loadUser,
     logout,
     setError,
-    registering,
-    registered,
     sendingEmail,
     emailSent,
     resetPassword,

@@ -5,7 +5,6 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import { ProSidebarProvider } from 'react-pro-sidebar';
 import AdminRoute from "./helpers/adminRoute";
-import Team from "./scenes/team";
 import Topbar from "./components/global/Topbar";
 import Sidebar from "./components/global/Sidebar";
 import Backdrop from '@mui/material/Backdrop';
@@ -22,6 +21,7 @@ const ForgotPassword = lazy(() => import('./pages/auth/forgot-password'));
 const ResetPassword = lazy(() => import('./pages/auth/reset-password'));
 const NotFound = lazy(() => import('./pages/not-found'));
 const Dashboard = lazy(() => import('./pages/dashboard'));
+const Users = lazy(() => import('./pages/users'));
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -82,7 +82,7 @@ function App() {
                   <Route path="/auth/forgot-password" element={<ForgotPassword />} />
                   <Route path="/auth/reset-password" element={<ResetPassword />} />
                   <Route path="/" element={<AdminRoute> <Dashboard /> </AdminRoute>} />
-                  <Route path="/users" element={<AdminRoute> <Team /> </AdminRoute>} />
+                  <Route path="/users" element={<AdminRoute> <Users /> </AdminRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>

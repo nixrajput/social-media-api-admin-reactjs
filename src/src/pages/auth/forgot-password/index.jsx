@@ -37,6 +37,8 @@ const ForgotPassword = () => {
     }
 
     useEffect(() => {
+        document.title = "Dashboard - Forgot Password";
+
         const returnUrl = location.state?.from?.pathname || '/';
 
         if (auth.token && auth.user && auth.status === 'userLoaded') {

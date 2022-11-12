@@ -5,8 +5,7 @@ const AdminRoute = ({ children }) => {
     const location = useLocation();
     const auth = useSelector((state) => state.auth);
 
-    if (auth.status === 'userLoaded' && auth.token && auth.user &&
-        auth.user.role === 'admin') {
+    if (auth.token && auth.status === 'userLoaded' && auth.user) {
         return children;
     }
 

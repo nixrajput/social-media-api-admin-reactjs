@@ -11,7 +11,7 @@ import {
   fetchUsers,
 } from '../../redux/actions';
 
-const Team = () => {
+const Users = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -131,7 +131,6 @@ const Team = () => {
               rowsPerPageOptions={[users.limit]}
               page={page}
               onPageChange={handlePageChange}
-              checkboxSelection
               disableSelectionOnClick
               getRowId={(row) => row._id}
               loading={users.status === 'loading'}
@@ -143,4 +142,4 @@ const Team = () => {
   );
 };
 
-export default Team;
+export default Users;

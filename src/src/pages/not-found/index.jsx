@@ -1,4 +1,14 @@
+import { useEffect } from 'react';
+
 const NotFound = () => {
+
+    useEffect(() => {
+        document.title = "Not Found";
+
+        return () => { }
+
+    }, []);
+
     return (
         <div className="app__flex" style={{
             width: "100%",
@@ -9,4 +19,4 @@ const NotFound = () => {
     )
 }
 
-export default NotFound
+export default NotFound;
