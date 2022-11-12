@@ -1,6 +1,6 @@
 const ApiUrls = {};
 
-ApiUrls.baseUrl = 'http://ec2-3-110-31-56.ap-south-1.compute.amazonaws.com:4000/api/v1';
+ApiUrls.baseUrl = 'https://api.nixlab.co.in/api/v1';
 ApiUrls.devBaseUrl = 'http://localhost:4000/api/v1';
 
 ApiUrls.loginEndpoint = '/admin/login';
