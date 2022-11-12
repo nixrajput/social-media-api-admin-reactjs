@@ -36,8 +36,6 @@ const Login = () => {
 
         await loginAction(dispatch, emailUsername, password);
 
-        closeBackdrop();
-
         if (auth.token && auth.status === 'authenticated') {
             await getProfileAction(dispatch, auth.token);
             if (auth.user && auth.status === 'userLoaded') {
@@ -45,6 +43,7 @@ const Login = () => {
                 navigate(returnUrl, { replace: true });
             }
         }
+        closeBackdrop();
     }
 
     useEffect(() => {
@@ -88,7 +87,6 @@ const Login = () => {
                 <Backdrop
                     sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                     open={open}
-                    onClick={closeBackdrop}
                 >
                     <CircularProgress color="inherit" />
                 </Backdrop>

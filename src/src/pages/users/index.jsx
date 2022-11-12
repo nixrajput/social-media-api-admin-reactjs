@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -6,6 +6,8 @@ import { tokens } from "../../theme";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import Header from "../../components/Header";
 import {
   fetchUsers,
@@ -20,6 +22,15 @@ const Users = () => {
   const dispatch = useDispatch();
 
   const [page, setPage] = useState(0);
+  const [open, setOpen] = useState(false);
+
+  const closeBackdrop = () => {
+    setOpen(false);
+  };
+
+  const openBackdrop = () => {
+    setOpen(true);
+  };
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
@@ -87,8 +98,34 @@ const Users = () => {
     },
   ];
 
+  useEffect(() => {
+    document.title = "Dashboard - All Users";
+
+    if (
+      auth.status === 'authenticating' || auth.status === 'loadingUser' ||
+      users.status === 'loading'
+    ) {
+      openBackdrop();
+    }
+    else {
+      closeBackdrop();
+    }
+
+    return () => { }
+
+  }, [
+    auth.token, auth.user, auth.status, users.status
+  ]);
+
   return (
     <Box m="20px">
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={open}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
       <Header title="USERS" subtitle="Managing the Users" />
       <Box
         m="40px 0 0 0"

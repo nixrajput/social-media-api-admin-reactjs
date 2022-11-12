@@ -74,12 +74,11 @@ const Dashboard = () => {
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
-        onClick={closeBackdrop}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Box m="20px">
 
+      <Box m="20px">
         {/* HEADER */}
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
