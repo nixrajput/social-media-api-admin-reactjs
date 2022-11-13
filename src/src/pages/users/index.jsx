@@ -10,7 +10,7 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import Header from "../../components/Header";
 import {
-  fetchUsers,
+  getAllUsersAction,
 } from '../../redux/actions';
 
 const Users = () => {
@@ -37,7 +37,7 @@ const Users = () => {
     console.log(newPage);
     const currentPage = newPage <= 0 ? 1 : newPage + 1;
     if (users.status !== 'loading' && users.hasNextPage) {
-      fetchUsers(dispatch, auth.token, currentPage);
+      getAllUsersAction(dispatch, auth.token, currentPage);
     }
   };
 
@@ -116,6 +116,19 @@ const Users = () => {
   }, [
     auth.token, auth.user, auth.status, users.status
   ]);
+
+  useEffect(() => {
+    const getData = async () => {
+      openBackdrop();
+      await getAllUsersAction(dispatch, auth.token);
+      closeBackdrop();
+    }
+
+    getData();
+
+    return () => { }
+
+  }, [auth.token, dispatch]);
 
   return (
     <Box m="20px">

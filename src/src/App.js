@@ -12,8 +12,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import {
   loadAuthDetailsAction,
   getProfileAction,
-  fetchUsers,
-  getStatsAction,
 } from './redux/actions';
 
 const Login = lazy(() => import('./pages/auth/login'));
@@ -39,11 +37,6 @@ function App() {
 
       if (auth.status === 'authenticated' && auth.token) {
         await getProfileAction(dispatch, auth.token);
-      }
-
-      if (auth.token && auth.user && auth.status === 'userLoaded') {
-        await getStatsAction(dispatch, auth.token);
-        await fetchUsers(dispatch, auth.token);
       }
     }
 

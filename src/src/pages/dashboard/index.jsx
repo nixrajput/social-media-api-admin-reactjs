@@ -1,21 +1,28 @@
 import { useState, useEffect } from 'react';
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
-import { useSelector } from "react-redux";
+import { Box, Button, Typography, useTheme } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
 import { tokens } from "../../theme";
-import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EmailIcon from "@mui/icons-material/Email";
 import ListIcon from "@mui/icons-material/List";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import CommentIcon from "@mui/icons-material/Comment";
 import Header from "../../components/Header";
-import LineChart from "../../components/LineChart";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import {
+  getStatsAction,
+  getRecentPostsAction,
+  getRecentUsersAction,
+  getVerifiedUsersStatsAction,
+} from '../../redux/actions';
+import { toDateString } from '../../utils/dateUtils';
+import Avatar from '../../components/global/Avatar';
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -24,6 +31,7 @@ const Dashboard = () => {
   const auth = useSelector((state) => state.auth);
   // const users = useSelector((state) => state.users);
   const stats = useSelector((state) => state.stats);
+  const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
 
@@ -69,6 +77,22 @@ const Dashboard = () => {
     auth.token, auth.user, auth.status, stats.status
   ]);
 
+  useEffect(() => {
+    const getData = async () => {
+      openBackdrop();
+      await getStatsAction(dispatch, auth.token);
+      await getRecentPostsAction(dispatch, auth.token);
+      await getRecentUsersAction(dispatch, auth.token);
+      await getVerifiedUsersStatsAction(dispatch, auth.token);
+      closeBackdrop();
+    }
+
+    getData();
+
+    return () => { }
+
+  }, [auth.token, dispatch]);
+
   return (
     <>
       <Backdrop
@@ -111,7 +135,7 @@ const Dashboard = () => {
           {/* Row 1 Start */}
 
           {
-            stats.status === 'success' &&
+            (stats.status === 'success' && stats.stats) &&
             Object.keys(stats.stats).map((key) => {
               const stat = stats.stats[key];
               return (
@@ -136,6 +160,70 @@ const Dashboard = () => {
           {/* Row 2 Start */}
 
           <Box
+            gridColumn={{ xs: "span 12", lg: "span 6" }}
+            gridRow="span 3"
+            backgroundColor={colors.primary[400]}
+            overflow="auto"
+          >
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              borderBottom={`4px solid ${colors.primary[500]}`}
+              colors={colors.grey[100]}
+              p="15px"
+            >
+              <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+                Recent Users
+              </Typography>
+            </Box>
+            {
+              (stats.status === 'success' && stats.recentUsers) &&
+              stats.recentUsers.map((user, i) => (
+                <Box
+                  key={`${user._id}-${i}`}
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  borderBottom={`4px solid ${colors.primary[500]}`}
+                  p="15px"
+                >
+                  <Box display='flex' flexDirection='row' justifyContent='center'>
+                    <Avatar avatar={user.avatar} />
+                    <Box ml='20px'>
+                      <Typography
+                        color={colors.greenAccent[500]}
+                        variant="h5"
+                        fontWeight="600"
+                      >
+                        {user._id}
+                      </Typography>
+                      <Typography color={colors.grey[100]}>
+                        {user.uname}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box color={colors.grey[100]}>
+                    {user.createdAt && toDateString(user.createdAt)}
+                  </Box>
+                  <Box
+                    backgroundColor={colors.greenAccent[500]}
+                    p="5px 10px"
+                    borderRadius="4px"
+                    display='flex'
+                    flexDirection='row'
+                    justifyContent='center'
+                    alignItems='center'
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <VisibilityIcon />
+                  </Box>
+                </Box>
+              ))
+            }
+          </Box>
+
+          {/* <Box
             gridColumn="span 8"
             gridRow="span 2"
             sx={{ gridColumn: "span 12", gridRow: "span 2" }}
@@ -154,7 +242,7 @@ const Dashboard = () => {
                   fontWeight="600"
                   color={colors.grey[100]}
                 >
-                  Revenue Generated
+                  Recent Users
                 </Typography>
                 <Typography
                   variant="h3"
@@ -175,12 +263,11 @@ const Dashboard = () => {
             <Box height="250px" m="-20px 0 0 0">
               <LineChart isDashboard={true} />
             </Box>
-          </Box>
+          </Box> */}
 
           <Box
-            gridColumn="span 4"
-            gridRow="span 2"
-            sx={{ gridColumn: "span 12", gridRow: "span 2" }}
+            gridColumn={{ xs: "span 12", lg: "span 6" }}
+            gridRow="span 3"
             backgroundColor={colors.primary[400]}
             overflow="auto"
           >
@@ -193,78 +280,95 @@ const Dashboard = () => {
               p="15px"
             >
               <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-                Recent Transactions
+                Recent Posts
               </Typography>
             </Box>
-            {mockTransactions.map((transaction, i) => (
-              <Box
-                key={`${transaction.txId}-${i}`}
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                borderBottom={`4px solid ${colors.primary[500]}`}
-                p="15px"
-              >
-                <Box>
-                  <Typography
-                    color={colors.greenAccent[500]}
-                    variant="h5"
-                    fontWeight="600"
-                  >
-                    {transaction.txId}
-                  </Typography>
-                  <Typography color={colors.grey[100]}>
-                    {transaction.user}
-                  </Typography>
-                </Box>
-                <Box color={colors.grey[100]}>{transaction.date}</Box>
+            {
+              (stats.status === 'success' && stats.recentPosts) &&
+              stats.recentPosts.map((post, i) => (
                 <Box
-                  backgroundColor={colors.greenAccent[500]}
-                  p="5px 10px"
-                  borderRadius="4px"
+                  key={`${post._id}-${i}`}
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  borderBottom={`4px solid ${colors.primary[500]}`}
+                  p="15px"
                 >
-                  ${transaction.cost}
+                  <Box>
+                    <Typography
+                      color={colors.greenAccent[500]}
+                      variant="h5"
+                      fontWeight="600"
+                    >
+                      {post._id}
+                    </Typography>
+                    <Typography color={colors.grey[100]}>
+                      {post.owner.uname}
+                    </Typography>
+                  </Box>
+                  <Box color={colors.grey[100]}>
+                    {post.createdAt && toDateString(post.createdAt)}
+                  </Box>
+                  <Box
+                    backgroundColor={colors.greenAccent[500]}
+                    p="5px 10px"
+                    borderRadius="4px"
+                    display='flex'
+                    flexDirection='row'
+                    justifyContent='center'
+                    alignItems='center'
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <VisibilityIcon />
+                  </Box>
                 </Box>
-              </Box>
-            ))}
+              ))
+            }
           </Box>
 
           {/* Row 2 End */}
 
           {/* Row 3 Start */}
 
-          <Box
-            gridColumn="span 4"
-            gridRow="span 2"
-            sx={{ gridColumn: "span 12", gridRow: "span 2" }}
-            backgroundColor={colors.primary[400]}
-            p="30px"
-          >
-            <Typography variant="h5" fontWeight="600">
-              Campaign
-            </Typography>
+          {
+            (stats.status === 'success' && stats.verifiedUsersStats) &&
             <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              mt="25px"
+              gridColumn={{ xs: "span 12", lg: "span 4" }}
+              gridRow="span 2"
+              backgroundColor={colors.primary[400]}
+              p="20px"
             >
-              <ProgressCircle size="125" />
-              <Typography
-                variant="h5"
-                color={colors.greenAccent[500]}
-                sx={{ mt: "15px" }}
-              >
-                $48,352 revenue generated
+              <Typography variant="h5" fontWeight="600">
+                Verified Users
               </Typography>
-              <Typography>Includes extra misc expenditures and costs</Typography>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                mt="25px"
+              >
+                <ProgressCircle
+                  size="160"
+                  progress={stats.verifiedUsersStats.roundedUnit}
+                />
+                <Typography
+                  variant="h5"
+                  color={colors.greenAccent[500]}
+                  sx={{ mt: "15px" }}
+                >
+                  {stats.verifiedUsersStats.roundedPercentage}% verified users
+                </Typography>
+                <Typography>
+                  {`${stats.verifiedUsersStats.verifiedUsers} out of
+                  ${stats.verifiedUsersStats.totalUsers} users are verified`}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          }
 
           <Box
-            gridColumn="span 4"
+            gridColumn={{ xs: "span 12", lg: "span 4" }}
             gridRow="span 2"
-            sx={{ gridColumn: "span 12", gridRow: "span 2" }}
             backgroundColor={colors.primary[400]}
           >
             <Typography
@@ -280,9 +384,8 @@ const Dashboard = () => {
           </Box>
 
           <Box
-            gridColumn="span 4"
+            gridColumn={{ xs: "span 12", lg: "span 4" }}
             gridRow="span 2"
-            sx={{ gridColumn: "span 12", gridRow: "span 2" }}
             backgroundColor={colors.primary[400]}
             padding="30px"
           >

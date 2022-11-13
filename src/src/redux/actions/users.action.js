@@ -5,7 +5,7 @@ import {
     getUsersError,
 } from '../slices/usersSlice';
 
-export const fetchUsers = async (dispatch, token, page = 1, limit = 10) => {
+export const getAllUsersAction = async (dispatch, token, page = 1, limit = 10) => {
     if (!dispatch) {
         return;
     }
