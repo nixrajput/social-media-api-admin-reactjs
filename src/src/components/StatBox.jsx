@@ -12,7 +12,6 @@ const StatBox = ({ title, subtitle, icon }) => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      style={{ cursor: "pointer" }}
     >
       <Box width="100%" m="0 30px">
         <Box display="flex" justifyContent="center" alignItems="center">

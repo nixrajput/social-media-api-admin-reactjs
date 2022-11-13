@@ -14,7 +14,8 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -105,11 +106,11 @@ const Sidebar = () => {
                 <img
                   alt="logo"
                   width="auto"
-                  height="60px"
+                  height='48px'
                   src={`../../logo.png`}
                 />
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuOutlinedIcon />
+                  <ArrowBackIosNewIcon sx={{ fontSize: "24px" }} />
                 </IconButton>
               </Box>
             </div>
@@ -122,10 +123,7 @@ const Sidebar = () => {
               color: colors.grey[100],
             }}>
               <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                <MenuOutlinedIcon style={{
-                  width: "32px",
-                  height: "32px",
-                }} />
+                <ArrowForwardIosIcon sx={{ fontSize: "24px" }} />
               </IconButton>
             </div>
           }
