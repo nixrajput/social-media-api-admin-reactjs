@@ -32,12 +32,19 @@ const Users = () => {
     setOpen(true);
   };
 
-  const handlePageChange = (newPage) => {
+  const getData = async () => {
+    const usersPromise = getAllUsersAction(dispatch, auth.token);
+    openBackdrop();
+    await usersPromise;
+    closeBackdrop();
+  }
+
+  const handlePageChange = async (newPage) => {
     setPage(newPage);
-    console.log(newPage);
     const currentPage = newPage <= 0 ? 1 : newPage + 1;
+    const usersPromise = getAllUsersAction(dispatch, auth.token, currentPage);
     if (users.status !== 'loading' && users.hasNextPage) {
-      getAllUsersAction(dispatch, auth.token, currentPage);
+      await usersPromise;
     }
   };
 
@@ -118,17 +125,13 @@ const Users = () => {
   ]);
 
   useEffect(() => {
-    const getData = async () => {
-      openBackdrop();
-      await getAllUsersAction(dispatch, auth.token);
-      closeBackdrop();
+    if (users.status === 'idle') {
+      getData();
     }
-
-    getData();
 
     return () => { }
 
-  }, [auth.token, dispatch]);
+  }, [auth.token, users.status]);
 
   return (
     <Box m="20px">

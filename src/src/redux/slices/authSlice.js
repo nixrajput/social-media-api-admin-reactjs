@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import storage from '../../utils/storage';
 
 const initialState = {
+    status: 'idle',
     token: null,
     expiresAt: null,
-    status: 'idle',
     user: null,
     error: null,
 };

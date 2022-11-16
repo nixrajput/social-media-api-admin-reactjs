@@ -9,7 +9,6 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import CommentIcon from "@mui/icons-material/Comment";
 import Header from "../../components/Header";
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
@@ -20,6 +19,7 @@ import {
   getRecentPostsAction,
   getRecentUsersAction,
   getVerifiedUsersStatsAction,
+  getMonthlyStatsAction,
 } from '../../redux/actions';
 import { toDateString } from '../../utils/dateUtils';
 import Avatar from '../../components/global/Avatar';
@@ -42,6 +42,22 @@ const Dashboard = () => {
   const openBackdrop = () => {
     setOpen(true);
   };
+
+  const getData = async () => {
+    if (stats.status === 'idle') {
+      const statsPromise = getStatsAction(dispatch, auth.token);
+      const recentUsersPromise = getRecentUsersAction(dispatch, auth.token);
+      const recentPostsPromise = getRecentPostsAction(dispatch, auth.token);
+      const verifiedUsersPromise = getVerifiedUsersStatsAction(dispatch, auth.token);
+      const monthlyStatsPromise = getMonthlyStatsAction(dispatch, auth.token);
+      openBackdrop();
+      await Promise.all([
+        statsPromise, recentUsersPromise, recentPostsPromise,
+        verifiedUsersPromise, monthlyStatsPromise
+      ]);
+      closeBackdrop();
+    }
+  }
 
   const renderIcon = (key) => {
     switch (key) {
@@ -78,20 +94,11 @@ const Dashboard = () => {
   ]);
 
   useEffect(() => {
-    const getData = async () => {
-      openBackdrop();
-      await getStatsAction(dispatch, auth.token);
-      await getRecentPostsAction(dispatch, auth.token);
-      await getRecentUsersAction(dispatch, auth.token);
-      await getVerifiedUsersStatsAction(dispatch, auth.token);
-      closeBackdrop();
-    }
-
     getData();
 
     return () => { }
 
-  }, [auth.token, dispatch]);
+  }, [auth.token]);
 
   return (
     <>
@@ -366,24 +373,29 @@ const Dashboard = () => {
             </Box>
           }
 
-          <Box
-            gridColumn={{ xs: "span 12", lg: "span 4" }}
-            gridRow="span 2"
-            backgroundColor={colors.primary[400]}
-          >
-            <Typography
-              variant="h5"
-              fontWeight="600"
-              sx={{ padding: "30px 30px 0 30px" }}
-            >
-              Sales Quantity
-            </Typography>
-            <Box height="250px" mt="-20px">
-              <BarChart isDashboard={true} />
-            </Box>
-          </Box>
+          {
+            (stats.status === 'success' && stats.monthlyStats) ?
+              <Box
+                gridColumn={{ xs: "span 12", lg: "span 4" }}
+                gridRow="span 2"
+                backgroundColor={colors.primary[400]}
+              >
+                <Typography
+                  variant="h5"
+                  fontWeight="600"
+                  sx={{ padding: "30px 30px 0 30px" }}
+                >
+                  Monthly Stats
+                </Typography>
+                <Box height="250px" mt="-20px">
+                  <BarChart data={stats.monthlyStats} />
+                </Box>
+              </Box>
+              :
+              null
+          }
 
-          <Box
+          {/* <Box
             gridColumn={{ xs: "span 12", lg: "span 4" }}
             gridRow="span 2"
             backgroundColor={colors.primary[400]}
@@ -399,7 +411,7 @@ const Dashboard = () => {
             <Box height="200px">
               <GeographyChart isDashboard={true} />
             </Box>
-          </Box>
+          </Box> */}
 
           {/* Row 3 End */}
 

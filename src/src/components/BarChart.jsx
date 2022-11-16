@@ -1,9 +1,8 @@
 import { useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
 import { tokens } from "../theme";
-import { mockBarData as data } from "../data/mockData";
 
-const BarChart = ({ isDashboard = false }) => {
+const BarChart = ({ data }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -39,13 +38,21 @@ const BarChart = ({ isDashboard = false }) => {
           },
         },
       }}
-      keys={["hot dog", "burger", "sandwich", "kebab", "fries", "donut"]}
-      indexBy="country"
+      keys={["users", "posts", "comments"]}
+      indexBy="month"
       margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
       padding={0.3}
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
-      colors={{ scheme: "nivo" }}
+      colors={{ scheme: "accent" }}
+      borderColor={{
+        from: 'color',
+        modifiers: [
+          ['darker', .6],
+          ['opacity', .5]
+        ]
+      }}
+      colorBy="id"
       defs={[
         {
           id: "dots",
@@ -66,34 +73,43 @@ const BarChart = ({ isDashboard = false }) => {
           spacing: 10,
         },
       ]}
-      borderColor={{
-        from: "color",
-        modifiers: [["darker", "1.6"]],
-      }}
+      // fill={[
+      //   {
+      //     match: {
+      //       id: 'users'
+      //     },
+      //     id: 'dots'
+      //   },
+      //   {
+      //     match: {
+      //       id: 'comments'
+      //     },
+      //     id: 'lines'
+      //   }
+      // ]}
       axisTop={null}
       axisRight={null}
       axisBottom={{
         tickSize: 5,
         tickPadding: 5,
-        tickRotation: 0,
-        legend: isDashboard ? undefined : "country", // changed
+        tickRotation: 0, // changed
         legendPosition: "middle",
         legendOffset: 32,
       }}
       axisLeft={{
         tickSize: 5,
         tickPadding: 5,
-        tickRotation: 0,
-        legend: isDashboard ? undefined : "food", // changed
+        tickRotation: 0, // changed
         legendPosition: "middle",
         legendOffset: -40,
       }}
-      enableLabel={false}
+      enableLabel={true}
+      label="formattedValue"
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor={{
-        from: "color",
-        modifiers: [["darker", 1.6]],
+        "from": "theme",
+        "theme": "labels.text.fill"
       }}
       legends={[
         {
@@ -119,9 +135,37 @@ const BarChart = ({ isDashboard = false }) => {
           ],
         },
       ]}
+      animate={true}
+      motionStiffness={90}
+      motionDamping={15}
       role="application"
+      tooltip={e => {
+        return (
+          <div
+            style={{
+              background: "#f0f0f0",
+              color: "#333",
+              padding: "4px 8px",
+              borderRadius: "4px",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "13px",
+            }}
+          >
+            <div style={{
+              backgroundColor: e.color,
+              width: "10px",
+              height: "10px",
+            }} />
+            <div style={{ marginLeft: "8px" }}>{`${e.id} - `}</div>
+            <div style={{ fontWeight: "bold", marginLeft: "4px" }}>{e.value}</div>
+          </div>
+        );
+      }}
       barAriaLabel={function (e) {
-        return e.id + ": " + e.formattedValue + " in country: " + e.indexValue;
+        return e.id + " " + e.value;
       }}
     />
   );

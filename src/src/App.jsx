@@ -28,23 +28,25 @@ function App() {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  const loadUserDetails = async () => {
+    const loadAuthDetailsPromise = loadAuthDetailsAction(dispatch);
 
-    const loadUserDetails = async () => {
-      if (auth.status === 'idle' || auth.status === 'unauthenticated') {
-        await loadAuthDetailsAction(dispatch);
-      }
-
-      if (auth.status === 'authenticated' && auth.token) {
-        await getProfileAction(dispatch, auth.token);
-      }
+    if (auth.status === 'idle') {
+      await loadAuthDetailsPromise;
     }
 
+    if (auth.status === 'authenticated' && auth.token) {
+      const getProfilePromise = getProfileAction(dispatch, auth.token);
+      await getProfilePromise;
+    }
+  }
+
+  useEffect(() => {
     loadUserDetails();
 
     return () => { }
 
-  }, [auth.token, dispatch, auth.status, auth.user]);
+  }, [auth.token]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>

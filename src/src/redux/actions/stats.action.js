@@ -12,6 +12,9 @@ import {
     getVerifiedUsersStats,
     getVerifiedUsersStatsSuccess,
     getVerifiedUsersStatsError,
+    getMonthlyStats,
+    getMonthlyStatsSuccess,
+    getMonthlyStatsError,
 } from '../slices/statsSlice';
 import ApiUrls from "../../constants/urls";
 
@@ -112,5 +115,30 @@ export const getVerifiedUsersStatsAction = async (dispatch, token) => {
         }
     } catch (error) {
         dispatch(getVerifiedUsersStatsError(error));
+    }
+}
+
+export const getMonthlyStatsAction = async (dispatch, token) => {
+    if (!dispatch) {
+        console.log('Dispatch is null');
+        return;
+    }
+    if (!token) {
+        console.log('No token found');
+        return;
+    }
+
+    dispatch(getMonthlyStats());
+    const headers = { 'Authorization': `Bearer ${token}` };
+    try {
+        const response = await apiClient.get(ApiUrls.getMonthlyStatsEndpoint, { headers });
+        if (response.status === 200) {
+            dispatch(getMonthlyStatsSuccess(response));
+        }
+        else {
+            dispatch(getMonthlyStatsError(response.message));
+        }
+    } catch (error) {
+        dispatch(getMonthlyStatsError(error));
     }
 }

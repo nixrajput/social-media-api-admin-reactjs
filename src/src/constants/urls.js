@@ -21,6 +21,7 @@ ApiUrls.deleteUserEndpoint = '/admin/users/:id/delete';
 
 ApiUrls.getProgressEndpoint = '/admin/get-progress';
 ApiUrls.getStatsEndpoint = '/admin/get-stats';
+ApiUrls.getMonthlyStatsEndpoint = '/admin/get-monthly-stats';
 
 ApiUrls.getPostsEndpoint = '/admin/posts';
 ApiUrls.getRecentPostsEndpoint = '/admin/get-recent-posts';

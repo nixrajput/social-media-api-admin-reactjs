@@ -7,6 +7,7 @@ const initialState = {
     recentUsers: null,
     recentPosts: null,
     verifiedUsersStats: null,
+    monthlyStats: null,
     error: '',
 };
 
@@ -95,6 +96,26 @@ const statsSlice = createSlice({
             state.verifiedUsersStats = null;
             state.error = '';
         },
+
+        getMonthlyStats: (state) => {
+            state.status = 'loading';
+        },
+
+        getMonthlyStatsSuccess: (state, action) => {
+            state.status = 'success';
+            state.monthlyStats = action.payload.results;
+        },
+
+        getMonthlyStatsError: (state, action) => {
+            state.status = 'error';
+            state.error = action.payload;
+        },
+
+        resetMonthlyStats: (state) => {
+            state.status = 'idle';
+            state.monthlyStats = null;
+            state.error = '';
+        },
     }
 });
 
@@ -115,6 +136,10 @@ export const {
     getVerifiedUsersStatsSuccess,
     getVerifiedUsersStatsError,
     resetVerifiedUsersStats,
+    getMonthlyStats,
+    getMonthlyStatsSuccess,
+    getMonthlyStatsError,
+    resetMonthlyStats,
 } = statsSlice.actions;
 
 export default statsSlice;
