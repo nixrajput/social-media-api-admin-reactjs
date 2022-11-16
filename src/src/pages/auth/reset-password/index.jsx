@@ -7,7 +7,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { resetPasswordAction } from '../../../redux/actions';
 
-const ResetPassword = () => {
+const ResetPasswordPage = () => {
     const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -43,7 +43,7 @@ const ResetPassword = () => {
     }
 
     useEffect(() => {
-        document.title = "Dashboard - Reset Password";
+        document.title = "Reset Password | Dashboard";
 
         const returnUrl = location.state?.from?.pathname || '/';
 
@@ -196,4 +196,4 @@ const ResetPassword = () => {
     )
 }
 
-export default ResetPassword;
+export default ResetPasswordPage;

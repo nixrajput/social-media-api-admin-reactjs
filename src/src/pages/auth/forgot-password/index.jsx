@@ -5,7 +5,7 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { forgotPasswordAction } from '../../../redux/actions';
 
-const ForgotPassword = () => {
+const ForgotPasswordPage = () => {
     const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -37,7 +37,7 @@ const ForgotPassword = () => {
     }
 
     useEffect(() => {
-        document.title = "Dashboard - Forgot Password";
+        document.title = "Forgot Password | Dashboard";
 
         const returnUrl = location.state?.from?.pathname || '/';
 
@@ -134,4 +134,4 @@ const ForgotPassword = () => {
     )
 }
 
-export default ForgotPassword;
+export default ForgotPasswordPage;

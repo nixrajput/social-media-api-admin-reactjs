@@ -1,5 +1,5 @@
 {
-    "name": "social-media-api-admin-dashboard",
+    "name": "social-api-admin-dashboard",
     "version": "1.0.0",
     "description": "Admin dashboard for social media api. Built with React, Redux, and Material UI.",
     "author": "Nikhil Rajput",

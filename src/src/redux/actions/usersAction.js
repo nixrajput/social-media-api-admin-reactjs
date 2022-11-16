@@ -4,11 +4,14 @@ import {
     getUsersSuccess,
     getUsersError,
 } from '../slices/usersSlice';
+import ApiUrls from "../../constants/urls";
 
 export const getAllUsersAction = async (dispatch, token, page = 1, limit = 10) => {
     if (!dispatch) {
+        console.log("dispatch is null");
         return;
     }
+
     if (!token) {
         console.log('No token found');
         return;
@@ -18,7 +21,7 @@ export const getAllUsersAction = async (dispatch, token, page = 1, limit = 10) =
     const headers = { 'Authorization': `Bearer ${token}` };
     try {
         const response = await apiClient.get(
-            `/admin/users?page=${page}&limit=${limit}`,
+            `${ApiUrls.getUsersEndpoint}?page=${page}&limit=${limit}`,
             { headers }
         );
         if (response.status === 200) {

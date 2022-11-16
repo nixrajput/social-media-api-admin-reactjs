@@ -18,7 +18,7 @@ export const isSameDate = (date, date2, compareWithToday = false) => {
         date.getDate() === date2.getDate();
 };
 
-export const toDateString = (date) => {
+export const toDateString = (date, format = "dd-mm-yyyy") => {
     const dateObj = new Date(date);
     const year = dateObj.getFullYear();
     const month = dateObj.getMonth() + 1;
@@ -27,6 +27,10 @@ export const toDateString = (date) => {
     let yearString = year.toString();
     let monthString = month < 10 ? '0' + month.toString() : month.toString();
     let dayString = day < 10 ? '0' + day.toString() : day.toString();
+
+    if (format === "dd-mm-yyyy") {
+        return dayString + '-' + monthString + '-' + yearString;
+    }
 
     return yearString + '-' + monthString + '-' + dayString;
 }

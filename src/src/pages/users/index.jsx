@@ -12,8 +12,9 @@ import Header from "../../components/Header";
 import {
   getAllUsersAction,
 } from '../../redux/actions';
+import PageHOC from "../../helpers/PageHOC";
 
-const Users = () => {
+const UserListPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -49,7 +50,12 @@ const Users = () => {
   };
 
   const columns = [
-    { field: "_id", headerName: "ID" },
+    {
+      field: "_id",
+      headerName: "ID",
+      flex: 1,
+      cellClassName: "name-column--cell",
+    },
     {
       field: "fname",
       headerName: "First name",
@@ -75,13 +81,11 @@ const Users = () => {
     {
       field: "role",
       headerName: "Access Level",
-      flex: 1,
       renderCell: ({ row: { role } }) => {
         return (
           <Box
-            width="60%"
             m="0 auto"
-            p="5px"
+            p="5px 10px"
             display="flex"
             justifyContent="center"
             backgroundColor={
@@ -134,7 +138,7 @@ const Users = () => {
   }, [auth.token, users.status]);
 
   return (
-    <Box m="20px">
+    <Box m="20px" mt="0" width="100%">
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
@@ -195,4 +199,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default PageHOC(UserListPage);

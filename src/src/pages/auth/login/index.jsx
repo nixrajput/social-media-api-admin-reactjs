@@ -9,7 +9,7 @@ import {
     loginAction, getProfileAction
 } from '../../../redux/actions';
 
-const Login = () => {
+const LoginPage = () => {
 
     const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
@@ -47,7 +47,7 @@ const Login = () => {
     }
 
     useEffect(() => {
-        document.title = "Dashboard - Login";
+        document.title = "Login | Dashboard";
 
         const returnUrl = location.state?.from?.pathname || '/';
 
@@ -169,4 +169,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default LoginPage;

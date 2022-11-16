@@ -7,7 +7,7 @@ import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+import CommentIcon from "@mui/icons-material/Comment";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
@@ -17,6 +17,7 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import Avatar from "./Avatar";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -92,70 +93,38 @@ const Sidebar = () => {
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu>
-          {!isCollapsed ? (
-            <div style={{
-              margin: "10px 10px 20px 0",
-              color: colors.grey[100],
-            }}>
-              <Box
+          {
+            !isCollapsed ?
+              <Box m="20px 0"
                 display="flex"
-                justifyContent="space-between"
+                flexDirection="column"
+                justifyContent="center"
                 alignItems="center"
-                ml="15px"
               >
-                <img
-                  alt="logo"
-                  width="auto"
-                  height='48px'
-                  src={`../../logo.png`}
+                <Avatar
+                  avatar={auth.user?.avatar}
+                  size="100px"
                 />
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <ArrowBackIosNewIcon sx={{ fontSize: "24px" }} />
-                </IconButton>
+
+                <Box textAlign="center">
+                  <Typography
+                    variant="h3"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    sx={{ m: "10px 0 0 0" }}
+                  >
+                    {auth.user?.fname + " " + auth.user?.lname}
+                  </Typography>
+
+                  <Typography variant="h5" color={colors.greenAccent[500]}>
+                    {'@' + auth.user?.uname}
+                  </Typography>
+                </Box>
               </Box>
-            </div>
-          ) :
-            <div style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              margin: "10px 0",
-              color: colors.grey[100],
-            }}>
-              <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                <ArrowForwardIosIcon sx={{ fontSize: "24px" }} />
-              </IconButton>
-            </div>
+              : null
           }
 
-          {!isCollapsed && (
-            <Box mb="25px">
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={auth.user?.avatar ? auth.user?.avatar?.url : `../../avatar.png`}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
-              </Box>
-              <Box textAlign="center">
-                <Typography
-                  variant="h3"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  {auth.user?.fname + " " + auth.user?.lname}
-                </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
-                  {'@' + auth.user?.uname}
-                </Typography>
-              </Box>
-            </Box>
-          )}
-
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+          <Box paddingLeft={isCollapsed ? undefined : "5%"}>
             <Item
               title="Dashboard"
               to="/"
@@ -188,7 +157,7 @@ const Sidebar = () => {
             <Item
               title="Manage Comments"
               to="/comments"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<CommentIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -258,6 +227,41 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
           </Box>
+
+          {!isCollapsed ? (
+            <div style={{
+              margin: "10px 10px 20px 0",
+              color: colors.grey[100],
+              display: "flex",
+              justifyContent: "end",
+              alignItems: "center",
+            }}>
+              <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                <ArrowBackIosNewIcon
+                  sx={{
+                    fontSize: "16px",
+                    fontWeight: "bold"
+                  }} />
+              </IconButton>
+            </div>
+          ) :
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              margin: "10px 0",
+              color: colors.grey[100],
+            }}>
+              <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                <ArrowForwardIosIcon
+                  sx={{
+                    fontSize: "16px",
+                    fontWeight: "bold"
+                  }} />
+              </IconButton>
+            </div>
+          }
+
         </Menu>
       </ProSidebar>
     </Box>

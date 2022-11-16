@@ -25,13 +25,46 @@ const Topbar = () => {
   //   }
   // });
 
+  const logoutUser = () => {
+    dispatch(logout());
+  }
+
   return (
-    <Box display="flex" justifyContent="space-between" p={2}>
+    <Box
+      position="fixed"
+      top="0"
+      left="0"
+      right="0"
+      height={{ xs: "80px", sm: "80px", md: "80px", lg: "80px" }}
+      bgcolor={colors.primary[500]}
+      display="flex"
+      flexDirection="row"
+      justifyContent="space-between"
+      alignItems="center"
+      p={2}
+      zIndex="1000"
+    >
+
+      {/* LOGO */}
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <img
+          alt="logo"
+          width="auto"
+          height='48px'
+          src={`../../logo.png`}
+        />
+      </Box>
+
       {/* SEARCH BAR */}
       <Box
         display="flex"
         backgroundColor={colors.primary[400]}
-        borderRadius="3px"
+        borderRadius="4px"
+        height={{ xs: "40px", sm: "40px", md: "40px", lg: "40px" }}
       >
         <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
         <IconButton type="button" sx={{ p: 1 }}>
@@ -54,9 +87,7 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton onClick={() => {
-          dispatch(logout());
-        }}>
+        <IconButton onClick={logoutUser}>
           <PersonOutlinedIcon />
         </IconButton>
       </Box>

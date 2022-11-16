@@ -23,7 +23,7 @@ ApiUrls.getProgressEndpoint = '/admin/get-progress';
 ApiUrls.getStatsEndpoint = '/admin/get-stats';
 ApiUrls.getMonthlyStatsEndpoint = '/admin/get-monthly-stats';
 
-ApiUrls.getPostsEndpoint = '/admin/posts';
+ApiUrls.getPostsEndpoint = '/admin/get-posts';
 ApiUrls.getRecentPostsEndpoint = '/admin/get-recent-posts';
 ApiUrls.getPostDetailsEndpoint = '/admin/posts/:id';
 ApiUrls.createNewPostEndpoint = '/admin/posts/create';

@@ -14,15 +14,15 @@ const initialState = {
 };
 
 
-const usersSlice = createSlice({
-    name: "users",
+const postsSlice = createSlice({
+    name: "posts",
     initialState,
     reducers: {
-        getUsers: (state, action) => {
+        getPosts: (state, action) => {
             state.status = 'loading';
         },
 
-        getUsersSuccess: (state, action) => {
+        getPostsSuccess: (state, action) => {
             state.currentPage = action.payload.currentPage;
             state.totalPages = action.payload.totalPages;
             state.hasNextPage = action.payload.hasNextPage;
@@ -34,7 +34,7 @@ const usersSlice = createSlice({
             state.status = 'success';
         },
 
-        getUsersError: (state, action) => {
+        getPostsError: (state, action) => {
             state.error = action.payload;
             state.status = 'failed';
         },
@@ -44,7 +44,7 @@ const usersSlice = createSlice({
             state.status = 'idle';
         },
 
-        clearUsers: (state, action) => {
+        clearPosts: (state, action) => {
             state.currentPage = null;
             state.totalPages = null;
             state.hasNextPage = false;
@@ -57,32 +57,32 @@ const usersSlice = createSlice({
             state.status = 'idle';
         },
 
-        deleteUser: (state, action) => {
-            state.results = state.results.filter(user => user._id !== action.payload);
+        deletePost: (state, action) => {
+            state.results = state.results.filter(post => post._id !== action.payload);
         },
 
-        updateUser: (state, action) => {
-            const index = state.results.findIndex(user => user._id === action.payload._id);
+        updatePost: (state, action) => {
+            const index = state.results.findIndex(post => post._id === action.payload._id);
             if (index !== -1) {
                 state.results[index] = action.payload;
             }
         },
 
-        addUser: (state, action) => {
+        addPost: (state, action) => {
             state.results.push(action.payload);
         },
     }
 });
 
 export const {
-    getUsers,
-    getUsersSuccess,
-    getUsersError,
+    getPosts,
+    getPostsSuccess,
+    getPostsError,
     clearError,
-    clearUsers,
-    deleteUser,
-    updateUser,
-    addUser,
-} = usersSlice.actions;
+    clearPosts,
+    deletePost,
+    updatePost,
+    addPost,
+} = postsSlice.actions;
 
-export default usersSlice;
+export default postsSlice;

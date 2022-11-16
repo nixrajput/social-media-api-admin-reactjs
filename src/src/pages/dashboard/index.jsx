@@ -23,13 +23,13 @@ import {
 } from '../../redux/actions';
 import { toDateString } from '../../utils/dateUtils';
 import Avatar from '../../components/global/Avatar';
+import PageHOC from '../../helpers/PageHOC';
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const auth = useSelector((state) => state.auth);
-  // const users = useSelector((state) => state.users);
   const stats = useSelector((state) => state.stats);
   const dispatch = useDispatch();
 
@@ -75,7 +75,7 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    document.title = "Dashboard - Admin Panel";
+    document.title = "Home | Dashboard";
 
     if (
       auth.status === 'authenticating' || auth.status === 'loadingUser' ||
@@ -109,7 +109,7 @@ const Dashboard = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
 
-      <Box m="20px">
+      <Box m="20px" mt="0" width="100%">
         {/* HEADER */}
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Header title="DASHBOARD" subtitle="Welcome to admin dashboard" />
@@ -142,24 +142,26 @@ const Dashboard = () => {
           {/* Row 1 Start */}
 
           {
-            (stats.status === 'success' && stats.stats) &&
-            Object.keys(stats.stats).map((key) => {
-              const stat = stats.stats[key];
-              return (
-                <StatBox
-                  key={key}
-                  title={stat.total}
-                  subtitle={key.toLocaleUpperCase()}
-                  icon={renderIcon(key)}
-                // progress={stat.progress ? stat.progress / 100 : 0}
-                // increase={
-                //   stat.progress !== null && stat.progress >= 0 ?
-                //     `+${stat.progress}%` :
-                //     `${stat.progress}%`
-                // }
-                />
-              );
-            })
+            (stats.status === 'success' && stats.stats) ?
+              Object.keys(stats.stats).map((key) => {
+                const stat = stats.stats[key];
+                return (
+                  <StatBox
+                    key={key}
+                    title={stat.total}
+                    subtitle={key.toLocaleUpperCase()}
+                    icon={renderIcon(key)}
+                  // progress={stat.progress ? stat.progress / 100 : 0}
+                  // increase={
+                  //   stat.progress !== null && stat.progress >= 0 ?
+                  //     `+${stat.progress}%` :
+                  //     `${stat.progress}%`
+                  // }
+                  />
+                );
+              })
+              :
+              null
           }
 
           {/* Row 1 End */}
@@ -185,48 +187,52 @@ const Dashboard = () => {
               </Typography>
             </Box>
             {
-              (stats.status === 'success' && stats.recentUsers) &&
-              stats.recentUsers.map((user, i) => (
-                <Box
-                  key={`${user._id}-${i}`}
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  borderBottom={`4px solid ${colors.primary[500]}`}
-                  p="15px"
-                >
-                  <Box display='flex' flexDirection='row' justifyContent='center'>
-                    <Avatar avatar={user.avatar} />
-                    <Box ml='20px'>
-                      <Typography
-                        color={colors.greenAccent[500]}
-                        variant="h5"
-                        fontWeight="600"
-                      >
-                        {user._id}
-                      </Typography>
-                      <Typography color={colors.grey[100]}>
-                        {user.uname}
-                      </Typography>
+              (stats.status === 'success' && stats.recentUsers) ?
+                stats.recentUsers.map((user, i) => (
+                  <Box
+                    key={`${user._id}-${i}`}
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    borderBottom={`4px solid ${colors.primary[500]}`}
+                    p="15px"
+                  >
+                    <Box display='flex' flexDirection='row' justifyContent='center'>
+                      <Avatar avatar={user.avatar} />
+                      <Box ml='20px'>
+                        <Typography
+                          color={colors.greenAccent[500]}
+                          variant="h5"
+                          fontWeight="600"
+                        >
+                          {user._id}
+                        </Typography>
+                        <Typography color={colors.grey[100]}>
+                          {user.uname}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Box color={colors.grey[100]}>
+                      {user.createdAt && toDateString(user.createdAt)}
+                    </Box>
+
+                    <Box
+                      backgroundColor={colors.greenAccent[500]}
+                      p="5px 10px"
+                      borderRadius="4px"
+                      display='flex'
+                      flexDirection='row'
+                      justifyContent='center'
+                      alignItems='center'
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <VisibilityIcon />
                     </Box>
                   </Box>
-                  <Box color={colors.grey[100]}>
-                    {user.createdAt && toDateString(user.createdAt)}
-                  </Box>
-                  <Box
-                    backgroundColor={colors.greenAccent[500]}
-                    p="5px 10px"
-                    borderRadius="4px"
-                    display='flex'
-                    flexDirection='row'
-                    justifyContent='center'
-                    alignItems='center'
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <VisibilityIcon />
-                  </Box>
-                </Box>
-              ))
+                ))
+                :
+                null
             }
           </Box>
 
@@ -291,45 +297,49 @@ const Dashboard = () => {
               </Typography>
             </Box>
             {
-              (stats.status === 'success' && stats.recentPosts) &&
-              stats.recentPosts.map((post, i) => (
-                <Box
-                  key={`${post._id}-${i}`}
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  borderBottom={`4px solid ${colors.primary[500]}`}
-                  p="15px"
-                >
-                  <Box>
-                    <Typography
-                      color={colors.greenAccent[500]}
-                      variant="h5"
-                      fontWeight="600"
-                    >
-                      {post._id}
-                    </Typography>
-                    <Typography color={colors.grey[100]}>
-                      {post.owner.uname}
-                    </Typography>
-                  </Box>
-                  <Box color={colors.grey[100]}>
-                    {post.createdAt && toDateString(post.createdAt)}
-                  </Box>
+              (stats.status === 'success' && stats.recentPosts) ?
+                stats.recentPosts.map((post, i) => (
                   <Box
-                    backgroundColor={colors.greenAccent[500]}
-                    p="5px 10px"
-                    borderRadius="4px"
-                    display='flex'
-                    flexDirection='row'
-                    justifyContent='center'
-                    alignItems='center'
-                    style={{ cursor: 'pointer' }}
+                    key={`${post._id}-${i}`}
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    borderBottom={`4px solid ${colors.primary[500]}`}
+                    p="15px"
                   >
-                    <VisibilityIcon />
+                    <Box>
+                      <Typography
+                        color={colors.greenAccent[500]}
+                        variant="h5"
+                        fontWeight="600"
+                      >
+                        {post._id}
+                      </Typography>
+                      <Typography color={colors.grey[100]}>
+                        {post.owner.uname}
+                      </Typography>
+                    </Box>
+                    <Box color={colors.grey[100]}>
+                      {post.createdAt && toDateString(post.createdAt)}
+                    </Box>
+                    <div
+                      style={{
+                        backgroundColor: colors.greenAccent[500],
+                        padding: '5px 10px',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <VisibilityIcon />
+                    </div>
                   </Box>
-                </Box>
-              ))
+                ))
+                :
+                null
             }
           </Box>
 
@@ -337,83 +347,65 @@ const Dashboard = () => {
 
           {/* Row 3 Start */}
 
-          {
-            (stats.status === 'success' && stats.verifiedUsersStats) &&
-            <Box
-              gridColumn={{ xs: "span 12", lg: "span 4" }}
-              gridRow="span 2"
-              backgroundColor={colors.primary[400]}
-              p="20px"
-            >
-              <Typography variant="h5" fontWeight="600">
-                Verified Users
-              </Typography>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                mt="25px"
-              >
-                <ProgressCircle
-                  size="144"
-                  progress={stats.verifiedUsersStats.roundedUnit}
-                />
-                <Typography
-                  variant="h5"
-                  color={colors.greenAccent[500]}
-                  sx={{ mt: "15px" }}
-                >
-                  {stats.verifiedUsersStats.roundedPercentage}% verified users
-                </Typography>
-                <Typography>
-                  {`${stats.verifiedUsersStats.verifiedUsers} out of
-                  ${stats.verifiedUsersStats.totalUsers} users are verified`}
-                </Typography>
-              </Box>
-            </Box>
-          }
-
-          {
-            (stats.status === 'success' && stats.monthlyStats) ?
-              <Box
-                gridColumn={{ xs: "span 12", lg: "span 4" }}
-                gridRow="span 2"
-                backgroundColor={colors.primary[400]}
-              >
-                <Typography
-                  variant="h5"
-                  fontWeight="600"
-                  sx={{ padding: "30px 30px 0 30px" }}
-                >
-                  Monthly Stats
-                </Typography>
-                <Box height="250px" mt="-20px">
-                  <BarChart data={stats.monthlyStats} />
-                </Box>
-              </Box>
-              :
-              null
-          }
-
-          {/* <Box
+          <Box
             gridColumn={{ xs: "span 12", lg: "span 4" }}
             gridRow="span 2"
             backgroundColor={colors.primary[400]}
-            padding="30px"
+            p="20px"
+          >
+            <Typography variant="h5" fontWeight="600">
+              Blue Tick Verified Users
+            </Typography>
+            {
+              (stats.status === 'success' && stats.verifiedUsersStats) ?
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  mt="25px"
+                >
+                  <ProgressCircle
+                    size="144"
+                    progress={stats.verifiedUsersStats.roundedUnit}
+                  />
+                  <Typography
+                    variant="h5"
+                    color={colors.greenAccent[500]}
+                    sx={{ mt: "15px" }}
+                  >
+                    {stats.verifiedUsersStats.roundedPercentage}% verified users
+                  </Typography>
+                  <Typography>
+                    {`${stats.verifiedUsersStats.verifiedUsers} out of
+                  ${stats.verifiedUsersStats.totalUsers} users are blue tick verified`}
+                  </Typography>
+                </Box>
+                :
+                null
+            }
+          </Box>
+
+          <Box
+            gridColumn={{ xs: "span 12", lg: "span 8" }}
+            gridRow="span 2"
+            backgroundColor={colors.primary[400]}
           >
             <Typography
               variant="h5"
               fontWeight="600"
-              sx={{ marginBottom: "15px" }}
+              sx={{ padding: "30px 30px 0 30px" }}
             >
-              Geography Based Traffic
+              Monthly Stats
             </Typography>
-            <Box height="200px">
-              <GeographyChart isDashboard={true} />
-            </Box>
-          </Box> */}
-
-          {/* Row 3 End */}
+            {
+              (stats.status === 'success' && stats.monthlyStats) ?
+                <Box height="250px" mt="-20px">
+                  <BarChart data={stats.monthlyStats} />
+                </Box>
+                :
+                null
+            }
+          </Box>
 
         </Box>
       </Box>
@@ -421,4 +413,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default PageHOC(DashboardPage);
