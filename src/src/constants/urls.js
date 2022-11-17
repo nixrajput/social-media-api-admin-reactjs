@@ -11,13 +11,12 @@ ApiUrls.changePasswordEndpoint = '/admin/change-password';
 
 ApiUrls.getProfileEndpoint = '/me';
 
-ApiUrls.getUsersEndpoint = '/admin/users';
+ApiUrls.getUsersEndpoint = '/admin/get-users';
 ApiUrls.getRecentUsersEndpoint = '/admin/get-recent-users';
 ApiUrls.getVerifiedUsersStatsEndpoint = '/admin/get-verified-users-stats';
-ApiUrls.getUserDetailsEndpoint = '/admin/users/:id';
-ApiUrls.createNewUserEndpoint = '/admin/users/create';
-ApiUrls.updateUserEndpoint = '/admin/users/:id/update';
-ApiUrls.deleteUserEndpoint = '/admin/users/:id/delete';
+ApiUrls.getUserDetailsEndpoint = '/admin/get-user-details';
+ApiUrls.updateUserEndpoint = '/admin/update-user';
+ApiUrls.deleteUserEndpoint = '/admin/delete-user';
 
 ApiUrls.getProgressEndpoint = '/admin/get-progress';
 ApiUrls.getStatsEndpoint = '/admin/get-stats';
@@ -25,10 +24,9 @@ ApiUrls.getMonthlyStatsEndpoint = '/admin/get-monthly-stats';
 
 ApiUrls.getPostsEndpoint = '/admin/get-posts';
 ApiUrls.getRecentPostsEndpoint = '/admin/get-recent-posts';
-ApiUrls.getPostDetailsEndpoint = '/admin/posts/:id';
-ApiUrls.createNewPostEndpoint = '/admin/posts/create';
-ApiUrls.updatePostEndpoint = '/admin/posts/:id/update';
-ApiUrls.deletePostEndpoint = '/admin/posts/:id/delete';
+ApiUrls.getPostDetailsEndpoint = '/admin/get-post-details';
+ApiUrls.updatePostEndpoint = '/admin/update-post';
+ApiUrls.deletePostEndpoint = '/admin/delete-post';
 
 
 export default ApiUrls;

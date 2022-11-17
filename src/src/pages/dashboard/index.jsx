@@ -14,6 +14,7 @@ import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from "react-router-dom";
 import {
   getStatsAction,
   getRecentPostsAction,
@@ -32,6 +33,7 @@ const DashboardPage = () => {
   const auth = useSelector((state) => state.auth);
   const stats = useSelector((state) => state.stats);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
 
@@ -217,18 +219,21 @@ const DashboardPage = () => {
                       {user.createdAt && toDateString(user.createdAt)}
                     </Box>
 
-                    <Box
-                      backgroundColor={colors.greenAccent[500]}
-                      p="5px 10px"
-                      borderRadius="4px"
-                      display='flex'
-                      flexDirection='row'
-                      justifyContent='center'
-                      alignItems='center'
-                      style={{ cursor: 'pointer' }}
+                    <div
+                      style={{
+                        backgroundColor: colors.greenAccent[500],
+                        padding: '5px 10px',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => navigate(`/users/${user._id}`)}
                     >
                       <VisibilityIcon />
-                    </Box>
+                    </div>
                   </Box>
                 ))
                 :
@@ -319,9 +324,17 @@ const DashboardPage = () => {
                         {post.owner.uname}
                       </Typography>
                     </Box>
+
+                    <Box>
+                      <Typography color={colors.grey[100]}>
+                        {post.mediaFiles.length} Media
+                      </Typography>
+                    </Box>
+
                     <Box color={colors.grey[100]}>
                       {post.createdAt && toDateString(post.createdAt)}
                     </Box>
+
                     <div
                       style={{
                         backgroundColor: colors.greenAccent[500],
@@ -333,6 +346,7 @@ const DashboardPage = () => {
                         alignItems: 'center',
                         cursor: 'pointer'
                       }}
+                      onClick={() => navigate(`/posts/${post._id}`)}
                     >
                       <VisibilityIcon />
                     </div>

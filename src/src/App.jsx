@@ -18,7 +18,9 @@ const ResetPasswordPage = lazy(() => import('./pages/auth/reset-password/Index')
 const NotFoundPage = lazy(() => import('./pages/not-found/Index'));
 const DashboardPage = lazy(() => import('./pages/dashboard/Index'));
 const UserListPage = lazy(() => import('./pages/users/Index'));
+const UserDetailsPage = lazy(() => import('./pages/users/UserDetails'));
 const PostListPage = lazy(() => import('./pages/posts/Index'));
+const PostDetailsPage = lazy(() => import('./pages/posts/PostDetails'));
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -26,25 +28,24 @@ function App() {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const loadUserDetails = async () => {
-    const loadAuthDetailsPromise = loadAuthDetailsAction(dispatch);
-
-    if (auth.status === 'idle' || auth.status === 'failed' || !auth.token) {
-      await loadAuthDetailsPromise;
-    }
-
-    if (auth.status === 'authenticated' && auth.token) {
-      const getProfilePromise = getProfileAction(dispatch, auth.token);
-      await getProfilePromise;
-    }
-  }
-
   useEffect(() => {
+    const loadUserDetails = async () => {
+      if (auth.status === 'idle' || auth.status === 'failed') {
+        const loadAuthDetailsPromise = loadAuthDetailsAction(dispatch);
+        await loadAuthDetailsPromise;
+      }
+
+      if (auth.token && auth.status === 'authenticated') {
+        const getProfilePromise = getProfileAction(dispatch, auth.token);
+        await getProfilePromise;
+      }
+    }
+
     loadUserDetails();
 
     return () => { }
 
-  }, [auth.token]);
+  }, [auth.token, auth.status, dispatch]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -69,8 +70,10 @@ function App() {
                   <Route path="/" element={<AdminRoute> <DashboardPage /> </AdminRoute>} />
 
                   <Route path="/users" element={<AdminRoute> <UserListPage /> </AdminRoute>} />
+                  <Route path="/users/:id" element={<AdminRoute> <UserDetailsPage /> </AdminRoute>} />
 
                   <Route path="/posts" element={<AdminRoute> <PostListPage /> </AdminRoute>} />
+                  <Route path="/posts/:id" element={<AdminRoute> <PostDetailsPage /> </AdminRoute>} />
 
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>

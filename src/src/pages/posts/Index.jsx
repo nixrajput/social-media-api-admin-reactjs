@@ -5,6 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import {
     getAllPostsAction,
@@ -19,6 +20,7 @@ const PostListPage = () => {
     const auth = useSelector((state) => state.auth);
     const posts = useSelector((state) => state.posts);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [page, setPage] = useState(0);
     const [open, setOpen] = useState(false);
@@ -202,7 +204,7 @@ const PostListPage = () => {
                             rowsPerPageOptions={[posts.limit]}
                             page={page}
                             onPageChange={handlePageChange}
-                            disableSelectionOnClick
+                            onRowClick={(row) => navigate(`/posts/${row.id}`)}
                             getRowId={(row) => row._id}
                             loading={posts.status === 'loading'}
                         />

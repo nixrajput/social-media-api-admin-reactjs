@@ -18,7 +18,7 @@ export const isSameDate = (date, date2, compareWithToday = false) => {
         date.getDate() === date2.getDate();
 };
 
-export const toDateString = (date, format = "dd-mm-yyyy") => {
+export const toDateString = function (date, { format = 'dd-MM-yyyy', separator = '-' } = {}) {
     const dateObj = new Date(date);
     const year = dateObj.getFullYear();
     const month = dateObj.getMonth() + 1;
@@ -28,14 +28,14 @@ export const toDateString = (date, format = "dd-mm-yyyy") => {
     let monthString = month < 10 ? '0' + month.toString() : month.toString();
     let dayString = day < 10 ? '0' + day.toString() : day.toString();
 
-    if (format === "dd-mm-yyyy") {
-        return dayString + '-' + monthString + '-' + yearString;
+    if (format === 'dd-MM-yyyy') {
+        return dayString + separator + monthString + separator + yearString;
     }
 
-    return yearString + '-' + monthString + '-' + dayString;
+    return yearString + separator + monthString + separator + dayString;
 }
 
-export const toTimeString = (date, is24HourFormat = false, showSeconds = false) => {
+export const toTimeString = function (date, { is24HourFormat = false, showSeconds = false } = {}) {
     const dateObj = new Date(date);
     const hours = dateObj.getHours();
     const minutes = dateObj.getMinutes();
@@ -47,24 +47,37 @@ export const toTimeString = (date, is24HourFormat = false, showSeconds = false) 
 
     let timeString = hoursString + ':' + minutesString;
 
-    if (!is24HourFormat) {
+    if (showSeconds) {
+        timeString = timeString + ':' + secondsString;
+    }
+
+    if (is24HourFormat === false) {
         if (hours > 12) {
             hoursString = (hours - 12).toString();
         } else if (hours === 0) {
             hoursString = '12';
         }
-        timeString = hoursString + ':' + minutesString + ' ' + (hours >= 12 ? 'PM' : 'AM');
-    }
 
-    if (showSeconds) {
-        timeString = timeString + ':' + secondsString;
+        let amPmString = hours < 12 ? 'AM' : 'PM';
+
+        if (showSeconds) {
+            return hoursString + ':' + minutesString + ':' + secondsString + ' ' + amPmString;
+        }
+
+        return hoursString + ':' + minutesString + ' ' + amPmString;
     }
 
     return timeString;
 }
 
-export const toDateTimeString = (date, is24HourFormat = false, showSeconds = false) => {
-    return toDateString(date) + ' ' + toTimeString(date, is24HourFormat, showSeconds);
+export const toDateTimeString = function (date,
+    { format = "dd-mm-yyyy", is24HourFormat = false, showSeconds = false } = {}) {
+    return toDateString(date, { format })
+        + ' '
+        + toTimeString(date, {
+            is24HourFormat,
+            showSeconds
+        });
 }
 
 export const toTimeAgo = (date) => {

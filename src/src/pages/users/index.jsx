@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
+import { useNavigate } from "react-router-dom";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
@@ -21,6 +22,7 @@ const UserListPage = () => {
   const auth = useSelector((state) => state.auth);
   const users = useSelector((state) => state.users);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
   const [open, setOpen] = useState(false);
@@ -188,7 +190,7 @@ const UserListPage = () => {
               rowsPerPageOptions={[users.limit]}
               page={page}
               onPageChange={handlePageChange}
-              disableSelectionOnClick
+              onRowClick={(row) => navigate(`/users/${row.id}`)}
               getRowId={(row) => row._id}
               loading={users.status === 'loading'}
             />
