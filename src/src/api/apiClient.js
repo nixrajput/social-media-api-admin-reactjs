@@ -16,7 +16,7 @@ async function apiClient(endpoint, method, { body, ...options } = {}) {
         config.body = JSON.stringify(body);
     }
 
-    let baseUrl = ApiUrls.devBaseUrl;
+    let baseUrl = ApiUrls.baseUrl;
 
     let data;
 
