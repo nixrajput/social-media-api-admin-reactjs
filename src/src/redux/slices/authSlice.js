@@ -5,7 +5,6 @@ const initialState = {
     status: 'idle',
     token: null,
     expiresAt: null,
-    user: null,
     error: null,
 };
 
@@ -18,34 +17,18 @@ const authSlice = createSlice({
         },
 
         authenticated: (state, action) => {
-            if (state.status === 'authenticating') {
-                state.token = action.payload.token;
-                state.expiresAt = action.payload.expiresAt;
-                storage.set('auth', action.payload);
-                state.status = 'authenticated';
-            }
+            state.token = action.payload.token;
+            state.expiresAt = action.payload.expiresAt;
+            storage.set('auth', action.payload);
+            state.status = 'authenticated';
         },
 
         unauthenticated: (state, action) => {
             state.token = null;
             state.expiresAt = null;
-            state.user = null;
             state.error = null;
             storage.remove('auth');
             state.status = 'unauthenticated';
-        },
-
-        loadingUser: (state, action) => {
-            state.status = 'loadingUser';
-        },
-
-        loadUser: (state, action) => {
-            if (state.status === 'loadingUser') {
-                state.error = null;
-                state.user = action.payload;
-                storage.set('user', action.payload);
-                state.status = 'userLoaded';
-            }
         },
 
         setError: (state, action) => {
@@ -56,7 +39,6 @@ const authSlice = createSlice({
         logout: (state, action) => {
             state.token = null;
             state.expiresAt = null;
-            state.user = null;
             state.error = null;
             storage.remove('auth');
             storage.remove('user');
@@ -68,9 +50,7 @@ const authSlice = createSlice({
         },
 
         emailSent: (state, action) => {
-            if (state.status === 'sendingEmail') {
-                state.status = 'emailSent';
-            }
+            state.status = 'emailSent';
         },
 
         resetPassword: (state, action) => {
@@ -78,9 +58,7 @@ const authSlice = createSlice({
         },
 
         passwordReset: (state, action) => {
-            if (state.status === 'resetPassword') {
-                state.status = 'passwordReset';
-            }
+            state.status = 'passwordReset';
         },
 
         success: (state, action) => {
@@ -93,8 +71,6 @@ export const {
     authenticating,
     authenticated,
     unauthenticated,
-    loadingUser,
-    loadUser,
     logout,
     setError,
     sendingEmail,

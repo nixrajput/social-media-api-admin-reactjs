@@ -5,6 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import {
@@ -18,6 +19,7 @@ const PostListPage = () => {
     const colors = tokens(theme.palette.mode);
 
     const auth = useSelector((state) => state.auth);
+    const profileDetails = useSelector((state) => state.profileDetails);
     const posts = useSelector((state) => state.posts);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -53,14 +55,12 @@ const PostListPage = () => {
         {
             field: "_id",
             headerName: "ID",
-            flex: 1,
-            cellClassName: "name-column--cell",
+            flex: 1.5,
         },
         {
             field: "owner",
             headerName: "User",
-            flex: 1,
-            cellClassName: "name-column--cell",
+            flex: 1.5,
         },
         {
             field: "postType",
@@ -68,23 +68,23 @@ const PostListPage = () => {
             flex: 1,
             renderCell: ({ row: { postType } }) => {
                 return (
-                    <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
+                    <Typography>
                         {postType}
                     </Typography>
                 );
             },
         },
         {
-            field: "createdAt",
-            headerName: "Created At",
+            field: "mediaCount",
+            headerName: "Media Files",
             flex: 1,
-            renderCell: ({ row: { createdAt } }) => {
+            renderCell: ({ row: { mediaFiles } }) => {
                 return (
-                    <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-                        {createdAt ? toDateString(createdAt) : ""}
+                    <Typography>
+                        {mediaFiles.length}
                     </Typography>
                 );
-            },
+            }
         },
         {
             field: "visibility",
@@ -92,7 +92,7 @@ const PostListPage = () => {
             flex: 1,
             renderCell: ({ row: { visibility } }) => {
                 return (
-                    <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
+                    <Typography>
                         {visibility}
                     </Typography>
                 );
@@ -101,11 +101,12 @@ const PostListPage = () => {
         {
             field: "postStatus",
             headerName: "Status",
+            flex: 1,
             renderCell: ({ row: { postStatus } }) => {
                 return (
                     <Box
-                        m="0 auto"
-                        p="5px 10px"
+                        m="0"
+                        p="2px 6px"
                         display="flex"
                         justifyContent="center"
                         alignItems="center"
@@ -116,20 +117,57 @@ const PostListPage = () => {
                         }
                         borderRadius="4px"
                     >
-                        <Typography color={colors.grey[100]}>
+                        <Typography fontSize="12px"
+                        >
                             {postStatus}
                         </Typography>
                     </Box>
                 );
             },
         },
+        {
+            field: "createdAt",
+            headerName: "Created At",
+            flex: 1,
+            renderCell: ({ row: { createdAt } }) => {
+                return (
+                    <Typography>
+                        {createdAt ? toDateString(createdAt) : ""}
+                    </Typography>
+                );
+            },
+        },
+        {
+            field: "edit",
+            headerName: "",
+            flex: 1,
+            renderCell: ({ row: { _id } }) => {
+                return (
+                    <div
+                        style={{
+                            backgroundColor: colors.greenAccent[500],
+                            padding: '5px 10px',
+                            borderRadius: '4px',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            cursor: 'pointer'
+                        }}
+                        onClick={() => navigate(`/posts/${_id}`)}
+                    >
+                        <VisibilityIcon />
+                    </div>
+                );
+            }
+        }
     ];
 
     useEffect(() => {
         document.title = "All Posts | Dashboard";
 
         if (
-            auth.status === 'authenticating' || auth.status === 'loadingUser' ||
+            auth.status === 'authenticating' || profileDetails.status === 'loading' ||
             posts.status === 'loading'
         ) {
             openBackdrop();
@@ -141,7 +179,7 @@ const PostListPage = () => {
         return () => { }
 
     }, [
-        auth.token, auth.user, auth.status, posts.status
+        auth.token, profileDetails.status, auth.status, posts.status
     ]);
 
     useEffect(() => {
@@ -204,7 +242,7 @@ const PostListPage = () => {
                             rowsPerPageOptions={[posts.limit]}
                             page={page}
                             onPageChange={handlePageChange}
-                            onRowClick={(row) => navigate(`/posts/${row.id}`)}
+                            disableSelectionOnClick
                             getRowId={(row) => row._id}
                             loading={posts.status === 'loading'}
                         />

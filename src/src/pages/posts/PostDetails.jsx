@@ -10,7 +10,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
-import Avatar from '../../components/global/Avatar';
+import CircleAvatar from '../../components/global/CircleAvatar';
 import {
     getPostDetailsAction,
 } from '../../redux/actions';
@@ -24,6 +24,7 @@ const PostDetailsPage = () => {
     const { id } = useParams();
 
     const auth = useSelector((state) => state.auth);
+    const profileDetails = useSelector((state) => state.profileDetails);
     const postDetails = useSelector((state) => state.postDetails);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -49,7 +50,7 @@ const PostDetailsPage = () => {
         document.title = "Post Details | Dashboard";
 
         if (
-            auth.status === 'authenticating' || auth.status === 'loadingUser' ||
+            auth.status === 'authenticating' || profileDetails.status === 'loading' ||
             postDetails.status === 'loading'
         ) {
             openBackdrop();
@@ -61,7 +62,7 @@ const PostDetailsPage = () => {
         return () => { }
 
     }, [
-        auth.token, auth.user, auth.status, postDetails.status
+        auth.token, profileDetails.status, auth.status, postDetails.status
     ]);
 
     useEffect(() => {
@@ -108,16 +109,40 @@ const PostDetailsPage = () => {
                                 height="100%"
                                 display="flex"
                                 flexDirection="column"
-                                justifyContent="center"
-                                alignItems="center"
-                                p="10px"
+                                justifyContent="flex-start"
+                                alignItems="flex-start"
                             >
                                 <Carousel
                                     autoPlay={false}
                                     sx={{
-                                        width: '400px',
+                                        width: '100%',
                                         height: '100%',
                                         position: 'relative',
+                                    }}
+                                    indicatorIconButtonProps={{
+                                        style: {
+                                            width: "4px",
+                                            height: "4px",
+                                            margin: "0 4px",
+                                            color: colors.primary[200],
+                                        }
+                                    }}
+                                    activeIndicatorIconButtonProps={{
+                                        style: {
+                                            width: "4px",
+                                            height: "4px",
+                                            margin: "0 4px",
+                                            color: colors.greenAccent[500],
+                                        }
+                                    }}
+                                    indicatorContainerProps={{
+                                        style: {
+                                            position: "absolute",
+                                            zIndex: 2,
+                                            bottom: "4px",
+                                            textAlign: 'center'
+                                        }
+
                                     }}
                                 >
                                     {
@@ -128,14 +153,12 @@ const PostDetailsPage = () => {
                                                         key={index}
                                                         src={item.url}
                                                         autoPlay={false}
-                                                        about="video"
                                                         controls
                                                         style={{
-                                                            position: "relative",
-                                                            width: "400px",
-                                                            height: "400px",
-                                                            aspectRatio: "1/1",
-                                                            objectFit: "cover",
+                                                            width: '100%',
+                                                            height: 'auto',
+                                                            aspectRatio: '1/1',
+                                                            objectFit: 'contain',
                                                         }}
                                                     />
                                                 )
@@ -147,11 +170,10 @@ const PostDetailsPage = () => {
                                                     src={item.url}
                                                     alt="Post Media"
                                                     style={{
-                                                        position: "relative",
-                                                        width: "400px",
-                                                        height: "400px",
-                                                        aspectRatio: "1/1",
-                                                        objectFit: "cover",
+                                                        width: '100%',
+                                                        height: 'auto',
+                                                        aspectRatio: '1/1',
+                                                        objectFit: 'cover',
                                                     }}
                                                 />
                                             )
@@ -167,7 +189,7 @@ const PostDetailsPage = () => {
 
                         <Box
                             gridColumn={{ xs: "span 12", lg: "span 8" }}
-                            gridRow="span 8"
+                            gridRow="span 6"
                             backgroundColor={colors.primary[400]}
                             overflow="auto"
                         >
@@ -175,7 +197,7 @@ const PostDetailsPage = () => {
                                 display="flex"
                                 justifyContent="space-between"
                                 alignItems="center"
-                                borderBottom={`4px solid ${colors.primary[500]}`}
+                                borderBottom={`4px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -195,11 +217,15 @@ const PostDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
-                                <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
                                     Owner
                                 </Typography>
 
@@ -215,7 +241,7 @@ const PostDetailsPage = () => {
                                         flexDirection='row'
                                         justifyContent='center'
                                     >
-                                        <Avatar
+                                        <CircleAvatar
                                             avatar={postDetails.post.owner.avatar}
                                         />
 
@@ -263,7 +289,7 @@ const PostDetailsPage = () => {
                                         flexDirection="column"
                                         alignItems="flex-start"
                                         justifyContent="stretch"
-                                        borderBottom={`2px solid ${colors.primary[500]}`}
+                                        borderBottom={`2px solid ${colors.background}`}
                                         colors={colors.grey[100]}
                                         p="15px"
                                     >
@@ -294,7 +320,7 @@ const PostDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -322,7 +348,7 @@ const PostDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -350,7 +376,7 @@ const PostDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -378,7 +404,7 @@ const PostDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -406,7 +432,7 @@ const PostDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -434,7 +460,7 @@ const PostDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -466,7 +492,7 @@ const PostDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -498,7 +524,7 @@ const PostDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >

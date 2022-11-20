@@ -1,9 +1,10 @@
 import React from 'react'
 
-const Avatar = ({ avatar, width = "40px", height = '40px', fit = 'cover' }) => {
+const CircleAvatar = ({ avatar, size = '40px', fit = 'cover' }) => {
     const style = {
-        width: width,
-        height: height,
+        width: size,
+        height: size,
+        borderRadius: '50%',
         objectFit: fit,
     }
 
@@ -14,8 +15,8 @@ const Avatar = ({ avatar, width = "40px", height = '40px', fit = 'cover' }) => {
                     src={avatar.url}
                     style={style}
                     alt="avatar"
-                    width={width}
-                    height={height}
+                    width={size}
+                    height={size}
                 />
             </div>
         )
@@ -27,11 +28,11 @@ const Avatar = ({ avatar, width = "40px", height = '40px', fit = 'cover' }) => {
                 src='../../avatar.png'
                 style={style}
                 alt="avatar"
-                width={width}
-                height={height}
+                width={size}
+                height={size}
             />
         </div>
     )
 }
 
-export default Avatar;
+export default CircleAvatar;

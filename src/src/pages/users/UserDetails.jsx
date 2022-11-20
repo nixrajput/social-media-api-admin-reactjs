@@ -8,12 +8,13 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
-import Avatar from '../../components/global/Avatar';
 import {
     getUserDetailsAction,
 } from '../../redux/actions';
 import PageHOC from "../../helpers/PageHOC";
 import { toDateTimeString } from '../../utils/dateUtils';
+import Avatar from "../../components/global/Avatar";
+import CircleAvatar from "../../components/global/CircleAvatar";
 
 const UserDetailsPage = () => {
     const theme = useTheme();
@@ -108,11 +109,10 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 justifyContent="center"
                                 alignItems="center"
-                                p="10px"
                             >
-                                <Avatar
+                                <CircleAvatar
                                     avatar={userDetails.user?.avatar}
-                                    size="240px"
+                                    size="320px"
                                 />
                             </Box>
                         </Box>
@@ -123,7 +123,7 @@ const UserDetailsPage = () => {
 
                         <Box
                             gridColumn={{ xs: "span 12", lg: "span 8" }}
-                            gridRow="span 8"
+                            gridRow="span 6"
                             backgroundColor={colors.primary[400]}
                             overflow="auto"
                         >
@@ -131,7 +131,7 @@ const UserDetailsPage = () => {
                                 display="flex"
                                 justifyContent="space-between"
                                 alignItems="center"
-                                borderBottom={`4px solid ${colors.primary[500]}`}
+                                borderBottom={`4px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -151,7 +151,7 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -179,7 +179,7 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -207,7 +207,7 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -235,7 +235,7 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -263,7 +263,7 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -291,7 +291,7 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -319,7 +319,7 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -351,7 +351,7 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -383,7 +383,7 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.primary[500]}`}
+                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >

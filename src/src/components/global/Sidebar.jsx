@@ -17,7 +17,7 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import Avatar from "./Avatar";
+import CircleAvatar from "./CircleAvatar";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -44,13 +44,16 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isCollapsed, setIsCollapsed] = useState(true);
+
+  // const auth = useSelector((state) => state.auth);
+  const profileDetails = useSelector((state) => state.profileDetails);
+
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-  const auth = useSelector((state) => state.auth);
 
   useEffect(() => {
     window.addEventListener('load', () => {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 980) {
         setIsCollapsed(true);
       }
       else {
@@ -59,7 +62,7 @@ const Sidebar = () => {
     });
 
     window.addEventListener("resize", () => {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 980) {
         setIsCollapsed(true);
       }
       else {
@@ -101,8 +104,8 @@ const Sidebar = () => {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Avatar
-                  avatar={auth.user?.avatar}
+                <CircleAvatar
+                  avatar={profileDetails.user?.avatar}
                   size="100px"
                 />
 
@@ -113,11 +116,11 @@ const Sidebar = () => {
                     fontWeight="bold"
                     sx={{ m: "10px 0 0 0" }}
                   >
-                    {auth.user?.fname + " " + auth.user?.lname}
+                    {profileDetails.user?.fname + " " + profileDetails.user?.lname}
                   </Typography>
 
                   <Typography variant="h5" color={colors.greenAccent[500]}>
-                    {'@' + auth.user?.uname}
+                    {'@' + profileDetails.user?.uname}
                   </Typography>
                 </Box>
               </Box>

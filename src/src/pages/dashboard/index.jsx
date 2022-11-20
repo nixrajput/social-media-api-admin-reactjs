@@ -23,7 +23,7 @@ import {
   getMonthlyStatsAction,
 } from '../../redux/actions';
 import { toDateString } from '../../utils/dateUtils';
-import Avatar from '../../components/global/Avatar';
+import CircleAvatar from '../../components/global/CircleAvatar';
 import PageHOC from '../../helpers/PageHOC';
 
 const DashboardPage = () => {
@@ -31,6 +31,7 @@ const DashboardPage = () => {
   const colors = tokens(theme.palette.mode);
 
   const auth = useSelector((state) => state.auth);
+  const profileDetails = useSelector((state) => state.profileDetails);
   const stats = useSelector((state) => state.stats);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -79,10 +80,7 @@ const DashboardPage = () => {
   useEffect(() => {
     document.title = "Home | Dashboard";
 
-    if (
-      auth.status === 'authenticating' || auth.status === 'loadingUser' ||
-      stats.status === 'loading'
-    ) {
+    if (profileDetails.status === 'loading' || stats.status === 'loading') {
       openBackdrop();
     }
     else {
@@ -92,7 +90,7 @@ const DashboardPage = () => {
     return () => { }
 
   }, [
-    auth.token, auth.user, auth.status, stats.status
+    profileDetails.status, stats.status
   ]);
 
   useEffect(() => {
@@ -180,11 +178,14 @@ const DashboardPage = () => {
               display="flex"
               justifyContent="space-between"
               alignItems="center"
-              borderBottom={`4px solid ${colors.primary[500]}`}
+              borderBottom={`4px solid ${colors.background}`}
               colors={colors.grey[100]}
               p="15px"
             >
-              <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+              <Typography color={colors.grey[100]}
+                variant="h3"
+                fontWeight="600"
+              >
                 Recent Users
               </Typography>
             </Box>
@@ -196,11 +197,11 @@ const DashboardPage = () => {
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
-                    borderBottom={`4px solid ${colors.primary[500]}`}
+                    borderBottom={`4px solid ${colors.background}`}
                     p="15px"
                   >
                     <Box display='flex' flexDirection='row' justifyContent='center'>
-                      <Avatar avatar={user.avatar} />
+                      <CircleAvatar avatar={user.avatar} />
                       <Box ml='20px'>
                         <Typography
                           color={colors.greenAccent[500]}
@@ -293,11 +294,13 @@ const DashboardPage = () => {
               display="flex"
               justifyContent="space-between"
               alignItems="center"
-              borderBottom={`4px solid ${colors.primary[500]}`}
+              borderBottom={`4px solid ${colors.background}`}
               colors={colors.grey[100]}
               p="15px"
             >
-              <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+              <Typography color={colors.grey[100]}
+                variant="h3"
+                fontWeight="600">
                 Recent Posts
               </Typography>
             </Box>
@@ -309,7 +312,7 @@ const DashboardPage = () => {
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
-                    borderBottom={`4px solid ${colors.primary[500]}`}
+                    borderBottom={`4px solid ${colors.background}`}
                     p="15px"
                   >
                     <Box>
@@ -365,11 +368,21 @@ const DashboardPage = () => {
             gridColumn={{ xs: "span 12", lg: "span 4" }}
             gridRow="span 2"
             backgroundColor={colors.primary[400]}
-            p="20px"
           >
-            <Typography variant="h5" fontWeight="600">
-              Blue Tick Verified Users
-            </Typography>
+
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              borderBottom={`4px solid ${colors.background}`}
+              colors={colors.grey[100]}
+              p="15px"
+            >
+              <Typography variant="h3" fontWeight="600">
+                Blue Tick Verified Users
+              </Typography>
+            </Box>
+
             {
               (stats.status === 'success' && stats.verifiedUsersStats) ?
                 <Box
@@ -404,13 +417,23 @@ const DashboardPage = () => {
             gridRow="span 2"
             backgroundColor={colors.primary[400]}
           >
-            <Typography
-              variant="h5"
-              fontWeight="600"
-              sx={{ padding: "30px 30px 0 30px" }}
+
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              borderBottom={`4px solid ${colors.background}`}
+              colors={colors.grey[100]}
+              p="15px"
             >
-              Monthly Stats
-            </Typography>
+              <Typography
+                variant="h3"
+                fontWeight="600"
+              >
+                Monthly Stats
+              </Typography>
+            </Box>
+
             {
               (stats.status === 'success' && stats.monthlyStats) ?
                 <Box height="250px" mt="-20px">

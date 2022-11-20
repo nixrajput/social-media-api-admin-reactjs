@@ -1,9 +1,10 @@
 import apiClient from "../../api/apiClient";
 import {
-    loadUser, loadingUser, authenticating,
-    authenticated, unauthenticated, sendingEmail,
-    emailSent, resetPassword, passwordReset, setError
+    authenticating, authenticated, unauthenticated,
+    sendingEmail, emailSent, resetPassword, passwordReset,
+    setError
 } from '../slices/authSlice';
+import { clearProfileDetails } from '../slices/profileDetailsSlice';
 import ApiUrls from "../../constants/urls";
 import storage from "../../utils/storage";
 
@@ -103,28 +104,12 @@ export const loadAuthDetailsAction = async (dispatch) => {
     }
 }
 
-export const getProfileAction = async (dispatch, token) => {
+export const logoutAction = async (dispatch) => {
     if (!dispatch) {
         console.log("dispatch is null");
         return;
     }
 
-    if (!token) {
-        console.log('No token found');
-        return;
-    }
-
-    dispatch(loadingUser());
-    const headers = { 'Authorization': `Bearer ${token}` };
-    try {
-        const response = await apiClient.get(ApiUrls.getProfileEndpoint, { headers });
-        if (response.status === 200) {
-            dispatch(loadUser(response.user));
-        }
-        else {
-            dispatch(setError(response.message));
-        }
-    } catch (error) {
-        dispatch(setError(error));
-    }
+    dispatch(clearProfileDetails());
+    dispatch(unauthenticated());
 }

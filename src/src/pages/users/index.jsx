@@ -4,9 +4,9 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import Header from "../../components/Header";
@@ -14,12 +14,15 @@ import {
   getAllUsersAction,
 } from '../../redux/actions';
 import PageHOC from "../../helpers/PageHOC";
+import CircleAvatar from "../../components/global/CircleAvatar";
+import { toDateString } from '../../utils/dateUtils';
 
 const UserListPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const auth = useSelector((state) => state.auth);
+  const profileDetails = useSelector((state) => state.profileDetails);
   const users = useSelector((state) => state.users);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,22 +56,29 @@ const UserListPage = () => {
 
   const columns = [
     {
+      field: "avatar",
+      headerName: "",
+      width: 64,
+      renderCell: (params) => (
+        <CircleAvatar
+          avatar={params.row.avatar}
+        />
+      ),
+    },
+    {
       field: "_id",
       headerName: "ID",
-      flex: 1,
-      cellClassName: "name-column--cell",
+      flex: 1.5,
     },
     {
       field: "fname",
       headerName: "First name",
       flex: 1,
-      cellClassName: "name-column--cell",
     },
     {
       field: "lname",
       headerName: "Last Name",
       flex: 1,
-      cellClassName: "name-column--cell",
     },
     {
       field: "email",
@@ -83,39 +93,134 @@ const UserListPage = () => {
     {
       field: "role",
       headerName: "Access Level",
+      flex: 1,
       renderCell: ({ row: { role } }) => {
         return (
           <Box
-            m="0 auto"
-            p="5px 10px"
+            m="0"
+            p="2px 6px"
             display="flex"
             justifyContent="center"
+            alignItems="center"
             backgroundColor={
               role === "admin"
-                ? colors.greenAccent[600]
-                : role === "manager"
-                  ? colors.greenAccent[700]
-                  : colors.greenAccent[700]
+                ? colors.redAccent[600]
+                : colors.greenAccent[600]
             }
             borderRadius="4px"
           >
-            {role === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {role === "manager" && <SecurityOutlinedIcon />}
-            {role === "user" && <LockOpenOutlinedIcon />}
-            <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
+            <Typography fontSize="12px"
+            >
               {role}
             </Typography>
           </Box>
         );
       },
     },
+    {
+      field: "accountStatus",
+      headerName: "Account Status",
+      flex: 1,
+      renderCell: ({ row: { accountStatus } }) => {
+        return (
+          <Box
+            m="0"
+            p="2px 6px"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            backgroundColor={
+              accountStatus === "active"
+                ? colors.greenAccent[600]
+                : colors.redAccent[600]
+            }
+            borderRadius="4px"
+          >
+            <Typography fontSize="12px"
+            >
+              {accountStatus}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "isValid",
+      headerName: "Valid Status",
+      flex: 1,
+      renderCell: ({ row: { isValid } }) => {
+        return (
+          <VerifiedUserIcon
+            sx={{
+              color: isValid ?
+                colors.greenAccent[600]
+                :
+                colors.redAccent[600],
+            }}
+          />
+        );
+      }
+    },
+    {
+      field: "isVerified",
+      headerName: "Verified Status",
+      flex: 1,
+      renderCell: ({ row: { isVerified } }) => {
+        return (
+          <VerifiedIcon
+            sx={{
+              color: isVerified ?
+                colors.greenAccent[600]
+                :
+                colors.grey[400],
+            }}
+          />
+        );
+      }
+    },
+    {
+      field: "createdAt",
+      headerName: "Created At",
+      flex: 1,
+      renderCell: ({ row: { createdAt } }) => {
+        return (
+          <Typography>
+            {createdAt ? toDateString(createdAt) : ""}
+          </Typography>
+        );
+      },
+    },
+    {
+      field: "edit",
+      headerName: "",
+      flex: 1,
+      renderCell: ({ row: { _id } }) => {
+        return (
+          <div
+            style={{
+              backgroundColor: colors.greenAccent[500],
+              padding: '5px 10px',
+              borderRadius: '4px',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer'
+            }}
+            onClick={() => navigate(`/users/${_id}`)}
+          >
+            <VisibilityIcon />
+          </div>
+        );
+      }
+    }
   ];
 
   useEffect(() => {
     document.title = "Dashboard - All Users";
 
     if (
-      auth.status === 'authenticating' || auth.status === 'loadingUser' ||
+      auth.status === 'authenticating' || profileDetails.status === 'loading' ||
       users.status === 'loading'
     ) {
       openBackdrop();
@@ -127,7 +232,7 @@ const UserListPage = () => {
     return () => { }
 
   }, [
-    auth.token, auth.user, auth.status, users.status
+    auth.token, profileDetails.status, auth.status, users.status
   ]);
 
   useEffect(() => {
@@ -190,7 +295,7 @@ const UserListPage = () => {
               rowsPerPageOptions={[users.limit]}
               page={page}
               onPageChange={handlePageChange}
-              onRowClick={(row) => navigate(`/users/${row.id}`)}
+              disableSelectionOnClick
               getRowId={(row) => row._id}
               loading={users.status === 'loading'}
             />
