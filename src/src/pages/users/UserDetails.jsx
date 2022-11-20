@@ -5,15 +5,14 @@ import { tokens } from "../../theme";
 import Backdrop from '@mui/material/Backdrop';
 import Button from "@mui/material/Button";
 import CircularProgress from '@mui/material/CircularProgress';
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import Switch from "@mui/material/Switch";
+import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import {
     getUserDetailsAction,
 } from '../../redux/actions';
 import PageHOC from "../../helpers/PageHOC";
 import { toDateTimeString } from '../../utils/dateUtils';
-import Avatar from "../../components/global/Avatar";
 import CircleAvatar from "../../components/global/CircleAvatar";
 
 const UserDetailsPage = () => {
@@ -216,7 +215,7 @@ const UserDetailsPage = () => {
                                     variant="h5"
                                     fontWeight="600"
                                 >
-                                    Last Name
+                                    Username
                                 </Typography>
 
                                 <Typography color={colors.grey[200]}
@@ -244,7 +243,7 @@ const UserDetailsPage = () => {
                                     variant="h5"
                                     fontWeight="600"
                                 >
-                                    Last Name
+                                    Email
                                 </Typography>
 
                                 <Typography color={colors.grey[200]}
@@ -255,6 +254,204 @@ const UserDetailsPage = () => {
                             </Box>
 
                             {/* Email End */}
+
+                            {/* Phone Start */}
+
+                            {
+                                userDetails.user?.phone ?
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="flex-start"
+                                        justifyContent="stretch"
+                                        borderBottom={`2px solid ${colors.background}`}
+                                        colors={colors.grey[100]}
+                                        p="15px"
+                                    >
+                                        <Typography
+                                            color={colors.grey[100]}
+                                            variant="h5"
+                                            fontWeight="600"
+                                        >
+                                            Phone
+                                        </Typography>
+
+                                        <Typography color={colors.grey[200]}
+                                            variant="subtitle1"
+                                        >
+                                            {userDetails.user?.countryCode} {userDetails.user?.phone}
+                                        </Typography>
+                                    </Box>
+                                    :
+                                    null
+                            }
+
+                            {/* Phone End */}
+
+                            {/* Gender Start */}
+
+                            {
+                                userDetails.user?.gender ?
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="flex-start"
+                                        justifyContent="stretch"
+                                        borderBottom={`2px solid ${colors.background}`}
+                                        colors={colors.grey[100]}
+                                        p="15px"
+                                    >
+                                        <Typography
+                                            color={colors.grey[100]}
+                                            variant="h5"
+                                            fontWeight="600"
+                                        >
+                                            Gender
+                                        </Typography>
+
+                                        <Typography color={colors.grey[200]}
+                                            variant="subtitle1"
+                                        >
+                                            {userDetails.user?.gender}
+                                        </Typography>
+                                    </Box>
+                                    :
+                                    null
+                            }
+
+                            {/* Gender End */}
+
+                            {/* About Start */}
+
+                            {
+                                userDetails.user?.about ?
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="flex-start"
+                                        justifyContent="stretch"
+                                        borderBottom={`2px solid ${colors.background}`}
+                                        colors={colors.grey[100]}
+                                        p="15px"
+                                    >
+                                        <Typography
+                                            color={colors.grey[100]}
+                                            variant="h5"
+                                            fontWeight="600"
+                                        >
+                                            About
+                                        </Typography>
+
+                                        <Typography color={colors.grey[200]}
+                                            variant="subtitle1"
+                                        >
+                                            {userDetails.user?.about}
+                                        </Typography>
+                                    </Box>
+                                    :
+                                    null
+                            }
+
+                            {/* About End */}
+
+                            {/* DOB Start */}
+
+                            {
+                                userDetails.user?.dob ?
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="flex-start"
+                                        justifyContent="stretch"
+                                        borderBottom={`2px solid ${colors.background}`}
+                                        colors={colors.grey[100]}
+                                        p="15px"
+                                    >
+                                        <Typography
+                                            color={colors.grey[100]}
+                                            variant="h5"
+                                            fontWeight="600"
+                                        >
+                                            Date of Birth
+                                        </Typography>
+
+                                        <Typography color={colors.grey[200]}
+                                            variant="subtitle1"
+                                        >
+                                            {userDetails.user?.dob}
+                                        </Typography>
+                                    </Box>
+                                    :
+                                    null
+                            }
+
+                            {/* DOB End */}
+
+                            {/* Profession Start */}
+
+                            {
+                                userDetails.user?.profession ?
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="flex-start"
+                                        justifyContent="stretch"
+                                        borderBottom={`2px solid ${colors.background}`}
+                                        colors={colors.grey[100]}
+                                        p="15px"
+                                    >
+                                        <Typography
+                                            color={colors.grey[100]}
+                                            variant="h5"
+                                            fontWeight="600"
+                                        >
+                                            Profession
+                                        </Typography>
+
+                                        <Typography color={colors.grey[200]}
+                                            variant="subtitle1"
+                                        >
+                                            {userDetails.user?.profession}
+                                        </Typography>
+                                    </Box>
+                                    :
+                                    null
+                            }
+
+                            {/* Profession End */}
+
+                            {/* Website Start */}
+
+                            {
+                                userDetails.user?.website ?
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="flex-start"
+                                        justifyContent="stretch"
+                                        borderBottom={`2px solid ${colors.background}`}
+                                        colors={colors.grey[100]}
+                                        p="15px"
+                                    >
+                                        <Typography
+                                            color={colors.grey[100]}
+                                            variant="h5"
+                                            fontWeight="600"
+                                        >
+                                            Website
+                                        </Typography>
+
+                                        <Typography color={colors.grey[200]}
+                                            variant="subtitle1"
+                                        >
+                                            {userDetails.user?.website}
+                                        </Typography>
+                                    </Box>
+                                    :
+                                    null
+                            }
+
+                            {/* Website End */}
 
                             {/* Posts Count Start */}
 
@@ -284,6 +481,62 @@ const UserDetailsPage = () => {
 
                             {/* Posts Count End */}
 
+                            {/* Followers Count Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Followers
+                                </Typography>
+
+                                <Typography color={colors.grey[200]}
+                                    variant="subtitle1"
+                                >
+                                    {userDetails.user?.followersCount}
+                                </Typography>
+                            </Box>
+
+                            {/* Followers Count End */}
+
+                            {/* Following Count Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Following
+                                </Typography>
+
+                                <Typography color={colors.grey[200]}
+                                    variant="subtitle1"
+                                >
+                                    {userDetails.user?.followingCount}
+                                </Typography>
+                            </Box>
+
+                            {/* Following Count End */}
+
                             {/* User Status Start */}
 
                             <Box
@@ -311,6 +564,184 @@ const UserDetailsPage = () => {
                             </Box>
 
                             {/* User Status End */}
+
+                            {/* User Role Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Role
+                                </Typography>
+
+                                <Typography color={colors.grey[200]}
+                                    variant="subtitle1"
+                                >
+                                    {userDetails.user?.role}
+                                </Typography>
+                            </Box>
+
+                            {/* User Role End */}
+
+                            {/* Privacy Status Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Private Account
+                                </Typography>
+
+                                <Switch
+                                    color="secondary"
+                                    checked={userDetails.user?.isPrivate}
+                                //onChange={handleValidChange}
+                                />
+                            </Box>
+
+                            {/* Privacy Status End */}
+
+                            {/* Valid Status Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Valid
+                                </Typography>
+
+                                <Switch
+                                    color="secondary"
+                                    checked={userDetails.user?.isValid}
+                                //onChange={handleValidChange}
+                                />
+                            </Box>
+
+                            {/* Valid Status End */}
+
+                            {/* Verified Status Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Verified
+                                </Typography>
+
+                                <Switch
+                                    color="secondary"
+                                    checked={userDetails.user?.isVerified}
+                                //onChange={handleValidChange}
+                                />
+                            </Box>
+
+                            {/* Verified Status End */}
+
+                            {/* Delete Status Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Account Deleted
+                                </Typography>
+
+                                <Switch
+                                    color="secondary"
+                                    checked={userDetails.user?.isDeleted}
+                                //onChange={handleValidChange}
+                                />
+                            </Box>
+
+                            {/* Delete Status End */}
+
+                            {/* Deleted At Start */}
+
+                            {
+                                userDetails.user?.isDeleted ? (
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="flex-start"
+                                        justifyContent="stretch"
+                                        borderBottom={`2px solid ${colors.background}`}
+                                        colors={colors.grey[100]}
+                                        p="15px"
+                                    >
+                                        <Typography
+                                            color={colors.grey[100]}
+                                            variant="h5"
+                                            fontWeight="600"
+                                        >
+                                            Deleted At
+                                        </Typography>
+
+                                        <Typography color={colors.grey[200]}
+                                            variant="subtitle1"
+                                        >
+                                            {
+                                                userDetails.user?.deletedAt ?
+                                                    toDateTimeString(userDetails.user.deletedAt, { showSeconds: true })
+                                                    : null
+                                            }
+                                        </Typography>
+                                    </Box>
+                                )
+                                    :
+                                    null
+                            }
+
+                            {/* Deleted At End */}
 
                             {/* User Created At Start */}
 
@@ -383,7 +814,6 @@ const UserDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -400,14 +830,14 @@ const UserDetailsPage = () => {
                                         alignItems="center"
                                         justifyContent="flex-end"
                                     >
-                                        <Button
+                                        {/* <Button
                                             variant="contained"
                                             onClick={() => {
                                                 navigate(`/posts/${userDetails.user?._id}/edit`)
                                             }}
                                         >
                                             Edit
-                                        </Button>
+                                        </Button> */}
 
                                         <Button
                                             variant="contained"

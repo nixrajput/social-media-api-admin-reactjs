@@ -4,6 +4,8 @@ import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ColorModeContext, tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
@@ -22,6 +24,17 @@ const Topbar = () => {
   const dispatch = useDispatch();
 
   const [scrolled, setScrolled] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const open = Boolean(anchorEl);
+
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   const logoutUser = async () => {
     const logoutPromise = logoutAction(dispatch);
@@ -127,9 +140,47 @@ const Topbar = () => {
 
         {
           auth.status === 'authenticated' ?
-            <IconButton onClick={logoutUser}>
-              <PersonOutlinedIcon />
-            </IconButton>
+            <>
+              <IconButton
+                id="user-button"
+                aria-controls={open ? 'user-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleOpenMenu}
+              >
+                <PersonOutlinedIcon />
+              </IconButton>
+              <Menu
+                id="user-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleCloseMenu}
+                MenuListProps={{
+                  'aria-labelledby': 'user-button',
+                }}
+              >
+                <MenuItem
+                  onClick={handleCloseMenu}
+                >
+                  Profile
+                </MenuItem>
+
+                <MenuItem
+                  onClick={handleCloseMenu}
+                >
+                  My account
+                </MenuItem>
+
+                <MenuItem
+                  onClick={() => {
+                    handleCloseMenu();
+                    logoutUser();
+                  }}
+                >
+                  Logout
+                </MenuItem>
+              </Menu>
+            </>
             :
             null
         }

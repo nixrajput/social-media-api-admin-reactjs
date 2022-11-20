@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Sidebar as ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -17,6 +17,12 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
+import TokenOutlinedIcon from '@mui/icons-material/TokenOutlined';
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
+import DevicesOutlinedIcon from '@mui/icons-material/DevicesOutlined';
+import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import CircleAvatar from "./CircleAvatar";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -44,6 +50,8 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const location = useLocation();
 
   // const auth = useSelector((state) => state.auth);
   const profileDetails = useSelector((state) => state.profileDetails);
@@ -74,7 +82,83 @@ const Sidebar = () => {
       window.removeEventListener("load", () => { });
       window.removeEventListener("resize", () => { });
     }
-  }, []);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (location.pathname === "/dashboard" || location.pathname === "/") {
+      setSelected("Dashboard");
+    }
+
+    if (location.pathname === "/users" || location.pathname.includes("/users/")) {
+      setSelected("Users");
+    }
+
+    if (location.pathname === "/posts" || location.pathname.includes("/posts/")) {
+      setSelected("Posts");
+    }
+
+    if (location.pathname === "/comments" || location.pathname.includes("/comments/")) {
+      setSelected("Comments");
+    }
+
+    if (location.pathname === "/notifications" || location.pathname.includes("/notifications/")) {
+      setSelected("Notifications");
+    }
+
+    if (location.pathname === "/fcm-tokens" || location.pathname.includes("/fcm-tokens/")) {
+      setSelected("FCM Tokens");
+    }
+
+    if (location.pathname === "/auth-tokens" || location.pathname.includes("/auth-tokens/")) {
+      setSelected("Auth Tokens");
+    }
+
+    if (location.pathname === "/auth-tokens" || location.pathname.includes("/auth-tokens/")) {
+      setSelected("Auth Tokens");
+    }
+
+    if (location.pathname === "/login-info" || location.pathname.includes("/login-info/")) {
+      setSelected("Login Info");
+    }
+
+    if (location.pathname === "/requests/bluetick" || location.pathname.includes("/requests/bluetick")) {
+      setSelected("Blue Tick Requests");
+    }
+
+    if (location.pathname === "/reports/users" || location.pathname.includes("/reports/users/")) {
+      setSelected("User Reports");
+    }
+
+    if (location.pathname === "/reports/posts" || location.pathname.includes("/reports/posts/")) {
+      setSelected("Post Reports");
+    }
+
+    if (location.pathname === "/reports/comments" || location.pathname.includes("/reports/comments/")) {
+      setSelected("Comment Reports");
+    }
+
+    if (location.pathname === "/reports/feedbacks" || location.pathname.includes("/reports/feedbacks/")) {
+      setSelected("Feedback Reports");
+    }
+
+    if (location.pathname === "/analytics/users" || location.pathname.includes("/analytics/users/")) {
+      setSelected("User Analytics");
+    }
+
+    if (location.pathname === "/analytics/posts" || location.pathname.includes("/analytics/posts/")) {
+      setSelected("Post Analytics");
+    }
+
+    if (location.pathname === "/analytics/comments" || location.pathname.includes("/analytics/comments/")) {
+      setSelected("Comment Analytics");
+    }
+
+    if (location.pathname === "/analytics/feedbacks" || location.pathname.includes("/analytics/feedbacks/")) {
+      setSelected("Feedback Analytics");
+    }
+
+    return () => { }
+  }, [location.pathname]);
 
   return (
     <Box
@@ -136,6 +220,8 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
+            {/* Data */}
+
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -143,88 +229,160 @@ const Sidebar = () => {
             >
               Data
             </Typography>
+
             <Item
-              title="Manage Users"
+              title="Users"
               to="/users"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
             <Item
-              title="Manage Posts"
+              title="Posts"
               to="/posts"
               icon={<ListAltOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
             <Item
-              title="Manage Comments"
+              title="Comments"
               to="/comments"
               icon={<CommentIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Pages
-            </Typography>
             <Item
-              title="Profile Form"
-              to="/form"
-              icon={<PersonOutlinedIcon />}
+              title="Notifications"
+              to="/notifications"
+              icon={<NotificationsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
             <Item
-              title="Calendar"
-              to="/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
+              title="FCM Tokens"
+              to="/fcm-tokens"
+              icon={<TokenOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
             <Item
-              title="FAQ Page"
-              to="/faq"
-              icon={<HelpOutlineOutlinedIcon />}
+              title="Auth Tokens"
+              to="/auth-tokens"
+              icon={<VpnKeyOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
+            <Item
+              title="Login Info"
+              to="/login-info"
+              icon={<DevicesOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            {/* Requests */}
 
             <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Charts
+              Requests
             </Typography>
+
             <Item
-              title="Bar Chart"
-              to="/bar"
+              title="Blue Tick Requests"
+              to="/requests/bluetick"
+              icon={<VerifiedOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            {/* Reports */}
+
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Reports
+            </Typography>
+
+            <Item
+              title="User Reports"
+              to="/reports/users"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title="Post Reports"
+              to="/reports/posts"
+              icon={<CalendarTodayOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title="Comment Reports"
+              to="/reports/comments"
+              icon={<CommentOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title="Feedback Reports"
+              to="/reports/feedbacks"
+              icon={<HelpOutlineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            {/* Analytics */}
+
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Analytics
+            </Typography>
+
+            <Item
+              title="User Analytics"
+              to="/analytics/users"
               icon={<BarChartOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
             <Item
-              title="Pie Chart"
-              to="/pie"
+              title="Post Analytics"
+              to="/analytics/posts"
               icon={<PieChartOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
             <Item
-              title="Line Chart"
-              to="/line"
+              title="Comment Analytics"
+              to="/analytics/comments"
               icon={<TimelineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
             <Item
-              title="Geography Chart"
-              to="/geography"
+              title="Feedback Analytics"
+              to="/analytics/feedbacks"
               icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

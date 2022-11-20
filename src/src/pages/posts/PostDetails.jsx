@@ -7,8 +7,8 @@ import Backdrop from '@mui/material/Backdrop';
 import Button from "@mui/material/Button";
 import CircularProgress from '@mui/material/CircularProgress';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import Switch from "@mui/material/Switch";
+import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import CircleAvatar from '../../components/global/CircleAvatar';
 import {
@@ -341,7 +341,7 @@ const PostDetailsPage = () => {
 
                             {/* Post Type End */}
 
-                            {/* Post Likes Count Start */}
+                            {/* Likes Count Start */}
 
                             <Box
                                 display="flex"
@@ -367,9 +367,9 @@ const PostDetailsPage = () => {
                                 </Typography>
                             </Box>
 
-                            {/* Post Likes Count End */}
+                            {/* Likes Count End */}
 
-                            {/* Post Comments Count Start */}
+                            {/* Comments Count Start */}
 
                             <Box
                                 display="flex"
@@ -395,9 +395,9 @@ const PostDetailsPage = () => {
                                 </Typography>
                             </Box>
 
-                            {/* Post Comments Count End */}
+                            {/* Comments Count End */}
 
-                            {/* Post Visibility Start */}
+                            {/* Visibility Start */}
 
                             <Box
                                 display="flex"
@@ -423,7 +423,7 @@ const PostDetailsPage = () => {
                                 </Typography>
                             </Box>
 
-                            {/* Post Visibility End */}
+                            {/* Visibility End */}
 
                             {/* Post Status Start */}
 
@@ -452,6 +452,147 @@ const PostDetailsPage = () => {
                             </Box>
 
                             {/* Post Status End */}
+
+                            {/* Comments Allowed Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Comments Allowed
+                                </Typography>
+
+                                <Switch
+                                    color="secondary"
+                                    checked={postDetails.post?.allowComments}
+                                //onChange={handleValidChange}
+                                />
+                            </Box>
+
+                            {/* Comments Allowed End */}
+
+                            {/* Likes Allowed Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Likes Allowed
+                                </Typography>
+
+                                <Switch
+                                    color="secondary"
+                                    checked={postDetails.post?.allowLikes}
+                                //onChange={handleValidChange}
+                                />
+                            </Box>
+
+                            {/* Likes Allowed End */}
+
+                            {/* Share Allowed Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Share Allowed
+                                </Typography>
+
+                                <Switch
+                                    color="secondary"
+                                    checked={postDetails.post?.allowShare}
+                                //onChange={handleValidChange}
+                                />
+                            </Box>
+
+                            {/* Share Allowed End */}
+
+                            {/* Save Allowed Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Save Allowed
+                                </Typography>
+
+                                <Switch
+                                    color="secondary"
+                                    checked={postDetails.post?.allowSave}
+                                //onChange={handleValidChange}
+                                />
+                            </Box>
+
+                            {/* Save Allowed End */}
+
+                            {/* Download Allowed Start */}
+
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="stretch"
+                                borderBottom={`2px solid ${colors.background}`}
+                                colors={colors.grey[100]}
+                                p="15px"
+                            >
+
+                                <Typography
+                                    color={colors.grey[100]}
+                                    variant="h5"
+                                    fontWeight="600"
+                                >
+                                    Download Allowed
+                                </Typography>
+
+                                <Switch
+                                    color="secondary"
+                                    checked={postDetails.post?.allowDownload}
+                                //onChange={handleValidChange}
+                                />
+                            </Box>
+
+                            {/* Download Allowed End */}
 
                             {/* Post Created At Start */}
 
@@ -524,7 +665,6 @@ const PostDetailsPage = () => {
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
                                 colors={colors.grey[100]}
                                 p="15px"
                             >
@@ -541,14 +681,14 @@ const PostDetailsPage = () => {
                                         alignItems="center"
                                         justifyContent="flex-end"
                                     >
-                                        <Button
+                                        {/* <Button
                                             variant="contained"
                                             onClick={() => {
                                                 navigate(`/posts/${postDetails.post.id}/edit`)
                                             }}
                                         >
                                             Edit
-                                        </Button>
+                                        </Button> */}
 
                                         <Button
                                             variant="contained"
