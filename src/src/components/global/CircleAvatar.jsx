@@ -2,6 +2,7 @@ import React from 'react'
 
 const CircleAvatar = ({ avatar, size = '40px', fit = 'cover' }) => {
     const style = {
+        position: "relative",
         width: size,
         height: size,
         borderRadius: '50%',

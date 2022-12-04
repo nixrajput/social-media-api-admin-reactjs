@@ -26,9 +26,16 @@ const authSlice = createSlice({
         unauthenticated: (state, action) => {
             state.token = null;
             state.expiresAt = null;
+            state.error = action.payload;
+            state.status = 'unauthenticated';
+        },
+
+        clearAuth: (state, action) => {
+            state.token = null;
+            state.expiresAt = null;
             state.error = null;
             storage.remove('auth');
-            state.status = 'unauthenticated';
+            state.status = 'idle';
         },
 
         setError: (state, action) => {
@@ -64,6 +71,11 @@ const authSlice = createSlice({
         success: (state, action) => {
             state.status = 'success';
         },
+
+        clearError: (state, action) => {
+            state.error = null;
+            state.status = 'noError';
+        },
     }
 });
 
@@ -72,12 +84,14 @@ export const {
     authenticated,
     unauthenticated,
     logout,
+    clearAuth,
     setError,
     sendingEmail,
     emailSent,
     resetPassword,
     passwordReset,
     success,
+    clearError,
 } = authSlice.actions;
 
 export default authSlice;

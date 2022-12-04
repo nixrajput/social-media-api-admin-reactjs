@@ -3,13 +3,13 @@ import { Box, IconButton, useTheme } from "@mui/material";
 import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ColorModeContext, tokens } from "../../theme";
+import { useNavigate } from "react-router-dom";
 import InputBase from "@mui/material/InputBase";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { logoutAction } from '../../redux/actions';
@@ -22,6 +22,7 @@ const Topbar = () => {
   const auth = useSelector((state) => state.auth);
   // const profileDetails = useSelector((state) => state.profileDetails);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [scrolled, setScrolled] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -131,15 +132,6 @@ const Topbar = () => {
 
         {
           auth.status === 'authenticated' ?
-            <IconButton>
-              <SettingsOutlinedIcon />
-            </IconButton>
-            :
-            null
-        }
-
-        {
-          auth.status === 'authenticated' ?
             <>
               <IconButton
                 id="user-button"
@@ -160,7 +152,10 @@ const Topbar = () => {
                 }}
               >
                 <MenuItem
-                  onClick={handleCloseMenu}
+                  onClick={() => {
+                    handleCloseMenu();
+                    navigate('/profile');
+                  }}
                 >
                   Profile
                 </MenuItem>
@@ -168,7 +163,7 @@ const Topbar = () => {
                 <MenuItem
                   onClick={handleCloseMenu}
                 >
-                  My account
+                  Settings
                 </MenuItem>
 
                 <MenuItem

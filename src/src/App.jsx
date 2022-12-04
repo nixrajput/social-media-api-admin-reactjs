@@ -26,6 +26,7 @@ const UserListPage = lazy(() => import('./pages/users/Index'));
 const UserDetailsPage = lazy(() => import('./pages/users/UserDetails'));
 const PostListPage = lazy(() => import('./pages/posts/Index'));
 const PostDetailsPage = lazy(() => import('./pages/posts/PostDetails'));
+const ProfilePage = lazy(() => import('./pages/profile/Index'));
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -105,6 +106,8 @@ function App() {
                     <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
                     <Route path="/" element={<AdminRoute> <DashboardPage /> </AdminRoute>} />
+
+                    <Route path="/profile" element={<AdminRoute> <ProfilePage /> </AdminRoute>} />
 
                     <Route path="/users" element={<AdminRoute> <UserListPage /> </AdminRoute>} />
                     <Route path="/users/:id" element={<AdminRoute> <UserDetailsPage /> </AdminRoute>} />

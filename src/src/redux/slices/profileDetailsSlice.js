@@ -42,12 +42,13 @@ const profileDetailsSlice = createSlice({
 
         clearError: (state, action) => {
             state.error = null;
-            state.status = 'idle';
+            state.status = 'noError';
         },
 
         clearProfileDetails: (state, action) => {
             state.user = null;
             state.error = null;
+            storage.remove('user');
             state.status = 'idle';
         },
 

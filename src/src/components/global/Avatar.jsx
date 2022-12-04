@@ -2,6 +2,7 @@ import React from 'react'
 
 const Avatar = ({ avatar, width = "40px", height = '40px', fit = 'cover' }) => {
     const style = {
+        position: "relative",
         width: width,
         height: height,
         objectFit: fit,

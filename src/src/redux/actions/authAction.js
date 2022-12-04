@@ -2,16 +2,31 @@ import apiClient from "../../api/apiClient";
 import {
     authenticating, authenticated, unauthenticated,
     sendingEmail, emailSent, resetPassword, passwordReset,
-    setError
+    setError, clearAuth, clearError
 } from '../slices/authSlice';
 import { clearProfileDetails } from '../slices/profileDetailsSlice';
 import ApiUrls from "../../constants/urls";
 import storage from "../../utils/storage";
 
 export const loginAction = async (dispatch, emailUname, password) => {
+    if (!dispatch) {
+        console.log("dispatch is null");
+        return;
+    }
+
+    if (!emailUname) {
+        dispatch(setError("Email or Username is required"));
+        return;
+    }
+
+    if (!password) {
+        dispatch(setError("Password is required"));
+        return;
+    }
+
     const body = {
-        "emailUname": emailUname.trim(),
-        "password": password.trim(),
+        "emailUname": emailUname,
+        "password": password,
     };
 
     dispatch(authenticating());
@@ -40,8 +55,13 @@ export const forgotPasswordAction = async (dispatch, email) => {
         return;
     }
 
+    if (!email) {
+        dispatch(setError("Email is required"));
+        return;
+    }
+
     const body = {
-        "email": email.trim(),
+        "email": email,
     };
 
     dispatch(sendingEmail());
@@ -66,10 +86,30 @@ export const resetPasswordAction = async (dispatch, otp, password, confirmPasswo
         return;
     }
 
+    if (!otp) {
+        dispatch(setError("OTP is required"));
+        return;
+    }
+
+    if (!password) {
+        dispatch(setError("Password is required"));
+        return;
+    }
+
+    if (!confirmPassword) {
+        dispatch(setError("Confirm Password is required"));
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        dispatch(setError("Passwords do not match"));
+        return;
+    }
+
     const body = {
-        "otp": otp.trim(),
-        "newPassword": password.trim(),
-        "confirmPassword": confirmPassword.trim(),
+        "otp": otp,
+        "newPassword": password,
+        "confirmPassword": confirmPassword,
     };
 
     dispatch(resetPassword());
@@ -97,7 +137,7 @@ export const loadAuthDetailsAction = async (dispatch) => {
     dispatch(authenticating());
     const data = storage.get('auth');
     if (!data || !data.token) {
-        dispatch(unauthenticated());
+        dispatch(unauthenticated('No token found'));
     }
     else {
         dispatch(authenticated(data));
@@ -111,5 +151,14 @@ export const logoutAction = async (dispatch) => {
     }
 
     dispatch(clearProfileDetails());
-    dispatch(unauthenticated());
+    dispatch(clearAuth());
+}
+
+export const clearAuthErrorAction = async (dispatch) => {
+    if (!dispatch) {
+        console.log("dispatch is null");
+        return;
+    }
+
+    dispatch(clearError());
 }

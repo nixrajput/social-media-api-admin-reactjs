@@ -6,6 +6,7 @@ import {
     getProfileDetails,
     getProfileDetailsSuccess,
     getProfileDetailsError,
+    clearError
 } from '../slices/profileDetailsSlice';
 import ApiUrls from "../../constants/urls";
 import storage from "../../utils/storage";
@@ -38,7 +39,7 @@ export const getProfileDetailsAction = async (dispatch, token) => {
     }
 
     if (!token) {
-        console.log('No token found');
+        dispatch(getProfileDetailsError("Token is required"));
         return;
     }
 
@@ -55,4 +56,13 @@ export const getProfileDetailsAction = async (dispatch, token) => {
     } catch (error) {
         dispatch(getProfileDetailsError(error));
     }
+}
+
+export const clearProfileErrorAction = async (dispatch) => {
+    if (!dispatch) {
+        console.log("dispatch is null");
+        return;
+    }
+
+    dispatch(clearError());
 }

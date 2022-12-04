@@ -8,7 +8,9 @@ import { useSnackbar } from 'notistack';
 import CircularProgress from '@mui/material/CircularProgress';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { resetPasswordAction } from '../../../redux/actions';
+import {
+    resetPasswordAction, clearAuthErrorAction
+} from '../../../redux/actions';
 import Topbar from "../../../components/global/Topbar";
 
 const ResetPasswordPage = () => {
@@ -37,31 +39,36 @@ const ResetPasswordPage = () => {
         setOpen(true);
     };
 
-    const onClickBtnEvent = (e) => async (dispatch) => {
+    const onClickBtnEvent = async (e) => {
         e.preventDefault();
 
-        openBackdrop();
-
-        await resetPasswordAction(dispatch, otp, password, confirmPassword);
-
-        closeBackdrop();
-
-        if (auth.status === 'passwordReset') {
-            navigate('/auth/login', { replace: true });
-        }
+        const resetPasswordPromise = resetPasswordAction(dispatch, otp.trim(), password.trim(), confirmPassword.trim());
+        await resetPasswordPromise;
     }
 
     useEffect(() => {
         document.title = "Reset Password | Dashboard";
 
-        const returnUrl = location.state?.from?.pathname || '/';
+        if (auth.status === 'passwordReset') {
+            enqueueSnackbar('Password reset successfully', { variant: 'success' });
+            navigate('/auth/login', { replace: true });
+        }
 
-        if (auth.token && auth.status === 'authenticated') {
+        if (auth.status === 'authenticated' && auth.token) {
+            const returnUrl = location.state?.from?.pathname || '/';
             navigate(returnUrl, { replace: true });
+        }
+
+        if (auth.status === 'authenticating' || auth.status === 'resetPassword') {
+            openBackdrop();
+        }
+        else {
+            closeBackdrop();
         }
 
         if (auth.status === 'error') {
             enqueueSnackbar(auth.error, { variant: 'error' });
+            clearAuthErrorAction(dispatch);
         }
 
         return () => { }
@@ -69,7 +76,7 @@ const ResetPasswordPage = () => {
     }, [
         auth.token, navigate, auth.status,
         location.state?.from?.pathname,
-        enqueueSnackbar, auth.error
+        enqueueSnackbar, auth.error, dispatch
     ]);
 
     return (

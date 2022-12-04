@@ -9,7 +9,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useSnackbar } from 'notistack';
 import {
-    loginAction, getProfileDetailsAction
+    loginAction, getProfileDetailsAction,
+    clearAuthErrorAction, clearProfileErrorAction,
 } from '../../../redux/actions';
 import Topbar from "../../../components/global/Topbar";
 
@@ -38,21 +39,20 @@ const LoginPage = () => {
         setOpen(true);
     };
 
-    const onClickLoginEvent = (e) => async (dispatch) => {
+    const onClickLoginEvent = async (e) => {
         e.preventDefault();
 
-        openBackdrop();
+        const loginPromise = loginAction(dispatch, emailUsername.trim(), password.trim());
+        await loginPromise;
 
-        await loginAction(dispatch, emailUsername, password);
-
-        if (auth.token && auth.status === 'authenticated') {
-            await getProfileDetailsAction(dispatch, auth.token);
+        if (auth.status === 'authenticated' && auth.token) {
+            const getProfileDetailsPromise = getProfileDetailsAction(dispatch, auth.token);
+            await getProfileDetailsPromise;
             if (profileDetails.status === 'success' && profileDetails.user) {
                 const returnUrl = location.state?.from?.pathname || '/';
                 navigate(returnUrl, { replace: true });
             }
         }
-        closeBackdrop();
     }
 
     useEffect(() => {
@@ -60,7 +60,9 @@ const LoginPage = () => {
 
         const returnUrl = location.state?.from?.pathname || '/';
 
-        if (auth.token && profileDetails.status === 'success' && profileDetails.user) {
+        if (auth.status === 'authenticated' && auth.token &&
+            profileDetails.status === 'success' && profileDetails.user) {
+            enqueueSnackbar('Login successful', { variant: 'success' });
             navigate(returnUrl, { replace: true });
         }
 
@@ -73,10 +75,12 @@ const LoginPage = () => {
 
         if (auth.status === 'error') {
             enqueueSnackbar(auth.error, { variant: 'error' });
+            clearAuthErrorAction(dispatch);
         }
 
         if (profileDetails.status === 'error') {
             enqueueSnackbar(profileDetails.error, { variant: 'error' });
+            clearProfileErrorAction(dispatch);
         }
 
         return () => { }
@@ -84,7 +88,8 @@ const LoginPage = () => {
     }, [
         auth.token, navigate, auth.status, profileDetails.status,
         profileDetails.user, location.state?.from?.pathname,
-        enqueueSnackbar, auth.error, profileDetails.error
+        enqueueSnackbar, auth.error, profileDetails.error,
+        dispatch
     ]);
 
     return (
@@ -134,7 +139,7 @@ const LoginPage = () => {
                 overflow="hidden"
                 transition="all 0.3s ease"
             >
-                <form onSubmit={(e) => dispatch(onClickLoginEvent(e))}
+                <form onSubmit={(e) => onClickLoginEvent(e)}
                     style={{
                         width: '100%',
                         maxWidth: '600px'
@@ -225,7 +230,7 @@ const LoginPage = () => {
                 </form>
             </Box>
 
-        </Box >
+        </Box>
     )
 }
 

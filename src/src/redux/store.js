@@ -6,6 +6,7 @@ import rootReducer from './rootReducer';
 function configureReduxStore(preloadedState) {
     const store = configureStore({
         reducer: rootReducer,
+        devTools: process.env.NODE_ENV !== 'production',
         middleware: (getDefaultMiddleware) =>
             getDefaultMiddleware().concat(logger),
         preloadedState,

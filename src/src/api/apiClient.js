@@ -1,4 +1,5 @@
 import ApiUrls from '../constants/urls';
+import axios from 'axios';
 
 async function apiClient(endpoint, method, { body, ...options } = {}) {
     const headers = { 'Content-Type': 'application/json' };
@@ -13,28 +14,32 @@ async function apiClient(endpoint, method, { body, ...options } = {}) {
     }
 
     if (body) {
-        config.body = JSON.stringify(body);
+        config.data = JSON.stringify(body);
     }
 
     let baseUrl = ApiUrls.baseUrl;
 
-    let data;
-
     try {
-        const response = await fetch(`${baseUrl}${endpoint}`, config);
-        data = await response.json();
+        const response = await axios(`${baseUrl}${endpoint}`, config);
+        let data = response.data;
         data.status = response.status;
-        console.log('apiClientData:', data);
+        if (process.env.NODE_ENV !== 'production') {
+            console.table({
+                endpoint,
+                status: response.status,
+                data: data,
+            });
+        }
         if (response.status === 200 || response.status === 201) {
             return data;
         }
         else {
-            throw new Error(data.message);
+            throw new Error(data.message || 'Something went wrong');
         }
     }
     catch (error) {
         console.log('apiClientError:', error);
-        return Promise.reject(error.message ? error.message : data.message);
+        return Promise.reject(error.response.data.message || error.message);
     }
 }
 

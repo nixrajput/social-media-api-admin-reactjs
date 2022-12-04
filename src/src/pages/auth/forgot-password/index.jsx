@@ -6,7 +6,9 @@ import { tokens } from "../../../theme";
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { forgotPasswordAction } from '../../../redux/actions';
+import {
+    forgotPasswordAction, clearAuthErrorAction
+} from '../../../redux/actions';
 import Topbar from "../../../components/global/Topbar";
 
 const ForgotPasswordPage = () => {
@@ -31,31 +33,36 @@ const ForgotPasswordPage = () => {
         setOpen(true);
     };
 
-    const onClickBtnEvent = (e) => async (dispatch) => {
+    const onClickBtnEvent = async (e) => {
         e.preventDefault();
 
-        openBackdrop();
-
-        await forgotPasswordAction(dispatch, email);
-
-        closeBackdrop();
-
-        if (auth.status === 'emailSent') {
-            navigate('/auth/reset-password', { replace: true });
-        }
+        const forgotPasswordPromise = forgotPasswordAction(dispatch, email.trim());
+        await forgotPasswordPromise;
     }
 
     useEffect(() => {
         document.title = "Forgot Password | Dashboard";
 
-        const returnUrl = location.state?.from?.pathname || '/';
+        if (auth.status === 'emailSent') {
+            enqueueSnackbar('OTP sent successfully', { variant: 'success' });
+            navigate('/auth/reset-password', { replace: true });
+        }
 
-        if (auth.token && auth.status === 'authenticated') {
+        if (auth.status === 'authenticated' && auth.token) {
+            const returnUrl = location.state?.from?.pathname || '/';
             navigate(returnUrl, { replace: true });
+        }
+
+        if (auth.status === 'authenticating' || auth.status === 'sendingEmail') {
+            openBackdrop();
+        }
+        else {
+            closeBackdrop();
         }
 
         if (auth.status === 'error') {
             enqueueSnackbar(auth.error, { variant: 'error' });
+            clearAuthErrorAction(dispatch);
         }
 
         return () => { }
@@ -63,7 +70,7 @@ const ForgotPasswordPage = () => {
     }, [
         auth.token, navigate, auth.status,
         location.state?.from?.pathname,
-        enqueueSnackbar, auth.error
+        enqueueSnackbar, auth.error, dispatch
     ]);
 
     return (
