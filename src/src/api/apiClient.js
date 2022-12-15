@@ -17,7 +17,7 @@ async function apiClient(endpoint, method, { body, ...options } = {}) {
         config.data = JSON.stringify(body);
     }
 
-    let baseUrl = ApiUrls.baseUrl;
+    let baseUrl = ApiUrls.devBaseUrl;
 
     try {
         const response = await axios(`${baseUrl}${endpoint}`, config);

@@ -27,6 +27,7 @@ const UserDetailsPage = lazy(() => import('./pages/users/UserDetails'));
 const PostListPage = lazy(() => import('./pages/posts/Index'));
 const PostDetailsPage = lazy(() => import('./pages/posts/PostDetails'));
 const ProfilePage = lazy(() => import('./pages/profile/Index'));
+const BlueTickRequestsListPage = lazy(() => import('./pages/blue-tick-requests/Index'));
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -114,6 +115,8 @@ function App() {
 
                     <Route path="/posts" element={<AdminRoute> <PostListPage /> </AdminRoute>} />
                     <Route path="/posts/:id" element={<AdminRoute> <PostDetailsPage /> </AdminRoute>} />
+
+                    <Route path="/blue-tick-requests" element={<AdminRoute> <BlueTickRequestsListPage /> </AdminRoute>} />
 
                     <Route path="*" element={<NotFoundPage />} />
                   </Routes>

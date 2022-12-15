@@ -298,7 +298,7 @@ const Sidebar = () => {
 
             <Item
               title="Blue Tick Requests"
-              to="/requests/bluetick"
+              to="/blue-tick-requests"
               icon={<VerifiedOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

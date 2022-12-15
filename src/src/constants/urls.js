@@ -28,5 +28,7 @@ ApiUrls.getPostDetailsEndpoint = '/admin/get-post-details';
 ApiUrls.updatePostEndpoint = '/admin/update-post';
 ApiUrls.deletePostEndpoint = '/admin/delete-post';
 
+ApiUrls.getBlueTickRequestsEndpoint = '/admin/get-blue-tick-requests';
+
 
 export default ApiUrls;
