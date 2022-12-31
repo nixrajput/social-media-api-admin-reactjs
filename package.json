@@ -5,7 +5,21 @@
   "author": "Nikhil Rajput",
   "license": "GPL-3.0",
   "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "build": "react-scripts build",
+    "dev": "react-scripts start",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
+    "express": "^4.18.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@fullcalendar/core": "^5.11.3",
@@ -25,29 +39,15 @@
     "@reduxjs/toolkit": "^1.8.6",
     "axios": "^1.2.0",
     "chart.js": "^3.9.1",
-    "compression": "^1.7.4",
-    "express": "^4.18.2",
     "formik": "^2.2.9",
-    "helmet": "^6.0.1",
-    "morgan": "^1.10.0",
     "notistack": "^2.0.8",
-    "react": "^18.2.0",
     "react-chartjs-2": "^4.3.1",
-    "react-dom": "^18.2.0",
     "react-material-ui-carousel": "^3.4.2",
     "react-pro-sidebar": "1.0.0-alpha.7",
     "react-redux": "^8.0.4",
     "react-router-dom": "^6.4.3",
-    "react-scripts": "5.0.1",
     "sass": "^1.55.0",
     "yup": "^0.32.11"
-  },
-  "scripts": {
-    "start": "node server.js",
-    "build": "react-scripts build",
-    "dev": "react-scripts start",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [

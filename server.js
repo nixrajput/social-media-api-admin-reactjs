@@ -1,7 +1,5 @@
 const express = require('express');
 const path = require("path");
-const helmet = require("helmet");
-const compression = require("compression");
 const morgan = require("morgan");
 
 const app = express();
