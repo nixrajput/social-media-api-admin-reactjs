@@ -20,7 +20,11 @@ specifiers:
   '@reduxjs/toolkit': ^1.8.6
   axios: ^1.2.0
   chart.js: ^3.9.1
+  compression: ^1.7.4
+  express: ^4.18.2
   formik: ^2.2.9
+  helmet: ^6.0.1
+  morgan: ^1.10.0
   notistack: ^2.0.8
   react: ^18.2.0
   react-chartjs-2: ^4.3.1
@@ -53,7 +57,11 @@ dependencies:
   '@reduxjs/toolkit': 1.9.1_k4ae6lp43ej6mezo3ztvx6pykq
   axios: 1.2.2
   chart.js: 3.9.1
+  compression: 1.7.4
+  express: 4.18.2
   formik: 2.2.9_react@18.2.0
+  helmet: 6.0.1
+  morgan: 1.10.0
   notistack: 2.0.8_je6wcyxzzodpuivmp54wfrprbm
   react: 18.2.0
   react-chartjs-2: 4.3.1_2unjvz6v6rskedwoxtmbfw2rje
@@ -3973,6 +3981,13 @@ packages:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: false
 
+  /basic-auth/2.0.1:
+    resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
+    engines: {node: '>= 0.8'}
+    dependencies:
+      safe-buffer: 5.1.2
+    dev: false
+
   /batch/0.6.1:
     resolution: {integrity: sha512-x+VAiMRL6UPkx+kudNvxTl6hB2XNNCG2r+7wixVfIYwu/2HKRXimwQyaumLjMveWvT2Hkd/cAJw+QBMfJ/EKVw==}
     dev: false
@@ -6137,6 +6152,11 @@ packages:
     hasBin: true
     dev: false
 
+  /helmet/6.0.1:
+    resolution: {integrity: sha512-8wo+VdQhTMVBMCITYZaGTbE4lvlthelPYSvoyNvk4RECTmrVjMerp9RfUOQXZWLvCcAn1pKj7ZRxK4lI9Alrcw==}
+    engines: {node: '>=14.0.0'}
+    dev: false
+
   /hey-listen/1.0.8:
     resolution: {integrity: sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==}
     dev: false
@@ -7597,6 +7617,19 @@ packages:
       minimist: 1.2.7
     dev: false
 
+  /morgan/1.10.0:
+    resolution: {integrity: sha512-AbegBVI4sh6El+1gNwvD5YIck7nSA36weD7xvIxG4in80j/UoK8AEGaWnnz8v1GxonMCltmlNs5ZKbGvl9b1XQ==}
+    engines: {node: '>= 0.8.0'}
+    dependencies:
+      basic-auth: 2.0.1
+      debug: 2.6.9
+      depd: 2.0.0
+      on-finished: 2.3.0
+      on-headers: 1.0.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /ms/2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
     dev: false
@@ -7800,6 +7833,13 @@ packages:
 
   /obuf/1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
+    dev: false
+
+  /on-finished/2.3.0:
+    resolution: {integrity: sha512-ikqdkGAAyf/X/gPhXGvfgAytDZtDbr+bkNUJ0N9h5MI/dmdgCs3l6hoHrcUv41sRKew3jIwrp4qQDXiK99Utww==}
+    engines: {node: '>= 0.8'}
+    dependencies:
+      ee-first: 1.1.1
     dev: false
 
   /on-finished/2.4.1:
