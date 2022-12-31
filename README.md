@@ -1,10 +1,10 @@
 # Social Media API Dashboard
 
-This is a dashboard for the [Social Media API](https://social-api.nixlab.co.in). It is built using [React](https://reactjs.org) and [Material-UI](https://material-ui.com). It is a work in progress.
+This is a dashboard for the [Social Media API](https://api.nixlab.co.in). It is built using [React](https://reactjs.org) and [Material-UI](https://material-ui.com). It is a work in progress.
 
 ## Website
 
-The website is hosted at [social-api-dashboard.cyclic.app](https://social-api-dashboard.cyclic.app).
+The website is hosted at [admin.nixlab.co.in](https://admin.nixlab.co.in).
 
 ## Authors
 

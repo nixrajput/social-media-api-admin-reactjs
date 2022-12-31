@@ -1,31 +1,65 @@
 {
-    "name": "social-api-admin-dashboard",
-    "version": "1.0.0",
-    "description": "Admin dashboard for social media api. Built with React, Redux, and Material UI.",
-    "author": "Nikhil Rajput",
-    "license": "GPL-3.0",
-    "main": "server.js",
-    "scripts": {
-        "dev": "nodemon --watch . server.js",
-        "start": "node server.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/nixrajput/social-media-api-admin-reactjs.git"
-    },
-    "bugs": {
-        "url": "https://github.com/nixrajput/social-media-api-admin-reactjs/issues"
-    },
-    "homepage": "https://github.com/nixrajput/social-media-api-admin-reactjs#readme",
-    "dependencies": {
-        "express": "^4.17.1"
-    },
-    "devDependencies": {
-        "nodemon": "^2.0.12"
-    },
-    "engines": {
-        "node": ">=16.0.0",
-        "npm": ">=8.0.0"
-    }
+  "name": "social-api-admin-dashboard",
+  "version": "1.0.0",
+  "description": "Admin dashboard for social media api. Built with React, Redux, and Material UI.",
+  "author": "Nikhil Rajput",
+  "license": "GPL-3.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@fullcalendar/core": "^5.11.3",
+    "@fullcalendar/daygrid": "^5.11.3",
+    "@fullcalendar/interaction": "^5.11.3",
+    "@fullcalendar/list": "^5.11.3",
+    "@fullcalendar/react": "^5.11.2",
+    "@fullcalendar/timegrid": "^5.11.3",
+    "@mui/icons-material": "^5.10.9",
+    "@mui/material": "^5.10.12",
+    "@mui/x-data-grid": "^5.17.9",
+    "@nivo/bar": "^0.80.0",
+    "@nivo/core": "^0.80.0",
+    "@nivo/geo": "^0.80.0",
+    "@nivo/line": "^0.80.0",
+    "@nivo/pie": "^0.80.0",
+    "@reduxjs/toolkit": "^1.8.6",
+    "axios": "^1.2.0",
+    "chart.js": "^3.9.1",
+    "formik": "^2.2.9",
+    "notistack": "^2.0.8",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^4.3.1",
+    "react-dom": "^18.2.0",
+    "react-material-ui-carousel": "^3.4.2",
+    "react-pro-sidebar": "1.0.0-alpha.7",
+    "react-redux": "^8.0.4",
+    "react-router-dom": "^6.4.3",
+    "react-scripts": "5.0.1",
+    "sass": "^1.55.0",
+    "yup": "^0.32.11"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
