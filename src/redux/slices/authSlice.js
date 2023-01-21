@@ -26,7 +26,6 @@ const authSlice = createSlice({
         unauthenticated: (state, action) => {
             state.token = null;
             state.expiresAt = null;
-            state.error = action.payload;
             state.status = 'unauthenticated';
         },
 
@@ -74,7 +73,6 @@ const authSlice = createSlice({
 
         clearError: (state, action) => {
             state.error = null;
-            state.status = 'noError';
         },
     }
 });

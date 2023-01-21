@@ -6,6 +6,8 @@ const Avatar = ({ avatar, width = "40px", height = '40px', fit = 'cover' }) => {
         width: width,
         height: height,
         objectFit: fit,
+        overflow: 'hidden',
+        backgroundColor: '#a0a0a0',
     }
 
     if (avatar && avatar.url) {
@@ -25,7 +27,7 @@ const Avatar = ({ avatar, width = "40px", height = '40px', fit = 'cover' }) => {
     return (
         <div style={style}>
             <img
-                src='../../avatar.png'
+                src='../../male_avatar.svg'
                 style={style}
                 alt="avatar"
                 width={width}

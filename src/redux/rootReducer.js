@@ -6,6 +6,8 @@ import postDetailsSlice from "./slices/postDetailsSlice";
 import userDetailsSlice from "./slices/userDetailsSlice";
 import profileDetailsSlice from "./slices/profileDetailsSlice";
 import blueTickRequestsSlice from "./slices/blueTickRequestsSlice";
+import projectsSlice from "./slices/projectSlice";
+import projectDetailsSlice from "./slices/projectDetailsSlice";
 
 const rootReducer = {
     [authSlice.name]: authSlice.reducer,
@@ -16,6 +18,8 @@ const rootReducer = {
     [userDetailsSlice.name]: userDetailsSlice.reducer,
     [profileDetailsSlice.name]: profileDetailsSlice.reducer,
     [blueTickRequestsSlice.name]: blueTickRequestsSlice.reducer,
+    [projectsSlice.name]: projectsSlice.reducer,
+    [projectDetailsSlice.name]: projectDetailsSlice.reducer,
 };
 
 export default rootReducer;

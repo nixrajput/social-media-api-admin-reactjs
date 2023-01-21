@@ -4,15 +4,13 @@ import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ColorModeContext, tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
-import InputBase from "@mui/material/InputBase";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
 import { logoutAction } from '../../redux/actions';
+import CircleAvatar from "./CircleAvatar";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -20,7 +18,7 @@ const Topbar = () => {
   const colorMode = useContext(ColorModeContext);
 
   const auth = useSelector((state) => state.auth);
-  // const profileDetails = useSelector((state) => state.profileDetails);
+  const profileDetails = useSelector((state) => state.profileDetails);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -62,18 +60,30 @@ const Topbar = () => {
       top="0"
       left="0"
       right="0"
-      height={{ xs: "80px", sm: "80px", md: "80px", lg: "80px" }}
-      bgcolor={colors.background}
+      width="100%"
+      maxWidth="1024px"
+      height={{
+        xs: "80px",
+        sm: "80px",
+        md: "80px",
+        lg: "80px"
+      }}
+      bgcolor={
+        scrolled ?
+          colors.dialog
+          :
+          colors.background
+      }
       display="flex"
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
       p={2}
-      m="0"
+      m="0 auto"
       zIndex="100"
       boxShadow={
         scrolled ?
-          "10px 0 10px 20px rgba(0,0,0,0.1)"
+          colors.defaultShadow
           :
           "none"
       }
@@ -92,24 +102,6 @@ const Topbar = () => {
           src={`../../logo.png`}
         />
       </Box>
-
-      {/* SEARCH BAR */}
-      {
-        auth.status === 'authenticated' ?
-          <Box
-            display="flex"
-            backgroundColor={colors.primary[400]}
-            borderRadius="4px"
-            height={{ xs: "40px", sm: "40px", md: "40px", lg: "40px" }}
-          >
-            <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-            <IconButton type="button" sx={{ p: 1 }}>
-              <SearchIcon />
-            </IconButton>
-          </Box>
-          :
-          null
-      }
 
       {/* ICONS */}
       <Box display="flex">
@@ -140,7 +132,10 @@ const Topbar = () => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleOpenMenu}
               >
-                <PersonOutlinedIcon />
+                <CircleAvatar
+                  avatar={profileDetails.user.avatar}
+                  size="32px"
+                />
               </IconButton>
               <Menu
                 id="user-menu"

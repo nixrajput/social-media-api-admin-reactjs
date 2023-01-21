@@ -13,9 +13,9 @@ function configureReduxStore(preloadedState) {
         enhancers: [monitorReducerEnhancer],
     });
 
-    if (process.env.NODE_ENV !== 'production' && module.hot) {
-        module.hot.accept('./rootReducer', () => store.replaceReducer(rootReducer))
-    }
+    // if (process.env.NODE_ENV !== 'production' && module.hot) {
+    //     module.hot.accept('./rootReducer', () => store.replaceReducer(rootReducer))
+    // }
 
     return store;
 }

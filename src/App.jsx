@@ -36,17 +36,19 @@ function App() {
   const profileDetails = useSelector((state) => state.profileDetails);
   const dispatch = useDispatch();
 
-  const snackbarRef = useRef(null)
+  const snackbarRef = useRef(null);
 
   useEffect(() => {
+    document.documentElement.lang = "en";
+
     const loadUserDetails = async () => {
-      if (auth.status === 'idle' || auth.status === 'failed') {
+      if (auth.status === 'idle') {
         const loadAuthDetailsPromise = loadAuthDetailsAction(dispatch);
         await loadAuthDetailsPromise;
       }
 
-      if (auth.token && auth.status === 'authenticated') {
-        if (profileDetails.status === 'idle' || profileDetails.status === 'failed') {
+      if (auth.status === 'authenticated' && auth.token) {
+        if (profileDetails.status === 'idle') {
           const data = storage.get('user');
 
           if (data) {
@@ -95,7 +97,10 @@ function App() {
               <main className="content">
                 <Suspense fallback={
                   <Backdrop
-                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    sx={{
+                      color: '#fff',
+                      zIndex: (theme) => theme.zIndex.drawer + 1
+                    }}
                     open={true}
                   >
                     <CircularProgress color="inherit" />

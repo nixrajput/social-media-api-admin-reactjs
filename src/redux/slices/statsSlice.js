@@ -8,7 +8,7 @@ const initialState = {
     recentPosts: null,
     verifiedUsersStats: null,
     monthlyStats: null,
-    error: '',
+    error: null,
 };
 
 const statsSlice = createSlice({
@@ -20,21 +20,21 @@ const statsSlice = createSlice({
         },
 
         getStatsSuccess: (state, action) => {
-            state.status = 'success';
             state.statsTillDate = action.payload.statsTillDate;
             state.stats = action.payload.stats;
+            state.status = 'success';
         },
 
         getStatsError: (state, action) => {
-            state.status = 'error';
             state.error = action.payload;
+            state.status = 'error';
         },
 
         resetStats: (state) => {
-            state.status = 'idle';
             state.statsTillDate = null;
             state.stats = null;
-            state.error = '';
+            state.error = null;
+            state.status = 'idle';
         },
 
         getRecentUsers: (state) => {
@@ -42,19 +42,19 @@ const statsSlice = createSlice({
         },
 
         getRecentUsersSuccess: (state, action) => {
-            state.status = 'success';
             state.recentUsers = action.payload.results;
+            state.status = 'success';
         },
 
         getRecentUsersError: (state, action) => {
-            state.status = 'error';
             state.error = action.payload;
+            state.status = 'error';
         },
 
         resetRecentUsers: (state) => {
-            state.status = 'idle';
             state.recentUsers = null;
-            state.error = '';
+            state.error = null;
+            state.status = 'idle';
         },
 
         getRecentPosts: (state) => {
@@ -62,19 +62,19 @@ const statsSlice = createSlice({
         },
 
         getRecentPostsSuccess: (state, action) => {
-            state.status = 'success';
             state.recentPosts = action.payload.results;
+            state.status = 'success';
         },
 
         getRecentPostsError: (state, action) => {
-            state.status = 'error';
             state.error = action.payload;
+            state.status = 'error';
         },
 
         resetRecentPosts: (state) => {
-            state.status = 'idle';
             state.recentPosts = null;
-            state.error = '';
+            state.error = null;
+            state.status = 'idle';
         },
 
         getVerifiedUsersStats: (state) => {
@@ -82,19 +82,19 @@ const statsSlice = createSlice({
         },
 
         getVerifiedUsersStatsSuccess: (state, action) => {
-            state.status = 'success';
             state.verifiedUsersStats = action.payload.stats;
+            state.status = 'success';
         },
 
         getVerifiedUsersStatsError: (state, action) => {
-            state.status = 'error';
             state.error = action.payload;
+            state.status = 'error';
         },
 
         resetVerifiedUsersStats: (state) => {
-            state.status = 'idle';
             state.verifiedUsersStats = null;
-            state.error = '';
+            state.error = null;
+            state.status = 'idle';
         },
 
         getMonthlyStats: (state) => {
@@ -102,19 +102,23 @@ const statsSlice = createSlice({
         },
 
         getMonthlyStatsSuccess: (state, action) => {
-            state.status = 'success';
             state.monthlyStats = action.payload.results;
+            state.status = 'success';
         },
 
         getMonthlyStatsError: (state, action) => {
-            state.status = 'error';
             state.error = action.payload;
+            state.status = 'error';
         },
 
         resetMonthlyStats: (state) => {
             state.status = 'idle';
             state.monthlyStats = null;
-            state.error = '';
+            state.error = null;
+        },
+
+        clearError: (state) => {
+            state.error = null;
         },
     }
 });
@@ -140,6 +144,7 @@ export const {
     getMonthlyStatsSuccess,
     getMonthlyStatsError,
     resetMonthlyStats,
+    clearError,
 } = statsSlice.actions;
 
 export default statsSlice;

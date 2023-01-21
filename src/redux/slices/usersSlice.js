@@ -9,8 +9,9 @@ const initialState = {
     limit: null,
     nextPage: null,
     prevPage: null,
-    results: [],
-    error: '',
+    results: null,
+    userList: [],
+    error: null,
 };
 
 
@@ -31,17 +32,34 @@ const usersSlice = createSlice({
             state.nextPage = action.payload.nextPage;
             state.prevPage = action.payload.prevPage;
             state.results = JSON.parse(JSON.stringify(action.payload.results));
+            state.userList = [...state.results];
+            state.status = 'success';
+        },
+
+        loadMoreUsers: (state, action) => {
+            state.status = 'loadingMore';
+        },
+
+        loadMoreUsersSuccess: (state, action) => {
+            state.currentPage = action.payload.currentPage;
+            state.totalPages = action.payload.totalPages;
+            state.hasNextPage = action.payload.hasNextPage;
+            state.hasPrevPage = action.payload.hasPrevPage;
+            state.limit = action.payload.limit;
+            state.nextPage = action.payload.nextPage;
+            state.prevPage = action.payload.prevPage;
+            state.results = JSON.parse(JSON.stringify(action.payload.results));
+            state.userList = [...state.userList, ...state.results];
             state.status = 'success';
         },
 
         getUsersError: (state, action) => {
             state.error = action.payload;
-            state.status = 'failed';
+            state.status = 'error';
         },
 
         clearError: (state, action) => {
             state.error = null;
-            state.status = 'idle';
         },
 
         clearUsers: (state, action) => {
@@ -52,7 +70,8 @@ const usersSlice = createSlice({
             state.limit = null;
             state.nextPage = null;
             state.prevPage = null;
-            state.results = [];
+            state.results = null;
+            state.userList = [];
             state.error = null;
             state.status = 'idle';
         },
@@ -78,6 +97,8 @@ export const {
     getUsers,
     getUsersSuccess,
     getUsersError,
+    loadMoreUsers,
+    loadMoreUsersSuccess,
     clearError,
     clearUsers,
     deleteUser,

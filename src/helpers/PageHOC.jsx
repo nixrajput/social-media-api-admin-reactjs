@@ -1,25 +1,21 @@
 import Topbar from "../components/global/Topbar";
-import Sidebar from "../components/global/Sidebar";
 import { Box } from "@mui/material";
+import ResponsivePage from "../components/ResponsivePage";
 
 const PageHOC = (WrappedComponent) => {
-    return (props) => {
+    const App = (props) => {
         return (
-            <>
+            <Box width="100%">
                 <Topbar />
-                <Box
-                    display="flex"
-                    flexDirection="row"
-                    width="100%"
-                    minWidth="100%"
-                    mt={{ xs: "80px", sm: "80px", md: "80px", lg: "80px" }}
-                >
-                    <Sidebar />
-                    <WrappedComponent {...props} />
-                </Box>
-            </>
+                <ResponsivePage
+                    Component={WrappedComponent}
+                    {...props}
+                />
+            </Box>
         );
     };
+
+    return App;
 };
 
 export default PageHOC;

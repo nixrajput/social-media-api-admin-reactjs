@@ -7,6 +7,8 @@ const CircleAvatar = ({ avatar, size = '40px', fit = 'cover' }) => {
         height: size,
         borderRadius: '50%',
         objectFit: fit,
+        overflow: 'hidden',
+        backgroundColor: '#a0a0a0',
     }
 
     if (avatar && avatar.url) {
@@ -26,7 +28,7 @@ const CircleAvatar = ({ avatar, size = '40px', fit = 'cover' }) => {
     return (
         <div style={style}>
             <img
-                src='../../avatar.png'
+                src='../../male_avatar.svg'
                 style={style}
                 alt="avatar"
                 width={size}

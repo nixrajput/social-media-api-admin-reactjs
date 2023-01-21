@@ -137,10 +137,19 @@ export const loadAuthDetailsAction = async (dispatch) => {
     dispatch(authenticating());
     const data = storage.get('auth');
     if (!data || !data.token) {
-        dispatch(unauthenticated('No token found'));
+        dispatch(unauthenticated());
     }
     else {
-        dispatch(authenticated(data));
+        let expiresAt = new Date(data.expiresAt);
+
+        if (expiresAt < new Date().getTime() / 1000) {
+            dispatch(unauthenticated());
+            dispatch(clearProfileDetails());
+            dispatch(setError('Session expired. Please login again'));
+        }
+        else {
+            dispatch(authenticated(data));
+        }
     }
 }
 

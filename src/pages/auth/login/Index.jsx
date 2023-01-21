@@ -48,10 +48,6 @@ const LoginPage = () => {
         if (auth.status === 'authenticated' && auth.token) {
             const getProfileDetailsPromise = getProfileDetailsAction(dispatch, auth.token);
             await getProfileDetailsPromise;
-            if (profileDetails.status === 'success' && profileDetails.user) {
-                const returnUrl = location.state?.from?.pathname || '/';
-                navigate(returnUrl, { replace: true });
-            }
         }
     }
 
@@ -73,12 +69,21 @@ const LoginPage = () => {
             closeBackdrop();
         }
 
-        if (auth.status === 'error') {
+        return () => { }
+
+    }, [
+        auth.token, navigate, auth.status, profileDetails.status,
+        profileDetails.user, location.state?.from?.pathname,
+        enqueueSnackbar, dispatch
+    ]);
+
+    useEffect(() => {
+        if (auth.error !== null) {
             enqueueSnackbar(auth.error, { variant: 'error' });
             clearAuthErrorAction(dispatch);
         }
 
-        if (profileDetails.status === 'error') {
+        if (profileDetails.error !== null) {
             enqueueSnackbar(profileDetails.error, { variant: 'error' });
             clearProfileErrorAction(dispatch);
         }
@@ -86,9 +91,7 @@ const LoginPage = () => {
         return () => { }
 
     }, [
-        auth.token, navigate, auth.status, profileDetails.status,
-        profileDetails.user, location.state?.from?.pathname,
-        enqueueSnackbar, auth.error, profileDetails.error,
+        auth.error, profileDetails.error, enqueueSnackbar,
         dispatch
     ]);
 
@@ -105,7 +108,10 @@ const LoginPage = () => {
         >
             <Topbar />
             <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                sx={{
+                    color: '#fff',
+                    zIndex: (theme) => theme.zIndex.drawer + 1
+                }}
                 open={open}
             >
                 <CircularProgress color="inherit" />

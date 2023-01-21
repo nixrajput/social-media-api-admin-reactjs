@@ -15,6 +15,7 @@ import {
     getMonthlyStats,
     getMonthlyStatsSuccess,
     getMonthlyStatsError,
+    clearError
 } from '../slices/statsSlice';
 import ApiUrls from "../../constants/urls";
 
@@ -141,4 +142,12 @@ export const getMonthlyStatsAction = async (dispatch, token) => {
     } catch (error) {
         dispatch(getMonthlyStatsError(error));
     }
+}
+
+export const clearStatsErrorAction = async (dispatch) => {
+    if (!dispatch) {
+        console.log('Dispatch is null');
+        return;
+    }
+    dispatch(clearError());
 }
