@@ -16,7 +16,7 @@ import { toDateTimeString } from '../../utils/dateUtils';
 import CircleAvatar from "../../components/CircleAvatar";
 import ListTile from "../../components/ListTile";
 
-const UserDetailsPage = () => {
+const VerificationRequestDetails = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
@@ -398,4 +398,4 @@ const UserDetailsPage = () => {
     )
 }
 
-export default PageHOC(UserDetailsPage);
+export default PageHOC(VerificationRequestDetails);

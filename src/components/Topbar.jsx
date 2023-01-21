@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { Box, IconButton, useTheme } from "@mui/material";
 import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ColorModeContext, tokens } from "../../theme";
+import { ColorModeContext, tokens } from "../theme";
 import { useNavigate } from "react-router-dom";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import { logoutAction } from '../../redux/actions';
+import { logoutAction } from '../redux/actions';
 import CircleAvatar from "./CircleAvatar";
 
 const Topbar = () => {
@@ -133,7 +133,7 @@ const Topbar = () => {
                 onClick={handleOpenMenu}
               >
                 <CircleAvatar
-                  avatar={profileDetails.user.avatar}
+                  avatar={profileDetails.user?.avatar}
                   size="32px"
                 />
               </IconButton>

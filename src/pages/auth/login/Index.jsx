@@ -12,7 +12,7 @@ import {
     loginAction, getProfileDetailsAction,
     clearAuthErrorAction, clearProfileErrorAction,
 } from '../../../redux/actions';
-import Topbar from "../../../components/global/Topbar";
+import Topbar from "../../../components/Topbar";
 
 const LoginPage = () => {
     const theme = useTheme();
@@ -132,15 +132,17 @@ const LoginPage = () => {
                 }}
                 bgcolor={{
                     xs: 'transparent',
-                    sm: colors.primary[400],
-                    md: colors.primary[400],
-                    lg: colors.primary[400]
+                    sm: colors.dialog,
+                    md: colors.dialog,
+                    lg: colors.dialog,
+                    xl: colors.dialog,
                 }}
                 padding={{
                     xs: '16px',
                     sm: '16px 24px',
                     md: '16px 24px',
                     lg: "16px 24px",
+                    xl: "16px 24px",
                 }}
                 overflow="hidden"
                 transition="all 0.3s ease"

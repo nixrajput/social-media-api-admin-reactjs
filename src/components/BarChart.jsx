@@ -9,6 +9,13 @@ const BarChart = ({ data }) => {
   return (
     <ResponsiveBar
       data={data}
+      keys={["users", "posts", "comments"]}
+      indexBy="month"
+      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+      padding={0.3}
+      valueScale={{ type: "linear" }}
+      indexScale={{ type: "band", round: true }}
+      colors={{ scheme: "accent" }}
       theme={{
         // added
         axis: {
@@ -38,13 +45,6 @@ const BarChart = ({ data }) => {
           },
         },
       }}
-      keys={["users", "posts", "comments"]}
-      indexBy="month"
-      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-      padding={0.3}
-      valueScale={{ type: "linear" }}
-      indexScale={{ type: "band", round: true }}
-      colors={{ scheme: "accent" }}
       borderColor={{
         from: 'color',
         modifiers: [

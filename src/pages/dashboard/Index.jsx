@@ -20,7 +20,7 @@ import {
   getMonthlyStatsAction,
   clearStatsErrorAction,
 } from '../../redux/actions/statsAction';
-import CircleAvatar from '../../components/global/CircleAvatar';
+import CircleAvatar from '../../components/CircleAvatar';
 import PageHOC from '../../helpers/PageHOC';
 
 const DashboardPage = () => {
@@ -106,28 +106,41 @@ const DashboardPage = () => {
       <Box
         display="flex"
         justifyContent="space-between"
-        alignItems="center"
+        alignItems="flex-start"
+        flexDirection={{
+          xs: "column",
+          sm: "column",
+          md: "row",
+          lg: "row",
+          xl: "row",
+        }}
+        mb="1.5rem"
       >
         <Header
           title="DASHBOARD"
           subtitle="Welcome to admin dashboard"
+          mb={{
+            xs: "1rem",
+            sm: "1rem",
+            md: "0",
+            lg: "0",
+            xl: "0",
+          }}
         />
 
-        <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.accent[700],
-              color: colors.primary[100],
-              padding: "10px 20px",
-            }}
-          >
-            <DownloadOutlinedIcon sx={{
-              mr: "0.5rem",
-              fontSize: "1rem"
-            }} />
-            Download Reports
-          </Button>
-        </Box>
+        <Button
+          sx={{
+            backgroundColor: colors.accent[700],
+            color: colors.primary[100],
+            padding: "10px 20px",
+          }}
+        >
+          <DownloadOutlinedIcon sx={{
+            mr: "0.5rem",
+            fontSize: "1rem"
+          }} />
+          Download Reports
+        </Button>
       </Box>
 
       {/* Stat Box */}
@@ -138,6 +151,7 @@ const DashboardPage = () => {
         justifyContent="space-between"
         alignItems="flex-start"
         flexWrap="wrap"
+        p="0 1rem"
         backgroundColor={colors.dialog}
       >
         {
@@ -186,7 +200,7 @@ const DashboardPage = () => {
         >
           <h3
             style={{
-              color: colors.grey[100],
+              color: colors.primary[100],
             }}
           >
             Recent Users
@@ -194,7 +208,7 @@ const DashboardPage = () => {
         </Box>
 
         {
-          (stats.status === 'success' && stats.recentUsers) ?
+          stats.recentUsers !== null ?
             stats.recentUsers.map((user, i) => (
               <Box
                 key={`${user._id}-${i}`}
@@ -219,11 +233,10 @@ const DashboardPage = () => {
                 >
                   <CircleAvatar avatar={user.avatar} />
 
-                  <Box ml='1.5rem'>
+                  <Box ml='1rem'>
                     <h5
                       style={{
-                        color: colors.grey[100],
-                        fontWeight: 500,
+                        color: colors.primary[100],
                       }}
                     >
                       {user.fname} {user.lname}
@@ -231,7 +244,7 @@ const DashboardPage = () => {
 
                     <p
                       style={{
-                        color: colors.grey[200],
+                        color: colors.primary[300],
                       }}
                     >
                       {user.uname}
@@ -274,14 +287,14 @@ const DashboardPage = () => {
         >
           <h3
             style={{
-              color: colors.grey[100],
+              color: colors.primary[100],
             }}
           >
             Recent Posts
           </h3>
         </Box>
         {
-          (stats.status === 'success' && stats.recentPosts) ?
+          stats.recentPosts !== null ?
             stats.recentPosts.map((post, i) => (
               <Box
                 key={`${post._id}-${i}`}
@@ -299,32 +312,22 @@ const DashboardPage = () => {
                 }}
               >
                 <Box>
+
                   <h5
                     style={{
                       color: colors.grey[100],
-                      fontWeight: 500,
-                    }}
-                  >
-                    {post._id}
-                  </h5>
-
-                  <p
-                    style={{
-                      color: colors.grey[200],
-                    }}
-                  >
-                    {post.owner.uname}
-                  </p>
-                </Box>
-
-                <Box>
-                  <p
-                    style={{
-                      color: colors.grey[200],
                       textTransform: 'capitalize'
                     }}
                   >
                     {post.postType}
+                  </h5>
+
+                  <p
+                    style={{
+                      color: colors.primary[300],
+                    }}
+                  >
+                    {post.owner.uname}
                   </p>
                 </Box>
 
@@ -370,7 +373,7 @@ const DashboardPage = () => {
           </h3>
         </Box>
         {
-          (stats.status === 'success' && stats.verifiedUsersStats) ?
+          stats.verifiedUsersStats !== null ?
             <Box
               display="flex"
               flexDirection="column"
@@ -386,7 +389,7 @@ const DashboardPage = () => {
 
               <h5
                 style={{
-                  color: colors.grey[100],
+                  color: colors.primary[100],
                   fontWeight: 500,
                   marginTop: '1rem',
                   textTransform: 'capitalize'
@@ -397,7 +400,7 @@ const DashboardPage = () => {
 
               <p
                 style={{
-                  color: colors.grey[200],
+                  color: colors.primary[300],
                 }}
               >
                 {`${stats.verifiedUsersStats.verifiedUsers} out of
@@ -430,7 +433,7 @@ const DashboardPage = () => {
         </Box>
 
         {
-          (stats.status === 'success' && stats.monthlyStats) ?
+          (stats.monthlyStats !== null) ?
             <Box
               display="flex"
               flexDirection="column"
@@ -439,6 +442,13 @@ const DashboardPage = () => {
               p="1rem"
               width="100%"
               bgcolor={colors.dialog}
+              height={{
+                xs: '360px',
+                sm: '360px',
+                md: '360px',
+                lg: '400px',
+                xl: '400px'
+              }}
             >
               <BarChart data={stats.monthlyStats} />
             </Box>

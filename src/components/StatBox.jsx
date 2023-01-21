@@ -11,7 +11,7 @@ const StatBox = ({ title, subtitle }) => {
       alignItems="center"
       justifyContent="center"
       flexDirection="column"
-      m="0.5rem 2rem"
+      m="0.5rem 0"
     >
       <h4
         style={{

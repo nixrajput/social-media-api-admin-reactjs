@@ -4,27 +4,27 @@ import { Box, useTheme, Button } from "@mui/material";
 import { tokens } from "../../theme";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import Header from "../../components/Header";
 import { useSnackbar } from 'notistack';
+import Header from "../../components/Header";
 import {
-  getAllUsersAction,
-  loadMoreUsersAction,
-  clearUsersErrorAction
-} from '../../redux/actions/usersAction';
+  getRequestsAction,
+  loadMoreRequestsAction,
+  clearRequestsErrorAction
+} from '../../redux/actions/verificationRequestsAction';
 import PageHOC from "../../helpers/PageHOC";
-import UserItem from "./UserItem";
+import VerificationRequestItem from "./VerificationRequestItem";
 
-const UserListPage = () => {
+const BlueTickRequestsListPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const auth = useSelector((state) => state.auth);
-  const users = useSelector((state) => state.users);
+  const verificationRequests = useSelector((state) => state.verificationRequests);
   const dispatch = useDispatch();
 
-  const [open, setOpen] = useState(false);
-
   const { enqueueSnackbar } = useSnackbar();
+
+  const [open, setOpen] = useState(false);
 
   const closeBackdrop = () => {
     setOpen(false);
@@ -35,39 +35,43 @@ const UserListPage = () => {
   };
 
   const loadMore = async () => {
-    const nextPage = users.currentPage + 1;
-    const loadMoreUsersPromise = loadMoreUsersAction(dispatch, auth.token, nextPage);
-    await loadMoreUsersPromise;
+    const nextPage = verificationRequests.currentPage + 1;
+    const loadMoreRequestssPromise = loadMoreRequestsAction(dispatch, auth.token, nextPage);
+    await loadMoreRequestssPromise;
   };
 
   useEffect(() => {
-    document.title = "Dashboard - All Users";
+    document.title = "Dashboard - Verification Requests";
 
     const getData = async () => {
-      const usersPromise = getAllUsersAction(dispatch, auth.token);
+      const requestsPromise = getRequestsAction(dispatch, auth.token);
       openBackdrop();
-      await usersPromise;
+      await requestsPromise;
       closeBackdrop();
     }
 
-    if (users.status === 'idle' && users.results === null) {
+    if (verificationRequests.status === 'idle' &&
+      verificationRequests.results === null) {
       getData();
     }
 
     return () => { }
 
-  }, [auth.token, users.status, dispatch, users.results]);
+  }, [
+    auth.token, verificationRequests.status,
+    dispatch, verificationRequests.results
+  ]);
 
   useEffect(() => {
-    if (users.error !== null) {
-      enqueueSnackbar(users.error, { variant: 'error' });
-      clearUsersErrorAction(dispatch);
+    if (verificationRequests.error !== null) {
+      enqueueSnackbar(verificationRequests.error, { variant: 'error' });
+      clearRequestsErrorAction(dispatch);
     }
 
     return () => { }
 
   }, [
-    users.error, enqueueSnackbar, dispatch
+    verificationRequests.error, enqueueSnackbar, dispatch
   ]);
 
   return (
@@ -83,8 +87,8 @@ const UserListPage = () => {
       </Backdrop>
 
       <Header
-        title="USERS"
-        subtitle="Managing the Users"
+        title="VERIFICATION REQUESTS"
+        subtitle="Managing the verification requests"
       />
 
       <Box
@@ -93,13 +97,14 @@ const UserListPage = () => {
         <Box
         >
           {
-            (users.userList !== null && users.userList.length > 0) ?
-              users.userList.map((user, index) => (
-                <UserItem
+            (verificationRequests.requestList !== null &&
+              verificationRequests.requestList.length > 0) ?
+              verificationRequests.requestList.map((req, index) => (
+                <VerificationRequestItem
                   key={index}
-                  user={user}
+                  request={req}
                   index={index}
-                  totalLength={users.userList.length}
+                  totalLength={verificationRequests.requestList.length}
                 />
               ))
               :
@@ -108,13 +113,13 @@ const UserListPage = () => {
                   color: colors.primary[300],
                 }}
               >
-                No Users Found
+                No verification requests found
               </h4>
           }
         </Box>
 
         {
-          users.status === 'loadingMore' ?
+          verificationRequests.status === 'loadingMore' ?
             <Box
               width="100%"
               display="flex"
@@ -128,7 +133,7 @@ const UserListPage = () => {
             null
         }
         {
-          users.hasNextPage ?
+          verificationRequests.hasNextPage ?
             <Box
               width="100%"
               display="flex"
@@ -154,4 +159,4 @@ const UserListPage = () => {
   );
 };
 
-export default PageHOC(UserListPage);
+export default PageHOC(BlueTickRequestsListPage);

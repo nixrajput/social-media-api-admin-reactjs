@@ -1,4 +1,4 @@
-import Topbar from "../components/global/Topbar";
+import Topbar from "../components/Topbar";
 import { Box } from "@mui/material";
 import ResponsivePage from "../components/ResponsivePage";
 

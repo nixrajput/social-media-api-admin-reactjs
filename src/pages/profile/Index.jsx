@@ -7,7 +7,7 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
-import CircleAvatar from '../../components/global/CircleAvatar';
+import CircleAvatar from '../../components/CircleAvatar';
 import {
     logoutAction, clearProfileErrorAction
 } from '../../redux/actions';

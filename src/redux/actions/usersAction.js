@@ -15,7 +15,7 @@ import {
 } from '../slices/userDetailsSlice';
 import ApiUrls from "../../constants/urls";
 
-export const getAllUsersAction = async (dispatch, token, page = 1, limit = 10) => {
+export const getAllUsersAction = async (dispatch, token, page = 1, limit = 20) => {
     if (!dispatch) {
         console.log("dispatch is null");
         return;
@@ -46,7 +46,7 @@ export const getAllUsersAction = async (dispatch, token, page = 1, limit = 10) =
     }
 }
 
-export const loadMoreUsersAction = async (dispatch, token, page, limit = 10) => {
+export const loadMoreUsersAction = async (dispatch, token, page, limit = 20) => {
     if (!dispatch) {
         console.log("dispatch is null");
         return;

@@ -5,7 +5,7 @@ import postsSlice from "./slices/postsSlice";
 import postDetailsSlice from "./slices/postDetailsSlice";
 import userDetailsSlice from "./slices/userDetailsSlice";
 import profileDetailsSlice from "./slices/profileDetailsSlice";
-import blueTickRequestsSlice from "./slices/blueTickRequestsSlice";
+import verificationRequestsSlice from "./slices/verificationRequestsSlice";
 import projectsSlice from "./slices/projectSlice";
 import projectDetailsSlice from "./slices/projectDetailsSlice";
 
@@ -17,7 +17,7 @@ const rootReducer = {
     [postDetailsSlice.name]: postDetailsSlice.reducer,
     [userDetailsSlice.name]: userDetailsSlice.reducer,
     [profileDetailsSlice.name]: profileDetailsSlice.reducer,
-    [blueTickRequestsSlice.name]: blueTickRequestsSlice.reducer,
+    [verificationRequestsSlice.name]: verificationRequestsSlice.reducer,
     [projectsSlice.name]: projectsSlice.reducer,
     [projectDetailsSlice.name]: projectDetailsSlice.reducer,
 };

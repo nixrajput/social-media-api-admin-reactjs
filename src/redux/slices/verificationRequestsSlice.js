@@ -9,13 +9,14 @@ const initialState = {
     limit: null,
     nextPage: null,
     prevPage: null,
-    results: [],
-    error: '',
+    results: null,
+    requestList: [],
+    error: null,
 };
 
 
-const blueTickRequestsSlice = createSlice({
-    name: "blueTickRequests",
+const verificationRequestsSlice = createSlice({
+    name: "verificationRequests",
     initialState,
     reducers: {
         getRequests: (state, action) => {
@@ -31,6 +32,7 @@ const blueTickRequestsSlice = createSlice({
             state.nextPage = action.payload.nextPage;
             state.prevPage = action.payload.prevPage;
             state.results = JSON.parse(JSON.stringify(action.payload.results));
+            state.requestList = [...state.results];
             state.status = 'success';
         },
 
@@ -39,9 +41,25 @@ const blueTickRequestsSlice = createSlice({
             state.status = 'failed';
         },
 
+        loadMoreRequests: (state, action) => {
+            state.status = 'loadingMore';
+        },
+
+        loadMoreRequestsSuccess: (state, action) => {
+            state.currentPage = action.payload.currentPage;
+            state.totalPages = action.payload.totalPages;
+            state.hasNextPage = action.payload.hasNextPage;
+            state.hasPrevPage = action.payload.hasPrevPage;
+            state.limit = action.payload.limit;
+            state.nextPage = action.payload.nextPage;
+            state.prevPage = action.payload.prevPage;
+            state.results = JSON.parse(JSON.stringify(action.payload.results));
+            state.requestList = [...state.requestList, ...state.results];
+            state.status = 'success';
+        },
+
         clearError: (state, action) => {
             state.error = null;
-            state.status = 'idle';
         },
 
         clearRequests: (state, action) => {
@@ -52,7 +70,7 @@ const blueTickRequestsSlice = createSlice({
             state.limit = null;
             state.nextPage = null;
             state.prevPage = null;
-            state.results = [];
+            state.results = null;
             state.error = null;
             state.status = 'idle';
         },
@@ -62,9 +80,11 @@ const blueTickRequestsSlice = createSlice({
 export const {
     getRequests,
     getRequestsSuccess,
+    loadMoreRequests,
+    loadMoreRequestsSuccess,
     getRequestsError,
     clearError,
     clearRequests,
-} = blueTickRequestsSlice.actions;
+} = verificationRequestsSlice.actions;
 
-export default blueTickRequestsSlice;
+export default verificationRequestsSlice;

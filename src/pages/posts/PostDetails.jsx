@@ -10,7 +10,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import Switch from "@mui/material/Switch";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
-import CircleAvatar from '../../components/global/CircleAvatar';
+import CircleAvatar from '../../components/CircleAvatar';
 import {
     getPostDetailsAction,
 } from '../../redux/actions';

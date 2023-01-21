@@ -4,7 +4,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { tokens } from "../../theme";
-import CircleAvatar from "../../components/global/CircleAvatar";
+import CircleAvatar from "../../components/CircleAvatar";
 
 const UserItem = ({ user, index, totalLength }) => {
     const theme = useTheme();
@@ -34,38 +34,55 @@ const UserItem = ({ user, index, totalLength }) => {
                 justifyContent="flex-start"
                 alignItems="center"
             >
-                <CircleAvatar avatar={user.avatar} />
-
-                <p
-                    style={{
-                        color: colors.grey[100],
-                        marginLeft: '1rem',
-                    }}
-                >
-                    {user.uname}
-                </p>
-
-                <VerifiedUserIcon
-                    sx={{
-                        color: user.isValid ?
-                            colors.success
-                            :
-                            colors.error,
-                        fontSize: '1rem',
-                        marginLeft: '0.5rem',
-                    }}
+                <CircleAvatar
+                    avatar={user.avatar}
+                    size="48px"
                 />
 
-                <VerifiedIcon
-                    sx={{
-                        color: user.isVerified ?
-                            colors.accent[600]
-                            :
-                            colors.primary[500],
-                        fontSize: '1rem',
-                        marginLeft: '0.25rem',
-                    }}
-                />
+                <Box>
+                    <h5
+                        style={{
+                            color: colors.primary[100],
+                            marginLeft: '1rem',
+                        }}
+                    >
+                        {user.uname}
+                    </h5>
+
+                    <p
+                        style={{
+                            color: colors.primary[300],
+                            marginLeft: '1rem',
+                        }}
+                    >
+                        {user._id}
+                    </p>
+
+                    <Box
+                        ml="1rem"
+                    >
+                        <VerifiedUserIcon
+                            sx={{
+                                color: user.isValid ?
+                                    colors.success
+                                    :
+                                    colors.error,
+                                fontSize: '1rem',
+                            }}
+                        />
+
+                        <VerifiedIcon
+                            sx={{
+                                color: user.isVerified ?
+                                    colors.accent[600]
+                                    :
+                                    colors.primary[500],
+                                fontSize: '1rem',
+                                marginLeft: '0.25rem',
+                            }}
+                        />
+                    </Box>
+                </Box>
             </Box>
 
             <Box

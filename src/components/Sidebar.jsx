@@ -1,8 +1,11 @@
 import { useEffect } from "react";
-import { Sidebar as ProSidebar, Menu, MenuItem, useProSidebar } from "react-pro-sidebar";
+import {
+  Sidebar as ProSidebar,
+  Menu, MenuItem,
+  useProSidebar
+} from "react-pro-sidebar";
 import { Box, IconButton, useTheme } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { tokens } from "../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -23,7 +26,6 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
 import DevicesOutlinedIcon from '@mui/icons-material/DevicesOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
-import CircleAvatar from "./global/CircleAvatar";
 
 const Item = ({ title, to, icon, active }) => {
   const navigate = useNavigate();
@@ -57,8 +59,6 @@ const Sidebar = () => {
   const location = useLocation();
 
   const { collapseSidebar, collapsed } = useProSidebar();
-
-  const profileDetails = useSelector((state) => state.profileDetails);
 
   useEffect(() => {
     window.addEventListener('load', () => {
@@ -108,7 +108,6 @@ const Sidebar = () => {
           },
           icon: ({ level, active, disabled }) => ({
             color: colors.primary[100],
-            fontSize: "1.5rem !important",
           }),
         }}
       >
@@ -119,7 +118,7 @@ const Sidebar = () => {
               display="flex"
               justifyContent="flex-end"
               alignItems="center"
-              m="10px 10px 20px 0"
+              m="0.5rem 0.5rem 0 0"
             >
               <IconButton onClick={() => collapseSidebar()}>
                 <ArrowBackIosNewIcon sx={{ fontSize: "16px" }} />
@@ -130,50 +129,12 @@ const Sidebar = () => {
               display="flex"
               justifyContent="center"
               alignItems="center"
-              m="10px 0"
+              m="0.5rem 0 0.5rem 0"
             >
               <IconButton onClick={() => collapseSidebar()}>
                 <ArrowForwardIosIcon sx={{ fontSize: "16px" }} />
               </IconButton>
             </Box>
-        }
-
-        {/* Profile Picture */}
-
-        {
-          !collapsed ?
-            <Box m="20px 0"
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <CircleAvatar
-                avatar={profileDetails.user?.avatar}
-                size="100px"
-              />
-
-              <Box textAlign="center">
-                <h3
-                  style={{
-                    color: colors.primary[100],
-                    fontWeight: "bold",
-                    margin: "0.5rem 0 0 0",
-                  }}
-                >
-                  {profileDetails.user?.fname + " " + profileDetails.user?.lname}
-                </h3>
-
-                <p
-                  style={{
-                    color: colors.primary[300],
-                  }}
-                >
-                  {'@' + profileDetails.user?.uname}
-                </p>
-              </Box>
-            </Box>
-            : null
         }
 
         {/* Menu Items */}
@@ -235,10 +196,10 @@ const Sidebar = () => {
         />
 
         <Item
-          title="Blue Tick Requests"
-          to="/blue-tick-requests"
+          title="Verification Requests"
+          to="/verification-requests"
           icon={<VerifiedOutlinedIcon />}
-          active={location.pathname === "/blue-tick-requests" || location.pathname.includes("/blue-tick-requests/")}
+          active={location.pathname === "/verification-requests" || location.pathname.includes("/verification-requests/")}
         />
 
         <Item
