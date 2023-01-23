@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import {
   Sidebar as ProSidebar,
   Menu, MenuItem,
@@ -22,6 +21,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
 import TokenOutlinedIcon from '@mui/icons-material/TokenOutlined';
+import SourceIcon from '@mui/icons-material/Source';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
 import DevicesOutlinedIcon from '@mui/icons-material/DevicesOutlined';
@@ -41,13 +41,13 @@ const Item = ({ title, to, icon, active }) => {
       active={active}
       component="div"
     >
-      <p
+      <span
         style={{
           color: colors.primary[100],
         }}
       >
         {title}
-      </p>
+      </span>
     </MenuItem>
   );
 };
@@ -60,34 +60,10 @@ const Sidebar = () => {
 
   const { collapseSidebar, collapsed } = useProSidebar();
 
-  useEffect(() => {
-    window.addEventListener('load', () => {
-      if (window.innerWidth <= 980) {
-        collapseSidebar(true);
-      }
-      else {
-        collapseSidebar(false);
-      }
-    });
-
-    window.addEventListener("resize", () => {
-      if (window.innerWidth <= 980) {
-        collapseSidebar(true);
-      }
-      else {
-        collapseSidebar(false);
-      }
-    });
-
-    return () => {
-      window.removeEventListener("load", () => { });
-      window.removeEventListener("resize", () => { });
-    }
-  }, [collapseSidebar]);
-
   return (
     <ProSidebar
       backgroundColor={colors.dialog}
+      defaultCollapsed={true}
       width="240px"
       collapsedWidth="80px"
       rootStyles={{
@@ -161,6 +137,34 @@ const Sidebar = () => {
         />
 
         <Item
+          title="projects"
+          to="/projects"
+          icon={<SourceIcon />}
+          active={location.pathname === "/projects" || location.pathname.includes("/projects/")}
+        />
+
+        <Item
+          title="Verification Requests"
+          to="/verification-requests"
+          icon={<VerifiedOutlinedIcon />}
+          active={location.pathname === "/verification-requests" || location.pathname.includes("/verification-requests/")}
+        />
+
+        <Item
+          title="Auth Tokens"
+          to="/auth-tokens"
+          icon={<VpnKeyOutlinedIcon />}
+          active={location.pathname === "/auth-tokens" || location.pathname.includes("/auth-tokens/")}
+        />
+
+        <Item
+          title="FCM Tokens"
+          to="/fcm-tokens"
+          icon={<TokenOutlinedIcon />}
+          active={location.pathname === "/fcm-tokens" || location.pathname.includes("/fcm-tokens/")}
+        />
+
+        {/* <Item
           title="Comments"
           to="/comments"
           icon={<CommentIcon />}
@@ -175,34 +179,13 @@ const Sidebar = () => {
         />
 
         <Item
-          title="FCM Tokens"
-          to="/fcm-tokens"
-          icon={<TokenOutlinedIcon />}
-          active={location.pathname === "/fcm-tokens" || location.pathname.includes("/fcm-tokens/")}
-        />
-
-        <Item
-          title="Auth Tokens"
-          to="/auth-tokens"
-          icon={<VpnKeyOutlinedIcon />}
-          active={location.pathname === "/auth-tokens" || location.pathname.includes("/auth-tokens/")}
-        />
-
-        <Item
           title="Login Info"
           to="/login-info"
           icon={<DevicesOutlinedIcon />}
           active={location.pathname === "/login-info" || location.pathname.includes("/login-info/")}
-        />
+        /> */}
 
-        <Item
-          title="Verification Requests"
-          to="/verification-requests"
-          icon={<VerifiedOutlinedIcon />}
-          active={location.pathname === "/verification-requests" || location.pathname.includes("/verification-requests/")}
-        />
-
-        <Item
+        {/* <Item
           title="User Reports"
           to="/reports/users"
           icon={<PersonOutlinedIcon />}
@@ -256,7 +239,7 @@ const Sidebar = () => {
           to="/analytics/feedbacks"
           icon={<MapOutlinedIcon />}
           active={location.pathname === "/analytics/feedbacks" || location.pathname.includes("/analytics/feedbacks/")}
-        />
+        /> */}
       </Menu>
     </ProSidebar>
   );

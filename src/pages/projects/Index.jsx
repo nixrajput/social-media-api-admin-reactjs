@@ -8,21 +8,21 @@ import { useSnackbar } from 'notistack';
 import SearchIcon from "@mui/icons-material/Search";
 import Header from "../../components/Header";
 import {
-    getPostsAction,
-    loadMorePostsAction,
-    clearPostsErrorAction,
-    searchPostsAction
-} from '../../redux/actions/postsAction';
+    getProjectsAction,
+    loadMoreProjectsAction,
+    searcProjectsAction,
+    clearProjectsErrorAction,
+} from '../../redux/actions/projectAction';
 import PageHOC from "../../helpers/PageHOC";
 import InputBox from "../../components/InputBox";
-import PostItem from "./PostItem";
+import ProjectItem from "./ProjectItem";
 
-const PostListPage = () => {
+const ProjectListPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
     const auth = useSelector((state) => state.auth);
-    const posts = useSelector((state) => state.posts);
+    const projects = useSelector((state) => state.projects);
     const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
@@ -39,44 +39,44 @@ const PostListPage = () => {
     };
 
     const loadMore = async () => {
-        const nextPage = posts.currentPage + 1;
-        const loadMorePostsPromise = loadMorePostsAction(dispatch, auth.token, nextPage);
-        await loadMorePostsPromise;
+        const nextPage = projects.currentPage + 1;
+        const loadMoreProjectsPromise = loadMoreProjectsAction(dispatch, auth.token, nextPage);
+        await loadMoreProjectsPromise;
     };
 
     const searchposts = async (searchText) => {
-        const searchPostsPromise = searchPostsAction(dispatch, auth.token, searchText);
-        await searchPostsPromise;
+        const searchProjectsPromise = searcProjectsAction(dispatch, auth.token, searchText);
+        await searchProjectsPromise;
     };
 
     useEffect(() => {
         document.title = "Posts - Dashboard";
 
         const getData = async () => {
-            const postsPromise = getPostsAction(dispatch, auth.token);
+            const getProjectsPromise = getProjectsAction(dispatch, auth.token);
             openBackdrop();
-            await postsPromise;
+            await getProjectsPromise;
             closeBackdrop();
         }
 
-        if (posts.status === 'idle' && posts.results === null) {
+        if (projects.status === 'idle' && projects.results === null) {
             getData();
         }
 
         return () => { }
 
-    }, [auth.token, posts.status, dispatch, posts.results]);
+    }, [auth.token, projects.status, dispatch, projects.results]);
 
     useEffect(() => {
-        if (posts.error !== null) {
-            enqueueSnackbar(posts.error, { variant: 'error' });
-            clearPostsErrorAction(dispatch);
+        if (projects.error !== null) {
+            enqueueSnackbar(projects.error, { variant: 'error' });
+            clearProjectsErrorAction(dispatch);
         }
 
         return () => { }
 
     }, [
-        posts.error, enqueueSnackbar, dispatch
+        projects.error, enqueueSnackbar, dispatch
     ]);
 
     return (
@@ -101,9 +101,9 @@ const PostListPage = () => {
                     placeholder="Search"
                     name="searchText"
                     disabled={
-                        posts.status === 'loading'
+                        projects.status === 'loading'
                         ||
-                        posts.status === 'searching'
+                        projects.status === 'searching'
                     }
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
@@ -130,7 +130,7 @@ const PostListPage = () => {
                 m="1rem 0 0 0"
             >
                 {
-                    posts.status === 'searching' ?
+                    projects.status === 'searching' ?
                         <Box
                             width="100%"
                             display="flex"
@@ -146,13 +146,13 @@ const PostListPage = () => {
 
                 <Box>
                     {
-                        (posts.postList !== null && posts.postList.length > 0) ?
-                            posts.postList.map((post, index) => (
-                                <PostItem
+                        (projects.projectList !== null && projects.projectList.length > 0) ?
+                            projects.projectList.map((item, index) => (
+                                <ProjectItem
                                     key={index}
-                                    post={post}
+                                    project={item}
                                     index={index}
-                                    totalLength={posts.postList.length}
+                                    totalLength={projects.projectList.length}
                                 />
                             ))
                             :
@@ -161,13 +161,13 @@ const PostListPage = () => {
                                     color: colors.primary[300],
                                 }}
                             >
-                                No posts Found
+                                No Projects Found
                             </h4>
                     }
                 </Box>
 
                 {
-                    posts.status === 'loadingMore' ?
+                    projects.status === 'loadingMore' ?
                         <Box
                             width="100%"
                             display="flex"
@@ -181,7 +181,7 @@ const PostListPage = () => {
                         null
                 }
                 {
-                    posts.hasNextPage ?
+                    projects.hasNextPage ?
                         <Box
                             width="100%"
                             display="flex"
@@ -207,4 +207,4 @@ const PostListPage = () => {
     );
 }
 
-export default PageHOC(PostListPage);
+export default PageHOC(ProjectListPage);

@@ -16,13 +16,18 @@ const Header = ({ title, subtitle, ...props }) => {
         {title}
       </h2>
 
-      <p
-        style={{
-          color: colors.primary[300],
-        }}
-      >
-        {subtitle}
-      </p>
+      {
+        subtitle ?
+          <p
+            style={{
+              color: colors.primary[300],
+            }}
+          >
+            {subtitle}
+          </p>
+          :
+          null
+      }
     </Box>
   );
 };

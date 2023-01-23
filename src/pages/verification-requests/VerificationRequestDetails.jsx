@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, Button } from "@mui/material";
 import { tokens } from "../../theme";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import { useSnackbar } from 'notistack';
 import {
-    getUserDetailsAction,
-    clearUserDetailsErrorAction
-} from '../../redux/actions/usersAction';
+    getVerificationRequestDetailsAction,
+    approveVerificationRequestAction,
+    rejectVerificationRequestAction,
+    clearVerificationRequestDetailsErrorAction
+} from '../../redux/actions/verificationRequestsAction';
 import PageHOC from "../../helpers/PageHOC";
 import { toDateTimeString } from '../../utils/dateUtils';
 import CircleAvatar from "../../components/CircleAvatar";
@@ -23,9 +25,8 @@ const VerificationRequestDetails = () => {
     const { id } = useParams();
 
     const auth = useSelector((state) => state.auth);
-    const userDetails = useSelector((state) => state.userDetails);
+    const verificationRequestDetails = useSelector((state) => state.verificationRequestDetails);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -39,49 +40,69 @@ const VerificationRequestDetails = () => {
         setOpen(true);
     };
 
+    const approveRequest = async () => {
+        const approveVerificationRequestPromise = approveVerificationRequestAction(dispatch, auth.token, id);
+        openBackdrop();
+        await approveVerificationRequestPromise;
+        closeBackdrop();
+    }
+
+    const rejectRequest = async () => {
+        const rejectVerificationRequestPromise = rejectVerificationRequestAction(dispatch, auth.token, id, '');
+        openBackdrop();
+        await rejectVerificationRequestPromise;
+        closeBackdrop();
+    }
+
     useEffect(() => {
-        document.title = "User Details | Dashboard";
+        document.title = "Verification Request Details | Dashboard";
 
         const getData = async () => {
-            const userDetailsPromise = getUserDetailsAction(dispatch, auth.token, id);
+            const verificationRequestDetailsPromise = getVerificationRequestDetailsAction(dispatch, auth.token, id);
             openBackdrop();
-            await userDetailsPromise;
+            await verificationRequestDetailsPromise;
             closeBackdrop();
         }
 
-        if (userDetails.status === 'loading') {
+        if (verificationRequestDetails.status === 'loading') {
             openBackdrop();
         }
         else {
             closeBackdrop();
         }
 
-        if (userDetails.status === 'idle' ||
-            (id && id !== userDetails.user?._id)) {
+        if (verificationRequestDetails.status === 'idle' ||
+            (id && id !== verificationRequestDetails.data?._id)) {
             getData();
         }
 
         return () => { }
 
     }, [
-        auth.token, userDetails.status,
-        userDetails.user?._id, id, dispatch
+        auth.token, verificationRequestDetails.status,
+        verificationRequestDetails.data?._id, id, dispatch
     ]);
 
     useEffect(() => {
-        if (userDetails.error !== null) {
-            enqueueSnackbar(userDetails.error, { variant: 'error' });
-            clearUserDetailsErrorAction(dispatch);
+        if (verificationRequestDetails.error !== null) {
+            enqueueSnackbar(verificationRequestDetails.error, { variant: 'error' });
+            clearVerificationRequestDetailsErrorAction(dispatch);
         }
 
         return () => { }
 
     }, [
-        userDetails.error, enqueueSnackbar, dispatch
+        verificationRequestDetails.error, enqueueSnackbar, dispatch
     ]);
 
     return (
-        <Box width="100%">
+        <Box
+            width="100%"
+            display="flex"
+            flexDirection="column"
+            justifyContent="flex-start"
+            alignItems="flex-start"
+        >
             <Backdrop
                 sx={{
                     color: '#fff',
@@ -93,23 +114,24 @@ const VerificationRequestDetails = () => {
             </Backdrop>
 
             <Header
-                title="USER DETAILS"
-                subtitle="Managing the User Details"
+                title="Verification Request Details"
             />
 
             {
-                userDetails.status === 'success' ?
+                verificationRequestDetails.data !== null ?
                     <Box
+                        position="relative"
                         width="100%"
                         mt="1.5rem"
                         bgcolor={colors.dialog}
                         p="1rem"
+                        overflow="hidden"
                     >
-                        {/* User Avatar Start */}
+                        {/* Avatar  */}
 
                         <CircleAvatar
-                            avatar={userDetails.user?.avatar}
-                            size="320px"
+                            avatar={verificationRequestDetails.data.user?.avatar}
+                            size="240px"
                         />
 
                         <h3
@@ -121,271 +143,356 @@ const VerificationRequestDetails = () => {
                             Details
                         </h3>
 
-                        {/* First Name Start */}
+                        {/* First Name  */}
 
                         <ListTile
                             title="First Name"
-                            value={userDetails.user?.fname}
+                            value={verificationRequestDetails.data.user?.fname}
                             mt="1.5rem"
                         />
 
-                        {/* Last Name Start */}
+                        {/* Last Name  */}
 
                         <ListTile
                             title="Last Name"
-                            value={userDetails.user?.lname}
+                            value={verificationRequestDetails.data.user?.lname}
                             mt="1rem"
                         />
 
-                        {/* Username Start */}
+                        {/* Username */}
 
                         <ListTile
                             title="Username"
-                            value={userDetails.user?.uname}
+                            value={verificationRequestDetails.data.user?.uname}
                             mt="1rem"
                         />
 
-                        {/* Email Start */}
+                        {/* Email */}
 
                         <ListTile
                             title="Email"
-                            value={userDetails.user?.email}
+                            value={verificationRequestDetails.data.user?.email}
                             mt="1rem"
                         />
 
-                        {/* Phone Start */}
-
-                        {
-                            userDetails.user?.phone ?
-                                <ListTile
-                                    title="Phone"
-                                    value={userDetails.user?.countryCode + " " + userDetails.user?.phone}
-                                    mt="1rem"
-                                />
-                                :
-                                null
-                        }
-
-                        {/* Gender Start */}
-
-                        {
-                            userDetails.user?.gender ?
-                                <ListTile
-                                    title="Gender"
-                                    value={userDetails.user?.gender}
-                                    mt="1rem"
-                                />
-                                :
-                                null
-                        }
-
-                        {/* About */}
-
-                        {
-                            userDetails.user?.about ?
-                                <ListTile
-                                    title="About"
-                                    value={userDetails.user?.about}
-                                    mt="1rem"
-                                />
-                                :
-                                null
-                        }
-
-                        {/* DOB */}
-
-                        {
-                            userDetails.user?.dob ?
-                                <ListTile
-                                    title="Date of Birth"
-                                    value={userDetails.user?.dob}
-                                    mt="1rem"
-                                />
-                                :
-                                null
-                        }
-
-                        {/* Profession */}
-
-                        {
-                            userDetails.user?.profession ?
-                                <ListTile
-                                    title="Profession"
-                                    value={userDetails.user?.profession}
-                                    mt="1rem"
-                                />
-                                :
-                                null
-                        }
-
-                        {/* Locaton */}
-
-                        {
-                            userDetails.user?.location ?
-                                <ListTile
-                                    title="Location"
-                                    value={userDetails.user?.location}
-                                    mt="1rem"
-                                />
-                                :
-                                null
-                        }
-
-                        {/* Website */}
-
-                        {
-                            userDetails.user?.website ?
-                                <ListTile
-                                    title="Website"
-                                    value={userDetails.user?.website}
-                                    mt="1rem"
-                                />
-                                :
-                                null
-                        }
-
-                        {/* Posts Count */}
+                        {/* Legal Name */}
 
                         <ListTile
-                            title="Posts"
-                            value={userDetails.user?.postsCount}
+                            title="Legal Name"
+                            value={verificationRequestDetails.data.legalName}
                             mt="1rem"
                         />
 
-                        {/* Followers Count */}
+                        {/* Valid Email */}
 
                         <ListTile
-                            title="Followers"
-                            value={userDetails.user?.followersCount}
+                            title="Valid Email"
+                            value={verificationRequestDetails.data.email}
                             mt="1rem"
                         />
 
-                        {/* Following Count */}
+                        {/* Valid Phone */}
 
                         <ListTile
                             title="Following"
-                            value={userDetails.user?.followingCount}
+                            value={verificationRequestDetails.data.phone}
                             mt="1rem"
                         />
+
+                        {/* Category */}
+
+                        <ListTile
+                            title="Category"
+                            value={verificationRequestDetails.data.category}
+                            mt="1rem"
+                        />
+
+                        {/*  Document */}
+
+                        <Box
+                            position="relative"
+                            width="100%"
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="flex-start"
+                            justifyContent="flex-start"
+                            mt="1rem"
+                        >
+                            <p
+                                style={{
+                                    color: colors.primary[300],
+                                }}
+                            >
+                                Valid ID
+                            </p>
+
+                            <h5
+                                style={{
+                                    color: 'var(--linkColor)',
+                                    textOverflow: 'ellipsis',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => {
+                                    window.open(verificationRequestDetails.data.document?.url, '_blank')
+                                }}
+                            >
+                                View
+                            </h5>
+                        </Box>
 
                         {/* Status */}
 
+                        <Box
+                            position="relative"
+                            width="100%"
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="flex-start"
+                            justifyContent="flex-start"
+                            mt="1rem"
+                        >
+                            <Box
+                                position="relative"
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="flex-start"
+                            >
+                                <p
+                                    style={{
+                                        color: colors.primary[300],
+                                    }}
+                                >
+                                    Status
+                                </p>
+
+                                <h5
+                                    style={{
+                                        color: verificationRequestDetails.data.status === 'rejected' ?
+                                            colors.error :
+                                            verificationRequestDetails.data.status === 'pending' ?
+                                                colors.warning :
+                                                colors.success,
+                                    }}
+                                >
+                                    {verificationRequestDetails.data.status}
+                                </h5>
+                            </Box>
+
+                            {
+                                verificationRequestDetails.data.status === 'pending' ?
+                                    <Box
+                                        position="relative"
+                                        display="flex"
+                                        flexDirection="row"
+                                        alignItems="center"
+                                        justifyContent="flex-start"
+                                        mt="1rem"
+                                    >
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                backgroundColor: colors.success,
+                                                color: colors.primary[100],
+                                            }}
+                                            onClick={() => approveRequest()}
+                                        >
+                                            Approve
+                                        </Button>
+
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                backgroundColor: colors.error,
+                                                color: colors.primary[100],
+                                                marginLeft: '1rem'
+                                            }}
+                                            onClick={() => rejectRequest()}
+                                        >
+                                            Reject
+                                        </Button>
+
+                                    </Box>
+                                    :
+                                    null
+
+                            }
+
+                        </Box>
+
+                        {/* Is Verified On Other Platform */}
+
                         <ListTile
-                            title="Status"
-                            value={userDetails.user?.accountStatus}
+                            title="Is Verified On Other Platform"
+                            value={verificationRequestDetails.data.isVerifiedOnOtherPlatform === "yes" ? "Yes" : "No"}
                             mt="1rem"
                         />
 
-                        {/*  Role */}
-
-                        <ListTile
-                            title="Role"
-                            value={userDetails.user?.role}
-                            mt="1rem"
-                        />
-
-                        {/* Private Account */}
-
-                        <ListTile
-                            title="Is Private"
-                            value={userDetails.user?.isPrivate ? "Yes" : "No"}
-                            mt="1rem"
-                        />
-
-                        {/* Valid Status */}
-
-                        <ListTile
-                            title="Is Valid"
-                            value={userDetails.user?.isValid ? "Yes" : "No"}
-                            mt="1rem"
-                        />
-
-                        {/* Verified Status */}
-
-                        <ListTile
-                            title="Is Verified"
-                            value={userDetails.user?.isVerified ? "Yes" : "No"}
-                            mt="1rem"
-                        />
-
-                        {/* User Verified At */}
+                        {/* Other Platform Links */}
 
                         {
-                            userDetails.user?.isVerified ?
+                            verificationRequestDetails.data.isVerifiedOnOtherPlatform === "yes" ?
                                 <ListTile
-                                    title="Created At"
-                                    value={
-                                        userDetails.user?.verifiedAt ?
-                                            toDateTimeString(userDetails.user?.verifiedAt, { showSeconds: true })
-                                            : null
-                                    }
+                                    title="Other Platform Links"
+                                    value={verificationRequestDetails.data.otherPlatformLinks}
                                     mt="1rem"
                                 />
                                 :
                                 null
                         }
 
-                        {/* verification Requested At */}
-
-                        {
-                            userDetails.user?.verificationRequestedAt ?
-                                <ListTile
-                                    title="Deletion Requested At"
-                                    value={
-                                        userDetails.user?.verificationRequestedAt ?
-                                            toDateTimeString(userDetails.user?.verificationRequestedAt, { showSeconds: true })
-                                            : null
-                                    }
-                                    mt="1rem"
-                                />
-                                :
-                                null
-                        }
-
-                        {/* Deletion Request */}
+                        {/* Has Wikipedia Page */}
 
                         <ListTile
-                            title="Deletion Request"
-                            value={userDetails.user?.deletionRequest ? "Yes" : "No"}
+                            title="Has Wikipedia Page"
+                            value={verificationRequestDetails.data?.hasWikipediaPage === "yes" ? "Yes" : "No"}
                             mt="1rem"
                         />
 
-                        {/* Deletion Requested At */}
+                        {/* Wikipedia Link */}
 
                         {
-                            userDetails.user?.deletionRequest ?
+                            verificationRequestDetails.data.hasWikipediaPage === "yes" ?
                                 <ListTile
-                                    title="Deletion Requested At"
-                                    value={
-                                        userDetails.user?.deletionRequestAt ?
-                                            toDateTimeString(userDetails.user.deletionRequest, { showSeconds: true })
-                                            : null
-                                    }
+                                    title="Wikipedia Link"
+                                    value={verificationRequestDetails.data.wikipediaPageLink}
                                     mt="1rem"
                                 />
                                 :
                                 null
                         }
 
-                        {/* User Created At */}
+                        {/* Has Featured In Articles */}
+
+                        <ListTile
+                            title="Has Featured In Articles"
+                            value={verificationRequestDetails.data.featuredInArticles === "yes" ? "Yes" : "No"}
+                            mt="1rem"
+                        />
+
+                        {/* Article Links */}
+
+                        {
+                            verificationRequestDetails.data.featuredInArticles === "yes" ?
+                                <ListTile
+                                    title="Article Links"
+                                    value={verificationRequestDetails.data.articleLinks}
+                                    mt="1rem"
+                                />
+                                :
+                                null
+                        }
+
+                        {/* If Approved */}
+
+                        {
+                            verificationRequestDetails.data.status === "approved" ?
+                                <Box>
+                                    {/* Approved At */}
+
+                                    {
+                                        verificationRequestDetails.data?.approvedAt ?
+                                            <ListTile
+                                                title="Approved At"
+                                                value={
+                                                    verificationRequestDetails.data?.approvedAt ?
+                                                        toDateTimeString(verificationRequestDetails.data?.approvedAt, { showSeconds: true })
+                                                        : null
+                                                }
+                                                mt="1rem"
+                                            />
+                                            :
+                                            null
+                                    }
+
+                                    {/* Approved By */}
+
+                                    {
+                                        verificationRequestDetails.data?.approvedBy ?
+                                            <ListTile
+                                                title="Approved By"
+                                                value={verificationRequestDetails.data.approvedBy.uname}
+                                                mt="1rem"
+                                            />
+                                            :
+                                            null
+                                    }
+                                </Box>
+                                :
+                                null
+                        }
+
+                        {/* If Rejected */}
+
+                        {
+                            verificationRequestDetails.data.status === "rejected" ?
+                                <Box>
+                                    {/* Rejected At */}
+
+                                    {
+                                        verificationRequestDetails.data?.rejectedAt ?
+                                            <ListTile
+                                                title="Rejected At"
+                                                value={
+                                                    verificationRequestDetails.data?.rejectedAt ?
+                                                        toDateTimeString(verificationRequestDetails.data?.rejectedAt, { showSeconds: true })
+                                                        : null
+                                                }
+                                                mt="1rem"
+                                            />
+                                            :
+                                            null
+                                    }
+
+                                    {/* Rejected By */}
+
+                                    {
+                                        verificationRequestDetails.data?.rejectedBy ?
+                                            <ListTile
+                                                title="Rejected By"
+                                                value={verificationRequestDetails.data.rejectedBy.uname}
+                                                mt="1rem"
+                                            />
+                                            :
+                                            null
+                                    }
+
+                                    {/* Rejection Reason */}
+
+                                    {
+                                        verificationRequestDetails.data?.reason ?
+                                            <ListTile
+                                                title="Rejected By"
+                                                value={verificationRequestDetails.data.reason}
+                                                mt="1rem"
+                                            />
+                                            :
+                                            null
+                                    }
+                                </Box>
+                                :
+                                null
+                        }
+
+                        {/* Created At */}
 
                         <ListTile
                             title="Created At"
                             value={
-                                userDetails.user?.createdAt ?
-                                    toDateTimeString(userDetails.user.createdAt, { showSeconds: true })
+                                verificationRequestDetails.data.user?.createdAt ?
+                                    toDateTimeString(verificationRequestDetails.data.user.createdAt, { showSeconds: true })
                                     : null
                             }
                             mt="1rem"
                         />
 
-                        {/* User Updated At */}
+                        {/* Updated At */}
 
                         <ListTile
                             title="Updated At"
                             value={
-                                userDetails.user?.updatedAt ?
-                                    toDateTimeString(userDetails.user.updatedAt, { showSeconds: true })
+                                verificationRequestDetails.data.user?.updatedAt ?
+                                    toDateTimeString(verificationRequestDetails.data.user.updatedAt, { showSeconds: true })
                                     : null
                             }
                             mt="1rem"

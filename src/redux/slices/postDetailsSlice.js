@@ -3,9 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     status: 'idle',
     post: null,
-    error: '',
+    error: null,
 };
-
 
 const postDetailsSlice = createSlice({
     name: "postDetails",
@@ -27,7 +26,6 @@ const postDetailsSlice = createSlice({
 
         clearError: (state, action) => {
             state.error = null;
-            state.status = 'idle';
         },
 
         clearPostDetails: (state, action) => {

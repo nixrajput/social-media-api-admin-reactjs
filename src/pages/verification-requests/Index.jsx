@@ -87,12 +87,11 @@ const BlueTickRequestsListPage = () => {
       </Backdrop>
 
       <Header
-        title="VERIFICATION REQUESTS"
-        subtitle="Managing the verification requests"
+        title="Verification Requests"
       />
 
       <Box
-        m="1.5rem 0 0 0"
+        m="1rem 0 0 0"
       >
         <Box
         >

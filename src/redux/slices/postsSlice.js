@@ -9,8 +9,9 @@ const initialState = {
     limit: null,
     nextPage: null,
     prevPage: null,
-    results: [],
-    error: '',
+    results: null,
+    postList: [],
+    error: null,
 };
 
 
@@ -31,6 +32,7 @@ const postsSlice = createSlice({
             state.nextPage = action.payload.nextPage;
             state.prevPage = action.payload.prevPage;
             state.results = JSON.parse(JSON.stringify(action.payload.results));
+            state.postList = [...state.results];
             state.status = 'success';
         },
 
@@ -39,9 +41,52 @@ const postsSlice = createSlice({
             state.status = 'failed';
         },
 
+        loadMorePosts: (state, action) => {
+            state.status = 'loadingMore';
+        },
+
+        loadMorePostsSuccess: (state, action) => {
+            state.currentPage = action.payload.currentPage;
+            state.totalPages = action.payload.totalPages;
+            state.hasNextPage = action.payload.hasNextPage;
+            state.hasPrevPage = action.payload.hasPrevPage;
+            state.limit = action.payload.limit;
+            state.nextPage = action.payload.nextPage;
+            state.prevPage = action.payload.prevPage;
+            state.results = JSON.parse(JSON.stringify(action.payload.results));
+            state.postList = [...state.postList, ...state.results];
+            state.status = 'success';
+        },
+
+        loadMorePostsError: (state, action) => {
+            state.error = action.payload;
+            state.status = 'failed';
+        },
+
+        searchingPosts: (state, action) => {
+            state.status = 'searching';
+        },
+
+        searchingPostsSuccess: (state, action) => {
+            state.currentPage = action.payload.currentPage;
+            state.totalPages = action.payload.totalPages;
+            state.hasNextPage = action.payload.hasNextPage;
+            state.hasPrevPage = action.payload.hasPrevPage;
+            state.limit = action.payload.limit;
+            state.nextPage = action.payload.nextPage;
+            state.prevPage = action.payload.prevPage;
+            state.results = JSON.parse(JSON.stringify(action.payload.results));
+            state.postList = [...state.results];
+            state.status = 'success';
+        },
+
+        searchingPostsError: (state, action) => {
+            state.error = action.payload;
+            state.status = 'error';
+        },
+
         clearError: (state, action) => {
             state.error = null;
-            state.status = 'idle';
         },
 
         clearPosts: (state, action) => {
@@ -52,24 +97,10 @@ const postsSlice = createSlice({
             state.limit = null;
             state.nextPage = null;
             state.prevPage = null;
-            state.results = [];
+            state.results = null;
+            state.postList = [];
             state.error = null;
             state.status = 'idle';
-        },
-
-        deletePost: (state, action) => {
-            state.results = state.results.filter(post => post._id !== action.payload);
-        },
-
-        updatePost: (state, action) => {
-            const index = state.results.findIndex(post => post._id === action.payload._id);
-            if (index !== -1) {
-                state.results[index] = action.payload;
-            }
-        },
-
-        addPost: (state, action) => {
-            state.results.push(action.payload);
         },
     }
 });
@@ -78,11 +109,14 @@ export const {
     getPosts,
     getPostsSuccess,
     getPostsError,
+    loadMorePosts,
+    loadMorePostsSuccess,
+    loadMorePostsError,
+    searchingPosts,
+    searchingPostsSuccess,
+    searchingPostsError,
     clearError,
     clearPosts,
-    deletePost,
-    updatePost,
-    addPost,
 } = postsSlice.actions;
 
 export default postsSlice;

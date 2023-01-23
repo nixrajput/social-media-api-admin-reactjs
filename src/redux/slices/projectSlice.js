@@ -14,7 +14,6 @@ const initialState = {
     error: null,
 };
 
-
 const projectsSlice = createSlice({
     name: "projects",
     initialState,
@@ -36,6 +35,11 @@ const projectsSlice = createSlice({
             state.status = 'success';
         },
 
+        getProjectsError: (state, action) => {
+            state.error = action.payload;
+            state.status = 'error';
+        },
+
         loadMoreProjects: (state, action) => {
             state.status = 'loadingMore';
         },
@@ -53,7 +57,29 @@ const projectsSlice = createSlice({
             state.status = 'success';
         },
 
-        getProjectsError: (state, action) => {
+        loadMoreProjectsError: (state, action) => {
+            state.error = action.payload;
+            state.status = 'error';
+        },
+
+        searchingProjects: (state, action) => {
+            state.status = 'searching';
+        },
+
+        searchingProjectsSuccess: (state, action) => {
+            state.currentPage = action.payload.currentPage;
+            state.totalPages = action.payload.totalPages;
+            state.hasNextPage = action.payload.hasNextPage;
+            state.hasPrevPage = action.payload.hasPrevPage;
+            state.limit = action.payload.limit;
+            state.nextPage = action.payload.nextPage;
+            state.prevPage = action.payload.prevPage;
+            state.results = JSON.parse(JSON.stringify(action.payload.results));
+            state.projectList = [...state.results];
+            state.status = 'success';
+        },
+
+        searchingProjectsError: (state, action) => {
             state.error = action.payload;
             state.status = 'error';
         },
@@ -75,21 +101,6 @@ const projectsSlice = createSlice({
             state.projectList = [];
             state.status = 'idle';
         },
-
-        deleteProject: (state, action) => {
-            state.results = state.results.filter(post => post._id !== action.payload);
-        },
-
-        updateProject: (state, action) => {
-            const index = state.results.findIndex(post => post._id === action.payload._id);
-            if (index !== -1) {
-                state.results[index] = action.payload;
-            }
-        },
-
-        addProject: (state, action) => {
-            state.results.push(action.payload);
-        },
     }
 });
 
@@ -101,9 +112,10 @@ export const {
     clearProjects,
     loadMoreProjects,
     loadMoreProjectsSuccess,
-    deleteProject,
-    updateProject,
-    addProject,
+    loadMoreProjectsError,
+    searchingProjects,
+    searchingProjectsSuccess,
+    searchingProjectsError,
 } = projectsSlice.actions;
 
 export default projectsSlice;

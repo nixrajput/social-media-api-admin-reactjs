@@ -53,6 +53,28 @@ const usersSlice = createSlice({
             state.status = 'success';
         },
 
+        searchingUsers: (state, action) => {
+            state.status = 'searching';
+        },
+
+        searchingUsersSuccess: (state, action) => {
+            state.currentPage = action.payload.currentPage;
+            state.totalPages = action.payload.totalPages;
+            state.hasNextPage = action.payload.hasNextPage;
+            state.hasPrevPage = action.payload.hasPrevPage;
+            state.limit = action.payload.limit;
+            state.nextPage = action.payload.nextPage;
+            state.prevPage = action.payload.prevPage;
+            state.results = JSON.parse(JSON.stringify(action.payload.results));
+            state.userList = [...state.results];
+            state.status = 'success';
+        },
+
+        searchingUsersError: (state, action) => {
+            state.error = action.payload;
+            state.status = 'error';
+        },
+
         getUsersError: (state, action) => {
             state.error = action.payload;
             state.status = 'error';
@@ -75,21 +97,6 @@ const usersSlice = createSlice({
             state.error = null;
             state.status = 'idle';
         },
-
-        deleteUser: (state, action) => {
-            state.results = state.results.filter(user => user._id !== action.payload);
-        },
-
-        updateUser: (state, action) => {
-            const index = state.results.findIndex(user => user._id === action.payload._id);
-            if (index !== -1) {
-                state.results[index] = action.payload;
-            }
-        },
-
-        addUser: (state, action) => {
-            state.results.push(action.payload);
-        },
     }
 });
 
@@ -101,9 +108,9 @@ export const {
     loadMoreUsersSuccess,
     clearError,
     clearUsers,
-    deleteUser,
-    updateUser,
-    addUser,
+    searchingUsers,
+    searchingUsersSuccess,
+    searchingUsersError,
 } = usersSlice.actions;
 
 export default usersSlice;

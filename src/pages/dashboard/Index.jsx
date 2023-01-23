@@ -22,6 +22,7 @@ import {
 } from '../../redux/actions/statsAction';
 import CircleAvatar from '../../components/CircleAvatar';
 import PageHOC from '../../helpers/PageHOC';
+import numberUtils from '../../utils/numberUtils';
 
 const DashboardPage = () => {
   const theme = useTheme();
@@ -118,7 +119,6 @@ const DashboardPage = () => {
       >
         <Header
           title="DASHBOARD"
-          subtitle="Welcome to admin dashboard"
           mb={{
             xs: "1rem",
             sm: "1rem",
@@ -161,7 +161,7 @@ const DashboardPage = () => {
               return (
                 <StatBox
                   key={`stat-${key}`}
-                  title={stat.total}
+                  title={numberUtils.toCountingNumber(stat.total)}
                   subtitle={key}
                 // progress={stat.progress ? stat.progress / 100 : 0}
                 // increase={

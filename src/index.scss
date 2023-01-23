@@ -123,6 +123,24 @@ p {
   }
 }
 
+span {
+  font-size: 0.755rem;
+  font-weight: 400;
+  transition: all 0.5s ease-in-out;
+
+  @media screen and (min-width: 1600px) {
+    font-size: 0.785rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: 0.655rem;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 0.625rem;
+  }
+}
+
 h1 {
   font-size: 2.5rem;
   font-weight: 700;

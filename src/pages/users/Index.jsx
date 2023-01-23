@@ -4,15 +4,18 @@ import { Box, useTheme, Button } from "@mui/material";
 import { tokens } from "../../theme";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import SearchIcon from "@mui/icons-material/Search";
 import Header from "../../components/Header";
 import { useSnackbar } from 'notistack';
 import {
-  getAllUsersAction,
+  getUsersAction,
   loadMoreUsersAction,
+  searchUsersAction,
   clearUsersErrorAction
 } from '../../redux/actions/usersAction';
 import PageHOC from "../../helpers/PageHOC";
 import UserItem from "./UserItem";
+import InputBox from "../../components/InputBox";
 
 const UserListPage = () => {
   const theme = useTheme();
@@ -23,6 +26,7 @@ const UserListPage = () => {
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -40,11 +44,16 @@ const UserListPage = () => {
     await loadMoreUsersPromise;
   };
 
+  const searchUsers = async (searchText) => {
+    const searchUsersPromise = searchUsersAction(dispatch, auth.token, searchText);
+    await searchUsersPromise;
+  };
+
   useEffect(() => {
     document.title = "Dashboard - All Users";
 
     const getData = async () => {
-      const usersPromise = getAllUsersAction(dispatch, auth.token);
+      const usersPromise = getUsersAction(dispatch, auth.token);
       openBackdrop();
       await usersPromise;
       closeBackdrop();
@@ -83,15 +92,59 @@ const UserListPage = () => {
       </Backdrop>
 
       <Header
-        title="USERS"
-        subtitle="Managing the Users"
+        title="Users"
       />
 
-      <Box
-        m="1.5rem 0 0 0"
-      >
-        <Box
+      <InputBox>
+        <input
+          type="text"
+          placeholder="Search"
+          name="searchText"
+          disabled={
+            users.status === 'loading'
+            ||
+            users.status === 'searching'
+          }
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter')
+              searchUsers(searchText);
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            marginLeft: '1rem',
+          }}
+          onClick={() => searchUsers(searchText)}
         >
+          <SearchIcon />
+        </div>
+      </InputBox>
+
+      <Box
+        m="1rem 0 0 0"
+      >
+        {
+          users.status === 'searching' ?
+            <Box
+              width="100%"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              m="1rem"
+            >
+              <CircularProgress sx={{ color: colors.accent }} />
+            </Box>
+            :
+            null
+        }
+
+        <Box>
           {
             (users.userList !== null && users.userList.length > 0) ?
               users.userList.map((user, index) => (

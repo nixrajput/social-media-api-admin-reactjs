@@ -6,6 +6,9 @@ import {
     loadMoreUsers,
     loadMoreUsersSuccess,
     clearError as clearUsersError,
+    searchingUsers,
+    searchingUsersError,
+    searchingUsersSuccess,
 } from '../slices/usersSlice';
 import {
     getUserDetails,
@@ -15,14 +18,14 @@ import {
 } from '../slices/userDetailsSlice';
 import ApiUrls from "../../constants/urls";
 
-export const getAllUsersAction = async (dispatch, token, page = 1, limit = 20) => {
+export const getUsersAction = async (dispatch, token, page = 1, limit = 20) => {
     if (!dispatch) {
         console.log("dispatch is null");
         return;
     }
 
     if (!token) {
-        console.log('No token found');
+        dispatch(getUsersError('No token found'));
         return;
     }
 
@@ -53,17 +56,17 @@ export const loadMoreUsersAction = async (dispatch, token, page, limit = 20) => 
     }
 
     if (!token) {
-        getUsersError('No token found');
+        dispatch(getUsersError('No token found'));
         return;
     }
 
     if (!page) {
-        getUsersError("Page number is required");
+        dispatch(getUsersError('Page number is required'));
         return;
     }
 
     if (page < 1) {
-        getUsersError("Page number must be greater than 0");
+        dispatch(getUsersError('Page number must be greater than 0'));
         return;
     }
 
@@ -94,12 +97,12 @@ export const getUserDetailsAction = async (dispatch, token, userId) => {
     }
 
     if (!token) {
-        console.log('No token found');
+        dispatch(getUserDetailsError('No token found'));
         return;
     }
 
     if (!userId) {
-        console.log('No user id found');
+        dispatch(getUserDetailsError('User id is required'));
         return;
     }
 
@@ -118,6 +121,42 @@ export const getUserDetailsAction = async (dispatch, token, userId) => {
         }
     } catch (error) {
         dispatch(getUserDetailsError(error));
+    }
+}
+
+export const searchUsersAction = async (dispatch, token, searchText) => {
+    if (!dispatch) {
+        console.log("dispatch is null");
+        return;
+    }
+
+    if (!token) {
+        dispatch(searchingUsersError('No token found'));
+        return;
+    }
+
+    if (!searchText) {
+        dispatch(searchingUsersError("Search text is required"));
+        return;
+    }
+
+    dispatch(searchingUsers());
+
+    try {
+        const headers = { 'Authorization': `Bearer ${token}` };
+
+        const response = await apiClient.get(
+            `${ApiUrls.searchUsersEndpoint}?q=${searchText}`,
+            { headers }
+        );
+        if (response.status === 200) {
+            dispatch(searchingUsersSuccess(response));
+        }
+        else {
+            dispatch(searchingUsersError(response.message));
+        }
+    } catch (error) {
+        dispatch(searchingUsersError(error));
     }
 }
 

@@ -4,7 +4,7 @@ import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import { useSnackbar } from 'notistack';
 import {
@@ -25,7 +25,6 @@ const UserDetailsPage = () => {
     const auth = useSelector((state) => state.auth);
     const userDetails = useSelector((state) => state.userDetails);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -93,12 +92,11 @@ const UserDetailsPage = () => {
             </Backdrop>
 
             <Header
-                title="USER DETAILS"
-                subtitle="Managing the User Details"
+                title="User Details"
             />
 
             {
-                userDetails.status === 'success' ?
+                userDetails.user !== null ?
                     <Box
                         width="100%"
                         mt="1.5rem"
@@ -109,7 +107,7 @@ const UserDetailsPage = () => {
 
                         <CircleAvatar
                             avatar={userDetails.user?.avatar}
-                            size="320px"
+                            size="240px"
                         />
 
                         <h3
@@ -121,7 +119,15 @@ const UserDetailsPage = () => {
                             Details
                         </h3>
 
-                        {/* First Name Start */}
+                        {/* ID*/}
+
+                        <ListTile
+                            title="ID"
+                            value={userDetails.user._id}
+                            mt="1.5rem"
+                        />
+
+                        {/* First Name */}
 
                         <ListTile
                             title="First Name"
@@ -129,7 +135,7 @@ const UserDetailsPage = () => {
                             mt="1.5rem"
                         />
 
-                        {/* Last Name Start */}
+                        {/* Last Name */}
 
                         <ListTile
                             title="Last Name"
@@ -137,7 +143,7 @@ const UserDetailsPage = () => {
                             mt="1rem"
                         />
 
-                        {/* Username Start */}
+                        {/* Username */}
 
                         <ListTile
                             title="Username"
@@ -145,7 +151,7 @@ const UserDetailsPage = () => {
                             mt="1rem"
                         />
 
-                        {/* Email Start */}
+                        {/* Email */}
 
                         <ListTile
                             title="Email"
@@ -153,7 +159,7 @@ const UserDetailsPage = () => {
                             mt="1rem"
                         />
 
-                        {/* Phone Start */}
+                        {/* Phone */}
 
                         {
                             userDetails.user?.phone ?
@@ -166,7 +172,7 @@ const UserDetailsPage = () => {
                                 null
                         }
 
-                        {/* Gender Start */}
+                        {/* Gender */}
 
                         {
                             userDetails.user?.gender ?
@@ -394,7 +400,7 @@ const UserDetailsPage = () => {
                     : null
             }
 
-        </Box >
+        </Box>
     )
 }
 

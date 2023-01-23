@@ -7,10 +7,12 @@ const ListTile = ({ title, value, ...props }) => {
 
     return (
         <Box
+            position="relative"
+            width="100%"
             display="flex"
             flexDirection="column"
             alignItems="flex-start"
-            justifyContent="stretch"
+            justifyContent="flex-start"
             {...props}
         >
             <p
@@ -24,6 +26,7 @@ const ListTile = ({ title, value, ...props }) => {
             <h5
                 style={{
                     color: colors.primary[100],
+                    textOverflow: 'ellipsis',
                 }}
             >
                 {value}

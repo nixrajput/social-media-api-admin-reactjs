@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { tokens } from "../../theme";
 
-const VerificationRequestItem = ({ request, index, totalLength }) => {
+const PostItem = ({ post, index, totalLength }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
@@ -11,7 +11,7 @@ const VerificationRequestItem = ({ request, index, totalLength }) => {
 
     return (
         <Box
-            key={`user-${request._id}`}
+            key={`post-${post._id}`}
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -31,31 +31,33 @@ const VerificationRequestItem = ({ request, index, totalLength }) => {
                 justifyContent="flex-start"
                 alignItems="flex-start"
             >
-
                 <h5
                     style={{
                         color: colors.primary[100],
+                        marginLeft: '1rem',
                     }}
                 >
-                    {request.user?.uname}
+                    {post._id}
                 </h5>
 
-                <span
+                <p
                     style={{
-                        marginTop: '0.25rem',
-                        color: colors.primary[100],
-                        backgroundColor: request.status === 'rejected' ?
-                            colors.error :
-                            request.status === 'pending' ?
-                                colors.warning :
-                                colors.success,
-                        padding: '0.15rem 0.5rem',
-                        borderRadius: '2rem',
+                        color: colors.primary[300],
+                        marginLeft: '1rem',
+                        textTransform: 'capitalize'
                     }}
                 >
-                    {request.status}
-                </span>
+                    {post.postType}
+                </p>
 
+                <p
+                    style={{
+                        color: colors.primary[300],
+                        marginLeft: '1rem',
+                    }}
+                >
+                    {post.owner.uname}
+                </p>
             </Box>
 
             <Box
@@ -66,7 +68,7 @@ const VerificationRequestItem = ({ request, index, totalLength }) => {
                     alignItems: 'center',
                     cursor: 'pointer'
                 }}
-                onClick={() => navigate(`/verification-requests/${request._id}`)}
+                onClick={() => navigate(`/posts/${post._id}`)}
             >
                 <VisibilityIcon sx={{ color: colors.accent[800] }}
                 />
@@ -75,4 +77,4 @@ const VerificationRequestItem = ({ request, index, totalLength }) => {
     )
 }
 
-export default VerificationRequestItem;
+export default PostItem;

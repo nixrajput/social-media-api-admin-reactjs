@@ -27,7 +27,10 @@ const UserDetailsPage = lazy(() => import('./pages/users/UserDetails'));
 const PostListPage = lazy(() => import('./pages/posts/Index'));
 const PostDetailsPage = lazy(() => import('./pages/posts/PostDetails'));
 const ProfilePage = lazy(() => import('./pages/profile/Index'));
-const BlueTickRequestsListPage = lazy(() => import('./pages/verification-requests/Index'));
+const VerificationRequestsListPage = lazy(() => import('./pages/verification-requests/Index'));
+const VerificationRequestDetails = lazy(() => import('./pages/verification-requests/VerificationRequestDetails'));
+const ProjectListPage = lazy(() => import('./pages/projects/Index'));
+const ProjectDetailsPage = lazy(() => import('./pages/projects/ProjectDetails'));
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -121,7 +124,11 @@ function App() {
                     <Route path="/posts" element={<AdminRoute> <PostListPage /> </AdminRoute>} />
                     <Route path="/posts/:id" element={<AdminRoute> <PostDetailsPage /> </AdminRoute>} />
 
-                    <Route path="/verification-requests" element={<AdminRoute> <BlueTickRequestsListPage /> </AdminRoute>} />
+                    <Route path="/projects" element={<AdminRoute> <ProjectListPage /> </AdminRoute>} />
+                    <Route path="/projects/:id" element={<AdminRoute> <ProjectDetailsPage /> </AdminRoute>} />
+
+                    <Route path="/verification-requests" element={<AdminRoute> <VerificationRequestsListPage /> </AdminRoute>} />
+                    <Route path="/verification-requests/:id" element={<AdminRoute> <VerificationRequestDetails /> </AdminRoute>} />
 
                     <Route path="*" element={<NotFoundPage />} />
                   </Routes>

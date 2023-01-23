@@ -1,21 +1,21 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import Carousel from 'react-material-ui-carousel';
 import Backdrop from '@mui/material/Backdrop';
-import Button from "@mui/material/Button";
 import CircularProgress from '@mui/material/CircularProgress';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Switch from "@mui/material/Switch";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
-import CircleAvatar from '../../components/CircleAvatar';
+import { useSnackbar } from 'notistack';
 import {
     getPostDetailsAction,
-} from '../../redux/actions';
+    clearPostDetailsErrorAction,
+} from '../../redux/actions/postsAction';
 import PageHOC from "../../helpers/PageHOC";
 import { toDateTimeString } from '../../utils/dateUtils';
+import ListTile from "../../components/ListTile";
+import numberUtils from "../../utils/numberUtils";
 
 const PostDetailsPage = () => {
     const theme = useTheme();
@@ -24,10 +24,10 @@ const PostDetailsPage = () => {
     const { id } = useParams();
 
     const auth = useSelector((state) => state.auth);
-    const profileDetails = useSelector((state) => state.profileDetails);
     const postDetails = useSelector((state) => state.postDetails);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const [open, setOpen] = useState(false);
 
@@ -39,85 +39,86 @@ const PostDetailsPage = () => {
         setOpen(true);
     };
 
-    const getData = async () => {
-        const postDetailsPromise = getPostDetailsAction(dispatch, auth.token, id);
-        openBackdrop();
-        await postDetailsPromise;
-        closeBackdrop();
-    }
-
     useEffect(() => {
         document.title = "Post Details | Dashboard";
 
-        if (
-            auth.status === 'authenticating' || profileDetails.status === 'loading' ||
-            postDetails.status === 'loading'
-        ) {
+        const getData = async () => {
+            const postDetailsPromise = getPostDetailsAction(dispatch, auth.token, id);
+            openBackdrop();
+            await postDetailsPromise;
+            closeBackdrop();
+        }
+
+        if (postDetails.status === 'loading') {
             openBackdrop();
         }
         else {
             closeBackdrop();
         }
 
-        return () => { }
-
-    }, [
-        auth.token, profileDetails.status, auth.status, postDetails.status
-    ]);
-
-    useEffect(() => {
-        if (postDetails.status === 'idle' || (id && id !== postDetails.post?._id)) {
+        if (postDetails.status === 'idle' ||
+            (id && id !== postDetails.post?._id)) {
             getData();
         }
 
         return () => { }
 
-    }, [auth.token, postDetails.status, postDetails.post?._id, id]);
+    }, [
+        auth.token, postDetails.status,
+        postDetails.post?._id, id, dispatch
+    ]);
+
+    useEffect(() => {
+        if (postDetails.error !== null) {
+            enqueueSnackbar(postDetails.error, { variant: 'error' });
+            clearPostDetailsErrorAction(dispatch);
+        }
+
+        return () => { }
+
+    }, [
+        postDetails.error, enqueueSnackbar, dispatch
+    ]);
 
     return (
-        <Box m="20px" mt="0" width="100%">
+        <Box width="100%">
             <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                sx={{
+                    color: '#fff',
+                    zIndex: (theme) => theme.zIndex.drawer + 1
+                }}
                 open={open}
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
 
-            <Header title="POST DETAILS" subtitle="Managing the Post Details" />
+            <Header
+                title="Post Details"
+            />
 
             {
-                postDetails.status === 'success' ?
+                postDetails.post !== null ?
                     <Box
-                        display="grid"
-                        gridTemplateColumns="repeat(12, 1fr)"
-                        gridAutoRows="140px"
-                        gap="20px"
-                        pb="20px"
+                        width="100%"
+                        mt="1.5rem"
+                        bgcolor={colors.dialog}
+                        p="1rem"
                     >
 
-                        {/* Post Media Start */}
+                        {/* Carousel */}
 
-                        <Box
-                            width="100%"
-                            gridColumn={{ xs: "span 12", lg: "span 4" }}
-                            gridRow="span 3"
-                            backgroundColor={colors.primary[400]}
-                            overflow="hidden"
-                        >
-                            <Box
-                                width="100%"
-                                height="100%"
-                                display="flex"
-                                flexDirection="column"
-                                justifyContent="flex-start"
-                                alignItems="flex-start"
-                            >
+                        {
+                            postDetails.post.postType === "media" ?
                                 <Carousel
                                     autoPlay={false}
                                     sx={{
                                         width: '100%',
                                         height: '100%',
+                                        maxWidth: '25rem',
+                                        maxHeight: '25rem',
                                         position: 'relative',
+                                        margin: '0 auto',
+                                        marginBottom: '1.5rem',
                                     }}
                                     indicatorIconButtonProps={{
                                         style: {
@@ -180,540 +181,237 @@ const PostDetailsPage = () => {
                                         })
                                     }
                                 </Carousel>
-                            </Box>
-                        </Box>
+                                :
+                                null
+                        }
 
-                        {/* Post Media End */}
-
-                        {/* Post Details Start */}
-
-                        <Box
-                            gridColumn={{ xs: "span 12", lg: "span 8" }}
-                            gridRow="span 6"
-                            backgroundColor={colors.primary[400]}
-                            overflow="auto"
+                        <h3
+                            style={{
+                                color: colors.primary[100],
+                            }}
                         >
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                borderBottom={`4px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h3"
-                                    fontWeight="600"
-                                >
-                                    Details
-                                </Typography>
-                            </Box>
+                            Details
+                        </h3>
 
-                            {/* Owner Details Start */}
+                        {/* ID*/}
 
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Owner
-                                </Typography>
+                        <ListTile
+                            title="ID"
+                            value={postDetails.post._id}
+                            mt="1.5rem"
+                        />
 
-                                <Box
-                                    width="100%"
-                                    display="flex"
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    p="15px"
-                                >
-                                    <Box
-                                        display='flex'
-                                        flexDirection='row'
-                                        justifyContent='center'
-                                    >
-                                        <CircleAvatar
-                                            avatar={postDetails.post.owner.avatar}
-                                        />
+                        {/* Caption */}
 
-                                        <Box ml='20px'>
-                                            <Typography
-                                                color={colors.greenAccent[500]}
-                                                variant="h5"
-                                                fontWeight="600"
-                                            >
-                                                {postDetails.post.owner.fname} {postDetails.post.owner.lname}
-                                            </Typography>
+                        {
+                            postDetails.post.postType === "poll" ?
+                                <ListTile
+                                    title="Poll Question"
+                                    value={postDetails.post.pollQuestion}
+                                    mt="1rem"
+                                />
+                                :
+                                <ListTile
+                                    title="Caption"
+                                    value={postDetails.post.caption}
+                                    mt="1rem"
+                                />
+                        }
 
-                                            <Typography color={colors.grey[100]}>
-                                                {postDetails.post.owner.uname}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
+                        {
+                            postDetails.post.postType === "poll" ?
+                                <Box>
+                                    {/* Poll Options */}
 
-                                    <Box
-                                        backgroundColor={colors.greenAccent[500]}
-                                        p="5px 10px"
-                                        borderRadius="4px"
-                                        display='flex'
-                                        flexDirection='row'
-                                        justifyContent='center'
-                                        alignItems='center'
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={
-                                            () => navigate(`/users/${postDetails.post.owner._id}`)
+                                    <ListTile
+                                        title="Poll Options"
+                                        value={postDetails.post.pollOptions.map((item, index) => {
+                                            return item.option
+                                        }).join(", ")}
+                                        mt="1rem"
+                                    />
+
+                                    {/* Total Votes */}
+
+                                    <ListTile
+                                        title="Total Votes"
+                                        value={postDetails.post.totalVotes}
+                                        mt="1rem"
+                                    />
+
+                                    {/* Poll Ends At */}
+
+                                    <ListTile
+                                        title="Poll Ends At"
+                                        value={
+                                            postDetails.post?.pollEndsAt ?
+                                                toDateTimeString(postDetails.post?.pollEndsAt, { showSeconds: true })
+                                                : null
                                         }
-                                    >
-                                        <VisibilityIcon />
-                                    </Box>
+                                        mt="1rem"
+                                    />
                                 </Box>
-                            </Box>
+                                :
+                                null
+                        }
 
-                            {/* Owner Details End */}
+                        {/* Owner */}
 
-                            {/* Post Caption Start */}
+                        <ListTile
+                            title="Owner"
+                            value={postDetails.post.owner.uname}
+                            mt="1rem"
+                        />
 
-                            {
-                                postDetails.post.caption ?
-                                    <Box
-                                        display="flex"
-                                        flexDirection="column"
-                                        alignItems="flex-start"
-                                        justifyContent="stretch"
-                                        borderBottom={`2px solid ${colors.background}`}
-                                        colors={colors.grey[100]}
-                                        p="15px"
-                                    >
-                                        <Typography
-                                            color={colors.grey[100]}
-                                            variant="h5"
-                                            fontWeight="600"
-                                        >
-                                            Caption
-                                        </Typography>
+                        {/* Post Type */}
 
-                                        <Typography color={colors.grey[200]}
-                                            variant="subtitle1"
-                                        >
-                                            {postDetails.post.caption}
-                                        </Typography>
-                                    </Box>
-                                    :
-                                    null
+                        <ListTile
+                            title="Post Type"
+                            value={postDetails.post.postType}
+                            mt="1rem"
+                        />
+
+                        {/* Likes */}
+
+                        <ListTile
+                            title="Likes"
+                            value={numberUtils.toCountingNumber(postDetails.post.likesCount || 0)}
+                            mt="1rem"
+                        />
+
+                        {/* Comments */}
+
+                        <ListTile
+                            title="Comments"
+                            value={numberUtils.toCountingNumber(postDetails.post.commentsCount || 0)}
+                            mt="1rem"
+                        />
+
+                        {/* Reposts */}
+
+                        <ListTile
+                            title="Reposts"
+                            value={numberUtils.toCountingNumber(postDetails.post.repostsCount || 0)}
+                            mt="1rem"
+                        />
+
+                        {/* Shares */}
+
+                        <ListTile
+                            title="Shares"
+                            value={numberUtils.toCountingNumber(postDetails.post.sharesCount || 0)}
+                            mt="1rem"
+                        />
+
+                        {/* Saves */}
+
+                        <ListTile
+                            title="Saves"
+                            value={numberUtils.toCountingNumber(postDetails.post.savesCount || 0)}
+                            mt="1rem"
+                        />
+
+                        {/* Views */}
+
+                        <ListTile
+                            title="Comments"
+                            value={numberUtils.toCountingNumber(postDetails.post.viewsCount || 0)}
+                            mt="1rem"
+                        />
+
+                        {/* Status */}
+
+                        <ListTile
+                            title="Status"
+                            value={postDetails.post?.postStatus}
+                            mt="1rem"
+                        />
+
+                        {/*  Visibility */}
+
+                        <ListTile
+                            title="Visibility"
+                            value={postDetails.post?.visibility}
+                            mt="1rem"
+                        />
+
+                        {/* Is Comments Allowed */}
+
+                        <ListTile
+                            title="Is Comments Allowed"
+                            value={postDetails.post?.allowComments ? "Yes" : "No"}
+                            mt="1rem"
+                        />
+
+                        {/* Is Likes Allowed */}
+
+                        <ListTile
+                            title="Is Likes Allowed"
+                            value={postDetails.post?.allowLikes ? "Yes" : "No"}
+                            mt="1rem"
+                        />
+
+                        {/* Is Repost Allowed */}
+
+                        <ListTile
+                            title="Is Repost Allowed"
+                            value={postDetails.post?.allowReposts ? "Yes" : "No"}
+                            mt="1rem"
+                        />
+
+                        {/* Is Sharing Allowed */}
+
+                        <ListTile
+                            title="Is Sharing Allowed"
+                            value={postDetails.post?.allowShare ? "Yes" : "No"}
+                            mt="1rem"
+                        />
+
+                        {/* Is Saving Allowed */}
+
+                        <ListTile
+
+                            title="Is Saving Allowed"
+                            value={postDetails.post?.allowSave ? "Yes" : "No"}
+                            mt="1rem"
+                        />
+
+                        {/* Is Download Allowed */}
+
+                        <ListTile
+                            title="Is Download Allowed"
+                            value={postDetails.post?.allowDownload ? "Yes" : "No"}
+                            mt="1rem"
+                        />
+
+                        {/* Created At */}
+
+                        <ListTile
+                            title="Created At"
+                            value={
+                                postDetails.post?.createdAt ?
+                                    toDateTimeString(postDetails.post.createdAt, { showSeconds: true })
+                                    : null
                             }
+                            mt="1rem"
+                        />
 
-                            {/* Post Caption End */}
+                        {/* Updated At */}
 
-                            {/* Post Type Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Post Type
-                                </Typography>
-
-                                <Typography color={colors.grey[200]}
-                                    variant="subtitle1"
-                                >
-                                    {postDetails.post.postType}
-                                </Typography>
-                            </Box>
-
-                            {/* Post Type End */}
-
-                            {/* Likes Count Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Likes
-                                </Typography>
-
-                                <Typography color={colors.grey[200]}
-                                    variant="subtitle1"
-                                >
-                                    {postDetails.post.likesCount}
-                                </Typography>
-                            </Box>
-
-                            {/* Likes Count End */}
-
-                            {/* Comments Count Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Comments
-                                </Typography>
-
-                                <Typography color={colors.grey[200]}
-                                    variant="subtitle1"
-                                >
-                                    {postDetails.post.commentsCount}
-                                </Typography>
-                            </Box>
-
-                            {/* Comments Count End */}
-
-                            {/* Visibility Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Post Visibility
-                                </Typography>
-
-                                <Typography color={colors.grey[200]}
-                                    variant="subtitle1"
-                                >
-                                    {postDetails.post.visibility}
-                                </Typography>
-                            </Box>
-
-                            {/* Visibility End */}
-
-                            {/* Post Status Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Post Status
-                                </Typography>
-
-                                <Typography color={colors.grey[200]}
-                                    variant="subtitle1"
-                                >
-                                    {postDetails.post.postStatus}
-                                </Typography>
-                            </Box>
-
-                            {/* Post Status End */}
-
-                            {/* Comments Allowed Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Comments Allowed
-                                </Typography>
-
-                                <Switch
-                                    color="secondary"
-                                    checked={postDetails.post?.allowComments}
-                                //onChange={handleValidChange}
-                                />
-                            </Box>
-
-                            {/* Comments Allowed End */}
-
-                            {/* Likes Allowed Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Likes Allowed
-                                </Typography>
-
-                                <Switch
-                                    color="secondary"
-                                    checked={postDetails.post?.allowLikes}
-                                //onChange={handleValidChange}
-                                />
-                            </Box>
-
-                            {/* Likes Allowed End */}
-
-                            {/* Share Allowed Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Share Allowed
-                                </Typography>
-
-                                <Switch
-                                    color="secondary"
-                                    checked={postDetails.post?.allowShare}
-                                //onChange={handleValidChange}
-                                />
-                            </Box>
-
-                            {/* Share Allowed End */}
-
-                            {/* Save Allowed Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Save Allowed
-                                </Typography>
-
-                                <Switch
-                                    color="secondary"
-                                    checked={postDetails.post?.allowSave}
-                                //onChange={handleValidChange}
-                                />
-                            </Box>
-
-                            {/* Save Allowed End */}
-
-                            {/* Download Allowed Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Download Allowed
-                                </Typography>
-
-                                <Switch
-                                    color="secondary"
-                                    checked={postDetails.post?.allowDownload}
-                                //onChange={handleValidChange}
-                                />
-                            </Box>
-
-                            {/* Download Allowed End */}
-
-                            {/* Post Created At Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Created At
-                                </Typography>
-
-                                <Typography color={colors.grey[200]}
-                                    variant="subtitle1"
-                                >
-                                    {
-                                        postDetails.post.createdAt ?
-                                            toDateTimeString(postDetails.post.createdAt, { showSeconds: true })
-                                            : null
-                                    }
-                                </Typography>
-                            </Box>
-
-                            {/* Post Created At End */}
-
-                            {/* Post Updated At Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                borderBottom={`2px solid ${colors.background}`}
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Typography
-                                    color={colors.grey[100]}
-                                    variant="h5"
-                                    fontWeight="600"
-                                >
-                                    Created At
-                                </Typography>
-
-                                <Typography color={colors.grey[200]}
-                                    variant="subtitle1"
-                                >
-                                    {
-                                        postDetails.post.updatedAt ?
-                                            toDateTimeString(postDetails.post.updatedAt, { showSeconds: true })
-                                            : null
-                                    }
-                                </Typography>
-                            </Box>
-
-                            {/* Post Updated At End */}
-
-                            {/* Post Actions Start */}
-
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="stretch"
-                                colors={colors.grey[100]}
-                                p="15px"
-                            >
-                                <Box
-                                    display="flex"
-                                    flexDirection="row"
-                                    alignItems="center"
-                                    justifyContent="space-between"
-                                    width="100%"
-                                >
-                                    <Box
-                                        display="flex"
-                                        flexDirection="row"
-                                        alignItems="center"
-                                        justifyContent="flex-end"
-                                    >
-                                        {/* <Button
-                                            variant="contained"
-                                            onClick={() => {
-                                                navigate(`/posts/${postDetails.post.id}/edit`)
-                                            }}
-                                        >
-                                            Edit
-                                        </Button> */}
-
-                                        <Button
-                                            variant="contained"
-                                            sx={{ marginLeft: "10px" }}
-                                            onClick={() => {
-                                                navigate(`/posts/${postDetails.post.id}/delete`)
-                                            }}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </Box>
-                                </Box>
-                            </Box>
-
-                            {/* Post Actions End */}
-
-                        </Box>
-
-                        {/* Post Details End */}
-
+                        <ListTile
+                            title="Updated At"
+                            value={
+                                postDetails.post?.updatedAt ?
+                                    toDateTimeString(postDetails.post.updatedAt, { showSeconds: true })
+                                    : null
+                            }
+                            mt="1rem"
+                        />
                     </Box>
                     : null
             }
 
-        </Box>
+        </Box >
     )
 }
 

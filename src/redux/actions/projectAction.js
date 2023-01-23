@@ -1,8 +1,10 @@
 import apiClient from "../../api/apiClient";
 import {
     getProjects, getProjectsError,
-    getProjectsSuccess, clearProjectsError,
-    loadMoreProjects, loadMoreProjectsSuccess
+    getProjectsSuccess, loadMoreProjects,
+    loadMoreProjectsSuccess, loadMoreProjectsError,
+    searchingProjects, searchingProjectsSuccess,
+    searchingProjectsError, clearProjectsError,
 } from '../slices/projectSlice';
 import {
     getProjectDetails, getProjectDetailsError,
@@ -10,17 +12,25 @@ import {
 } from '../slices/projectDetailsSlice';
 import ApiUrls from "../../constants/urls";
 
-export const getProjectsAction = async (dispatch, page = 1, limit = 10) => {
+export const getProjectsAction = async (dispatch, token, page = 1, limit = 10) => {
     if (!dispatch) {
         console.log("dispatch is null");
+        return;
+    }
+
+    if (!token) {
+        dispatch(getProjectsError('No token found'));
         return;
     }
 
     dispatch(getProjects());
 
     try {
+        const headers = { 'Authorization': `Bearer ${token}` };
+
         const response = await apiClient.get(
-            `${ApiUrls.getProjectsEndpoint}?page=${page}&limit=${limit}`
+            `${ApiUrls.getProjectsEndpoint}?page=${page}&limit=${limit}`,
+            { headers }
         );
         if (response.status === 200) {
             dispatch(getProjectsSuccess(response));
@@ -33,55 +43,70 @@ export const getProjectsAction = async (dispatch, page = 1, limit = 10) => {
     }
 }
 
-export const loadMoreProjectsAction = async (dispatch, page, limit = 10) => {
+export const loadMoreProjectsAction = async (dispatch, token, page, limit = 10) => {
     if (!dispatch) {
         console.log("dispatch is null");
         return;
     }
+    if (!token) {
+        dispatch(loadMoreProjectsError('No token found'));
+        return;
+    }
 
     if (!page) {
-        getProjectsError("Page number is required");
+        dispatch(loadMoreProjectsError("Page number is required"));
         return;
     }
 
     if (page < 1) {
-        getProjectsError("Page number must be greater than 0");
+        dispatch(loadMoreProjectsError("Page number must be greater than 0"));
         return;
     }
 
     dispatch(loadMoreProjects());
 
     try {
+        const headers = { 'Authorization': `Bearer ${token}` };
+
         const response = await apiClient.get(
-            `${ApiUrls.getProjectsEndpoint}?page=${page}&limit=${limit}`
+            `${ApiUrls.getProjectsEndpoint}?page=${page}&limit=${limit}`,
+            { headers }
         );
         if (response.status === 200) {
             dispatch(loadMoreProjectsSuccess(response));
         }
         else {
-            dispatch(getProjectsError(response.message));
+            dispatch(loadMoreProjectsError(response.message));
         }
     } catch (error) {
-        dispatch(getProjectsError(error));
+        dispatch(loadMoreProjectsError(error));
     }
 }
 
-export const getProjectDetailsAction = async (dispatch, projectId) => {
+export const getProjectDetailsAction = async (dispatch, token, projectId) => {
     if (!dispatch) {
         console.log("dispatch is null");
         return;
     }
 
+    if (!token) {
+        dispatch(getProjectDetailsError('No token found'));
+        return;
+    }
+
     if (!projectId) {
-        getProjectDetailsError("Project id is required");
+        dispatch(getProjectDetailsError("Project id is required"));
         return;
     }
 
     dispatch(getProjectDetails());
 
     try {
+        const headers = { 'Authorization': `Bearer ${token}` };
+
         const response = await apiClient.get(
-            `${ApiUrls.getProjectDetailsEndpoint}?projectId=${projectId}`,
+            `${ApiUrls.getProjectDetailsEndpoint}?id=${projectId}`,
+            { headers }
         );
         if (response.status === 200) {
             dispatch(getProjectDetailsSuccess(response));
@@ -94,55 +119,39 @@ export const getProjectDetailsAction = async (dispatch, projectId) => {
     }
 }
 
-export const incrementProjectViewsCountAction = async (dispatch, projectId) => {
+export const searcProjectsAction = async (dispatch, token, searchText) => {
     if (!dispatch) {
         console.log("dispatch is null");
         return;
     }
 
-    if (!projectId) {
-        console.log("Project id is required");
+    if (!token) {
+        dispatch(searchingProjectsError('No token found'));
         return;
     }
+
+    if (!searchText) {
+        dispatch(searchingProjectsError("Search text is required"));
+        return;
+    }
+
+    dispatch(searchingProjects());
 
     try {
+        const headers = { 'Authorization': `Bearer ${token}` };
+
         const response = await apiClient.get(
-            `${ApiUrls.incrementProjectViewsCountEndpoint}?projectId=${projectId}`,
+            `${ApiUrls.searchProjectsEndpoint}?q=${searchText}`,
+            { headers }
         );
         if (response.status === 200) {
-            console.log("Incremented project views");
+            dispatch(searchingProjectsSuccess(response));
         }
         else {
-            console.log("Failed to increment project views");
+            dispatch(searchingProjectsError(response.message));
         }
     } catch (error) {
-        console.log(error);
-    }
-}
-
-export const incrementProjectDownloadsCountAction = async (dispatch, projectId) => {
-    if (!dispatch) {
-        console.log("dispatch is null");
-        return;
-    }
-
-    if (!projectId) {
-        console.log("Project id is required");
-        return;
-    }
-
-    try {
-        const response = await apiClient.get(
-            `${ApiUrls.incrementProjectDownloadsCountEndpoint}?projectId=${projectId}`,
-        );
-        if (response.status === 200) {
-            console.log("Incremented project downloads count");
-        }
-        else {
-            console.log("Failed to increment project downloads count");
-        }
-    } catch (error) {
-        console.log(error);
+        dispatch(searchingProjectsError(error));
     }
 }
 
