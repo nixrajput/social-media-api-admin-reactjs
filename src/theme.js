@@ -1,4 +1,7 @@
-import { createContext, useState, useMemo, useEffect } from "react";
+import {
+  createContext, useState,
+  useMemo, useEffect
+} from "react";
 import { createTheme } from "@mui/material/styles";
 import storage from "./utils/storage";
 
@@ -233,105 +236,105 @@ export const themeSettings = (mode) => {
 };
 
 // // context for color mode
-// export const ColorModeContext = createContext({
-//   setColorMode: (value) => { },
-// });
-
-// export const useMode = () => {
-//   const [mode, setMode] = useState("dark");
-//   const [systemMode, setSystemMode] = useState("dark");
-//   const [themeMode, setThemeMode] = useState('dark');
-
-//   useEffect(() => {
-//     const localMode = storage.get("theme");
-//     const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
-
-//     darkThemeMq.addEventListener("change", (e) => {
-//       const newColorScheme = e.matches ? "dark" : "light";
-//       setSystemMode(newColorScheme);
-//     });
-
-//     switch (localMode) {
-//       case "light":
-//         setMode("light");
-//         setThemeMode('light');
-//         break;
-//       case "dark":
-//         setMode("dark");
-//         setThemeMode('dark');
-//         break;
-//       case "system":
-//         setMode(systemMode);
-//         setThemeMode('system');
-//         break;
-//       default:
-//         setMode(systemMode);
-//         setThemeMode('system');
-//         break;
-//     }
-
-//     return () => {
-//       darkThemeMq.removeEventListener("change", () => { });
-//     }
-//   }, [systemMode, mode, themeMode]);
-
-//   const colorMode = useMemo(
-//     () => ({
-//       setColorMode: (value) => {
-//         storage.set("theme", value);
-
-//         switch (value) {
-//           case "light":
-//             setMode("light");
-//             setThemeMode('light');
-//             break;
-//           case "dark":
-//             setMode("dark");
-//             setThemeMode('dark');
-//             break;
-//           case "system":
-//             setMode(systemMode);
-//             setThemeMode('system');
-//             break;
-//           default:
-//             setMode(systemMode);
-//             setThemeMode('system');
-//             break;
-//         }
-//       }
-//     }),
-//     [mode, systemMode, themeMode]
-//   );
-
-//   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-//   return [theme, colorMode, themeMode];
-// };
-
-// context for color mode
 export const ColorModeContext = createContext({
-  toggleColorMode: () => { },
+  setColorMode: (value) => { },
 });
 
 export const useMode = () => {
   const [mode, setMode] = useState("dark");
+  const [systemMode, setSystemMode] = useState("dark");
+  const [themeMode, setThemeMode] = useState('dark');
 
   useEffect(() => {
     const localMode = storage.get("theme");
-    if (localMode) {
-      setMode(localMode);
+    const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
+
+    darkThemeMq.addEventListener("change", (e) => {
+      const newColorScheme = e.matches ? "dark" : "light";
+      setSystemMode(newColorScheme);
+    });
+
+    switch (localMode) {
+      case "light":
+        setMode("light");
+        setThemeMode('light');
+        break;
+      case "dark":
+        setMode("dark");
+        setThemeMode('dark');
+        break;
+      case "system":
+        setMode(systemMode);
+        setThemeMode('system');
+        break;
+      default:
+        setMode(systemMode);
+        setThemeMode('system');
+        break;
     }
-  }, []);
+
+    return () => {
+      darkThemeMq.removeEventListener("change", () => { });
+    }
+  }, [systemMode, mode, themeMode]);
 
   const colorMode = useMemo(
     () => ({
-      toggleColorMode: () => {
-        storage.set("theme", mode === "light" ? "dark" : "light");
-        setMode((prev) => (prev === "light" ? "dark" : "light"));
+      setColorMode: (value) => {
+        storage.set("theme", value);
+
+        switch (value) {
+          case "light":
+            setMode("light");
+            setThemeMode('light');
+            break;
+          case "dark":
+            setMode("dark");
+            setThemeMode('dark');
+            break;
+          case "system":
+            setMode(systemMode);
+            setThemeMode('system');
+            break;
+          default:
+            setMode(systemMode);
+            setThemeMode('system');
+            break;
+        }
       }
     }),
-    [mode]
+    [systemMode]
   );
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  return [theme, colorMode];
+  return [theme, colorMode, themeMode];
 };
+
+// // context for color mode
+// export const ColorModeContext = createContext({
+//   toggleColorMode: () => { },
+// });
+
+// export const useMode = () => {
+//   const [mode, setMode] = useState("dark");
+
+//   useEffect(() => {
+//     const localMode = storage.get("theme");
+//     if (localMode) {
+//       setMode(localMode);
+//     }
+//   }, []);
+
+//   const colorMode = useMemo(
+//     () => ({
+//       toggleColorMode: () => {
+//         storage.set("theme", mode === "light" ? "dark" : "light");
+//         setMode((prev) => (prev === "light" ? "dark" : "light"));
+//       }
+//     }),
+//     [mode]
+//   );
+
+//   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+//   return [theme, colorMode];
+// };
